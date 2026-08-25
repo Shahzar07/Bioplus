@@ -1,12 +1,8 @@
 import Link from "next/link";
 import { Package, FileText, MapPin, Truck, ArrowUpRight } from "lucide-react";
-import { AccountGreeting, ACCOUNT_USER } from "@/components/account/AccountShell";
-
-const STATS = [
-  { label: "Total orders", value: "3", icon: Package, href: "/account/orders" },
-  { label: "In transit", value: "1", icon: Truck, href: "/account/orders" },
-  { label: "COA files", value: "2", icon: FileText, href: "/account/files" },
-];
+import { AccountGreeting } from "@/components/account/AccountShell";
+import { db } from "@/lib/db";
+import { requireUser } from "@/lib/auth";
 
 const QUICK = [
   { title: "Recent orders", text: "Review order status, tracking, and history.", href: "/account/orders", icon: Package },
@@ -14,7 +10,21 @@ const QUICK = [
   { title: "Research address", text: "Manage your shipping & billing details.", href: "/account/research-address", icon: MapPin },
 ];
 
-export default function AccountDashboard() {
+export default async function AccountDashboard() {
+  const user = await requireUser();
+
+  const [totalOrders, inTransit, coaFiles] = await Promise.all([
+    db.order.count({ where: { userId: user.id } }),
+    db.order.count({ where: { userId: user.id, status: { in: ["SHIPPED", "PROCESSING"] } } }),
+    db.coaFile.count({ where: { order: { userId: user.id } } }),
+  ]);
+
+  const stats = [
+    { label: "Total orders", value: totalOrders, icon: Package, href: "/account/orders" },
+    { label: "In transit", value: inTransit, icon: Truck, href: "/account/orders" },
+    { label: "COA files", value: coaFiles, icon: FileText, href: "/account/files" },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
@@ -36,7 +46,7 @@ export default function AccountDashboard() {
           </span>
           <h1 className="font-display mt-3 text-4xl font-extrabold leading-[0.98] tracking-tight sm:text-5xl">
             <span className="block text-white">WELCOME BACK,</span>
-            <span className="brand-text-gradient block uppercase">{ACCOUNT_USER.username}</span>
+            <span className="brand-text-gradient block uppercase">{user.name ?? user.email}</span>
           </h1>
           <p className="mt-4 max-w-xl text-[14px] leading-relaxed text-white/55">
             Your BioPlus Labs account hub is built for order visibility, research-supply access, and account
@@ -47,7 +57,7 @@ export default function AccountDashboard() {
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
-        {STATS.map((s) => (
+        {stats.map((s) => (
           <Link
             key={s.label}
             href={s.href}

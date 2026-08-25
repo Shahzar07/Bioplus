@@ -32,3 +32,8 @@ yarn-error.log*
 
 # prisma generated client
 /src/generated
+
+# playwright
+/test-results
+/playwright-report
+/blob-report

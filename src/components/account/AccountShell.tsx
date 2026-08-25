@@ -10,14 +10,35 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { createContext, useContext } from "react";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
+import { logout } from "@/app/(auth)/actions";
 
-export const ACCOUNT_USER = {
-  name: "Dr. A. Whitfield",
-  username: "awhitfield",
-  email: "a.whitfield@lab.ac.uk",
+export type AccountUser = {
+  name: string;
+  email: string;
+  organisation: string | null;
 };
+
+const AccountUserContext = createContext<AccountUser | null>(null);
+
+/** The signed-in customer, for the client pages nested inside the shell. */
+export function useAccountUser(): AccountUser {
+  const user = useContext(AccountUserContext);
+  if (!user) throw new Error("useAccountUser must be used within AccountShell");
+  return user;
+}
+
+function LogOutButton({ className, children }: { className: string; children: React.ReactNode }) {
+  return (
+    <form action={logout}>
+      <button type="submit" className={className}>
+        {children}
+      </button>
+    </form>
+  );
+}
 
 const NAV = [
   { href: "/account", label: "Research Hub", icon: LayoutDashboard },
@@ -27,10 +48,17 @@ const NAV = [
   { href: "/account/settings", label: "Account Settings", icon: Settings },
 ];
 
-export function AccountShell({ children }: { children: React.ReactNode }) {
+export function AccountShell({
+  user,
+  children,
+}: {
+  user: AccountUser;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
   return (
+    <AccountUserContext.Provider value={user}>
     <section className="band-dark relative min-h-[80vh] text-white">
       <div className="hairline-grid absolute inset-0 opacity-50" />
       <Container className="relative py-10 lg:py-14">
@@ -60,13 +88,10 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
                   </Link>
                 );
               })}
-              <Link
-                href="/"
-                className="flex items-center gap-3 px-5 py-4 text-[14px] font-semibold text-white/60 transition-all hover:bg-white/[0.04] hover:text-white"
-              >
+              <LogOutButton className="flex w-full items-center gap-3 px-5 py-4 text-left text-[14px] font-semibold text-white/60 transition-all hover:bg-white/[0.04] hover:text-white">
                 <LogOut size={18} className="text-white/40" />
                 Log out
-              </Link>
+              </LogOutButton>
             </nav>
 
             <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-[12.5px] text-white/55">
@@ -85,6 +110,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
         </div>
       </Container>
     </section>
+    </AccountUserContext.Provider>
   );
 }
 
@@ -99,13 +125,13 @@ export function PanelHeader({ title, subtitle }: { title: string; subtitle: stri
 }
 
 export function AccountGreeting() {
+  const user = useAccountUser();
   return (
     <p className="text-[14px] text-white/60">
-      Hello <strong className="text-white">{ACCOUNT_USER.username}</strong>{" "}
-      (not {ACCOUNT_USER.username}?{" "}
-      <Link href="/" className="text-brand-300 hover:text-brand-200">
+      Hello <strong className="text-white">{user.name}</strong> (not {user.name}?{" "}
+      <LogOutButton className="text-brand-300 underline-offset-2 hover:text-brand-200 hover:underline">
         Log out
-      </Link>
+      </LogOutButton>
       )
     </p>
   );
