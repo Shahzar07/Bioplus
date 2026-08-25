@@ -3,6 +3,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { CATALOGUE_TAG } from "@/lib/catalog";
 import { getSettings, shippingFor } from "@/lib/settings";
+import { sendOrderConfirmation } from "@/lib/email";
 import { multiplyMoney, round2, sumMoney } from "@/lib/money";
 import type { Prisma } from "@/generated/prisma";
 
@@ -258,6 +259,34 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
 
     // Stock changed, so the storefront's cached catalogue is stale.
     revalidateTag(CATALOGUE_TAG);
+
+    // The order is already safe in the database; a mail failure must not undo
+    // it, so this is deliberately not awaited into the result.
+    void sendOrderConfirmation(
+      {
+        number: order.number,
+        email: order.email,
+        firstName: order.firstName,
+        total,
+        items: priced.map((p) => ({
+          name: p.variant.product.name,
+          label: p.variant.label,
+          qty: p.qty,
+          lineTotal: p.lineTotal,
+        })),
+      },
+      settings.bankTransfer,
+    ).then((sent) => {
+      if (sent) {
+        return db.orderEvent.create({
+          data: {
+            orderId: order.id,
+            type: "EMAIL_SENT",
+            message: "Order confirmation emailed to the customer.",
+          },
+        });
+      }
+    });
 
     return { ok: true, orderNumber: order.number, orderId: order.id };
   } catch (error) {

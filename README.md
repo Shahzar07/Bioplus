@@ -26,14 +26,15 @@ npm run build
 
 **Storefront**
 - Home — full-bleed dark hero (animated DNA-helix + particles in brand orange, gradient headline, dispatch pill), trust bar, "BioPlus Range" band using the product render, category showcase, best-sellers, quality, affiliate band, FAQ
-- Shop — full catalogue with category filter + sorting (`/shop?category=metabolic` etc.)
+- Shop — full catalogue with sorting (featured, price, name)
 - Product detail — mg variant selection, quantity, add-to-cart, image gallery (branded vial + range photo), and rich tabs: **Full Description** (headline, intro, purity badges, Product Details table with molecular formula / MW / CAS / form, Storage & Handling, Note), **Mixing Guide**, **Research**, **Usage**, **Reviews**
 - **Peptide Dosage Calculator** (`/dosage-calculator`) — desired dose / peptide strength / volume presets + custom, live syringe visual, ml-to-draw + insulin units + doses-per-vial
 - Cart (persisted to `localStorage`) + slide-in cart drawer
-- Checkout — full UK address form (Town/City, County, Postcode) + order summary + confirmation (payment gateway-ready, see below)
+- Checkout — full UK address form, server-priced order summary, discount codes, and bank-transfer confirmation
 
-**Account "Research Hub"** (`/account`) — dark dashboard
+**Account "Research Hub"** (`/account`) — dark dashboard, backed by real data
 - Dashboard, Orders, Files & COA, Research Address, Account Settings
+- Sign in and registration at `/login` and `/register`; guests can still check out
 
 **Content & compliance**
 - About, FAQ, Shipping & Delivery, Research Library, Affiliate, Wholesale, Contact
@@ -44,8 +45,13 @@ npm run build
 
 ## Catalogue data
 
-All products live in [`src/lib/products.ts`](src/lib/products.ts) — **16 product lines / 36 SKUs**, priced in **GBP** per
-kit with `BPL-` catalogue numbers. Edit this one file to change products, prices, or stock.
+The catalogue lives in **Postgres** and is edited from the admin dashboard at `/admin/products` — adding a product,
+changing a price or taking a SKU out of stock is live on the storefront within a second, with no deploy.
+
+[`prisma/seed-data.ts`](prisma/seed-data.ts) holds the catalogue as originally shipped and is used only to seed a fresh
+database. [`src/lib/products.ts`](src/lib/products.ts) now holds the types and pure helpers; reads go through
+[`src/lib/catalog.ts`](src/lib/catalog.ts), which caches under the `products` tag so every admin write can revalidate
+the storefront.
 
 ## Brand assets
 
@@ -74,20 +80,67 @@ home, Research, and product pages. Scientific reference data (molecular formula 
 `public/videos/hero-bg.mp4` is the DNA/particle loop behind the hero, colour-graded to the brand orange. It autoplays
 muted and looped.
 
-## Still to wire up (intentional placeholders)
+## Admin dashboard
 
-1. **Product photography** — the generated vials are placed per category. If you receive individual per-product photos,
-   drop them in `public/products/` and map them in `ProductImage`.
-2. **Payments** — checkout is a complete UI with an order-confirmation step. Connect the chosen gateway in
-   `src/app/checkout/page.tsx` `placeOrder()` when credentials are available.
-3. **Auth / orders backend** — the account area uses representative sample data. Wire to a real backend/CMS for live
-   orders, COA downloads, and saved addresses.
-4. **Contact / affiliate / wholesale forms** — front-end only; connect to email/CRM or a form endpoint.
-5. **COA files & batch numbers** — the account "Files & COA" area and the batch register in
-   [`CoaFinder`](src/components/coa/CoaFinder.tsx) use representative entries; upload the real PDFs and batch IDs when
-   the testing lab supplies them.
-6. **Social links** — `SITE.facebook` in [`src/lib/site.ts`](src/lib/site.ts) points at a placeholder until the client's
-   page URL is confirmed.
+Sign in at `/login` with a staff account and the dashboard is at **`/admin`**.
+
+| Section | What it does |
+| --- | --- |
+| **Overview** | Revenue today and over 30 days, average order value, orders awaiting payment, low-stock alerts, 30-day chart, recent orders |
+| **Orders** | Status tabs, search across number/email/surname/postcode/SKU, CSV export. Each order: mark paid → shipped → delivered, add tracking, cancel or refund (which returns stock), internal notes, printable packing slip, full event timeline |
+| **Products** | One-click in-stock / out-of-stock / arriving-soon per SKU, publish or hide per product, full editor with a repeatable variant editor and image upload, duplicate as draft |
+| **Inventory** | Stock per SKU, quick adjustments with a reason, low-stock filter, movement history |
+| **Customers** | Order count, lifetime spend, order history, staff-only notes, suspend/reactivate, role changes |
+| **Discounts** | Percentage or fixed codes with minimum spend, validity window and usage cap |
+| **Settings** | Delivery rules, bank transfer details, store contact, activity log |
+
+New orders reach an open dashboard within about three seconds, with a toast and a chime — no refresh needed.
+
+### How orders work
+
+Checkout re-prices every line **from the database**: the browser only supplies SKUs and quantities, so a tampered cart
+cannot change what is charged. Order creation, stock decrements and discount redemption run in one transaction, and
+selling the last vial takes a SKU off sale automatically. Payment is by **bank transfer** — the confirmation shows the
+account details and the order number as the reference, and the owner marks the order paid once funds clear. The
+`Order` model already carries `paymentMethod`/`paymentRef`, so a card processor can be added later without a migration.
+
+## Setup
+
+```bash
+cp .env.example .env    # then fill in the values below
+npm install
+npm run db:deploy       # apply migrations
+npm run db:seed         # seed the catalogue, settings and the first admin
+npm run dev
+```
+
+| Variable | Required | What it is |
+| --- | --- | --- |
+| `DATABASE_URL` | yes | Pooled Postgres connection used at runtime |
+| `DIRECT_DATABASE_URL` | yes | Unpooled connection for migrations (Neon's pooler cannot run DDL) |
+| `AUTH_SECRET` | yes | 32+ random bytes — `openssl rand -base64 32` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account |
+| `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
+| `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
+| `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
+
+### Tests
+
+```bash
+npm run e2e
+```
+
+Playwright drives a production build through the real flows: sign-in and route guards, checkout including tampered
+carts and stock limits, order fulfilment, stock and price changes reaching the storefront, discounts, and a second
+browser placing an order that appears on an untouched dashboard.
+
+## Still to wire up
+
+1. **Card payments** — bank transfer is live; a processor can be added against the existing payment fields.
+2. **Contact / affiliate / wholesale forms** — front-end only; connect to email or a CRM.
+3. **COA batch register** — the public register in [`CoaFinder`](src/components/coa/CoaFinder.tsx) still uses
+   representative entries. Per-order COA files uploaded from the dashboard already reach the customer's Research Hub.
+4. **Social links** — `SITE.facebook` in [`src/lib/site.ts`](src/lib/site.ts) points at a placeholder.
 
 ## Contact (from the client brief)
 

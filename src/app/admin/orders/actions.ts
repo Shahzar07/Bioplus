@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { requireStaff } from "@/lib/auth";
 import { CATALOGUE_TAG } from "@/lib/catalog";
 import { NEXT_STATUSES, ORDER_STATUS_LABEL, STOCK_HOLDING_STATUSES } from "@/lib/order-status";
+import { sendShippedEmail } from "@/lib/email";
 import type { OrderStatus } from "@/generated/prisma";
 
 export type ActionResult = { ok?: string; error?: string } | undefined;
@@ -102,6 +103,20 @@ export async function updateOrderStatus(
 
   if (returnsStock) revalidateTag(CATALOGUE_TAG);
   await logActivity(staff.id, `order.${status.toLowerCase()}`, orderId, order.number);
+
+  if (status === "SHIPPED") {
+    const shipped = await db.order.findUniqueOrThrow({ where: { id: orderId } });
+    if (await sendShippedEmail(shipped)) {
+      await db.orderEvent.create({
+        data: {
+          orderId,
+          type: "EMAIL_SENT",
+          message: "Dispatch notification emailed to the customer.",
+          actorId: staff.id,
+        },
+      });
+    }
+  }
 
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${orderId}`);
