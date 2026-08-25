@@ -33,8 +33,8 @@ export const ORDER_STATUS_LIGHT: Record<OrderStatus, string> = {
   PROCESSING: "bg-brand-50 text-brand-700 ring-brand-200",
   SHIPPED: "bg-sky-100 text-sky-800 ring-sky-200",
   DELIVERED: "bg-emerald-100 text-emerald-800 ring-emerald-200",
-  CANCELLED: "bg-ink-100 text-ink-600 ring-ink-200",
-  REFUNDED: "bg-ink-100 text-ink-600 ring-ink-200",
+  CANCELLED: "bg-haze text-ink-600 ring-line",
+  REFUNDED: "bg-haze text-ink-600 ring-line",
 };
 
 export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {

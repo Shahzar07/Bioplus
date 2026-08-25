@@ -415,7 +415,7 @@ function Row({ label, value, emphasise }: { label: string; value: string; emphas
         <button
           type="button"
           onClick={() => navigator.clipboard?.writeText(value)}
-          className="text-ink-400 transition hover:text-brand-600"
+          className="text-ink-500 transition hover:text-brand-600"
           aria-label={`Copy ${label}`}
         >
           <Copy size={13} />

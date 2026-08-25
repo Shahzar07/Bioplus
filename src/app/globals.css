@@ -157,3 +157,13 @@ body {
   background: radial-gradient(circle, rgba(255, 168, 105, 0.9), rgba(248, 80, 0, 0));
   animation: twinkle 4s ease-in-out infinite, drift 12s ease-in-out infinite;
 }
+
+/* Packing slip — the order detail page prints as a picking document. */
+@media print {
+  body {
+    background: #fff;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+}
