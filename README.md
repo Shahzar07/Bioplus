@@ -119,7 +119,7 @@ npm run dev
 | `DATABASE_URL` | yes | Pooled Postgres connection used at runtime |
 | `DIRECT_DATABASE_URL` | yes | Unpooled connection for migrations (Neon's pooler cannot run DDL) |
 | `AUTH_SECRET` | yes | 32+ random bytes — `openssl rand -base64 32` |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account. Nothing can sign in to `/admin` until it exists |
 | `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
 | `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
@@ -130,9 +130,42 @@ npm run dev
 npm run e2e
 ```
 
+The suite signs in as `admin@biopluslabs.co.uk` with the password `devpassword123`, so seed the local database
+with `ADMIN_PASSWORD=devpassword123` (or reset that account's password) before the first run.
+
 Playwright drives a production build through the real flows: sign-in and route guards, checkout including tampered
 carts and stock limits, order fulfilment, stock and price changes reaching the storefront, discounts, and a second
 browser placing an order that appears on an untouched dashboard.
+
+## Deploying to Vercel
+
+The project is linked to this repository, so a push to the production branch deploys. Vercel runs the
+`vercel-build` script rather than `build`:
+
+```
+prisma generate && prisma migrate deploy && tsx prisma/seed.ts --if-empty && next build
+```
+
+Migrations are applied on every deploy. The seed runs with `--if-empty`, so the first deploy against a blank
+database populates the catalogue, store settings and the admin account, and every deploy after that leaves the
+catalogue alone — otherwise a deploy would overwrite the prices and product copy edited in the dashboard.
+
+### Environment variables
+
+Set these on the project, for the Production environment, **before the first deploy** — the build itself reads
+the database (`/product/[slug]` is prerendered from it), so a deploy without them fails at "Collecting page data".
+
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `DATABASE_URL` | yes | Pooled Neon connection (the `-pooler` host) |
+| `DIRECT_DATABASE_URL` | yes | Unpooled Neon connection, for migrations |
+| `AUTH_SECRET` | yes | `openssl rand -base64 32` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | yes, first deploy | The first admin account |
+| `BLOB_READ_WRITE_TOKEN` | no | Enables image and COA uploads |
+| `RESEND_API_KEY` | no | Enables order emails |
+
+Attaching a Neon store to the project from **Storage** sets `POSTGRES_URL` and `DATABASE_URL_UNPOOLED` instead of
+the first two; both spellings are accepted, so there is nothing to copy across by hand.
 
 ## Still to wire up
 

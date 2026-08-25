@@ -2,7 +2,7 @@
   "name": "bioplus-labs",
   "version": "1.0.0",
   "private": true,
-  "description": "BioPlus Labs — biopluslabs.co.uk storefront",
+  "description": "BioPlus Labs \u2014 biopluslabs.co.uk storefront",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
@@ -13,7 +13,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "vercel-build": "prisma generate && prisma migrate deploy && tsx prisma/seed.ts --if-empty && next build"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

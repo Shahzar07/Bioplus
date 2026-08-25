@@ -1,19 +1,18 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
+import { directUrl } from "./src/lib/database-url";
 
 /**
  * Prisma 7 keeps connection URLs out of schema.prisma and no longer loads .env
  * on its own, hence the dotenv import above.
  *
- * DATABASE_URL is the pooled connection the app uses at runtime.
- * DIRECT_DATABASE_URL is the unpooled connection migrations need — on Neon the
- * pooler cannot run DDL. Falls back to DATABASE_URL for a plain Postgres
- * server, which has no pooler.
+ * Migrations run against the unpooled connection — on Neon the pooler cannot
+ * run DDL. See src/lib/database-url.ts for the names that are accepted.
  */
 export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
-    url: process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL ?? "",
+    url: directUrl() ?? "",
   },
   migrations: {
     path: "prisma/migrations",

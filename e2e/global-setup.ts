@@ -2,6 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma";
 import { SEED_PRODUCTS } from "../prisma/seed-data";
+import { directUrl } from "../src/lib/database-url";
 
 /**
  * Puts the shop back to a known state before the suite runs.
@@ -25,7 +26,7 @@ function isLocalDatabase(url: string | undefined): boolean {
 }
 
 export default async function globalSetup() {
-  const url = process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL;
+  const url = directUrl();
 
   if (!isLocalDatabase(url)) {
     console.warn(

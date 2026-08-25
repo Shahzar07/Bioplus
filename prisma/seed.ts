@@ -3,6 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import { PrismaClient, type Availability } from "../src/generated/prisma";
 import { SEED_PRODUCTS } from "./seed-data";
+import { directUrl } from "../src/lib/database-url";
 
 /**
  * Seeds the catalogue exactly as it shipped on the hardcoded storefront, plus
@@ -28,7 +29,7 @@ const OPENING_STOCK: Record<Availability, number> = {
 
 const db = new PrismaClient({
   adapter: new PrismaPg({
-    connectionString: process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL,
+    connectionString: directUrl(),
   }),
 });
 
@@ -152,9 +153,21 @@ async function seedCounters() {
   });
 }
 
+/**
+ * `--if-empty` is what the deploy runs. Settings, counters and the admin are
+ * already guarded, but re-seeding the catalogue rewrites names and prices, so
+ * it would undo every edit made in the dashboard since the last deploy. On a
+ * database that already has products, leave the catalogue alone.
+ */
 async function main() {
+  const onlyIfEmpty = process.argv.includes("--if-empty");
+
   console.log("Seeding BioPlus Labs…");
-  await seedCatalogue();
+  if (onlyIfEmpty && (await db.product.count()) > 0) {
+    console.log("  catalogue: already populated — left untouched");
+  } else {
+    await seedCatalogue();
+  }
   await seedAdmin();
   await seedSettings();
   await seedCounters();
