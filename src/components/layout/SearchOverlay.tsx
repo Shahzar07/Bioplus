@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
-import { searchProducts, PRODUCTS, priceRangeLabel } from "@/lib/products";
+import { priceRangeLabel } from "@/lib/products";
+import { useCatalogue, useProductSearch } from "@/lib/catalog-context";
 import { ProductImage } from "@/components/product/ProductImage";
 
 export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -21,7 +22,12 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  const results = useMemo(() => (q ? searchProducts(q) : PRODUCTS.slice(0, 6)), [q]);
+  const catalogue = useCatalogue();
+  const searchProducts = useProductSearch();
+  const results = useMemo(
+    () => (q ? searchProducts(q) : catalogue.slice(0, 6)),
+    [q, catalogue, searchProducts],
+  );
 
   if (!open) return null;
 

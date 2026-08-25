@@ -5,10 +5,11 @@ import { X, Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { formatGBP } from "@/lib/cn";
 import { ProductImage } from "@/components/product/ProductImage";
-import { variantBySku } from "@/lib/products";
+import { useVariantBySku } from "@/lib/catalog-context";
 
 export function CartDrawer() {
   const { drawerOpen, setDrawerOpen, detailedLines, subtotal, setQty, remove, count } = useCart();
+  const variantBySku = useVariantBySku();
 
   return (
     <>

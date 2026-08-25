@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { ProductCard } from "@/components/product/ProductCard";
-import { PRODUCTS, lowestPrice, productAvailability } from "@/lib/products";
+import { lowestPrice, productAvailability } from "@/lib/products";
+import { useCatalogue } from "@/lib/catalog-context";
 
 type Sort = "featured" | "price-asc" | "price-desc" | "name";
 
@@ -18,10 +19,11 @@ const SORTS: { value: Sort; label: string }[] = [
 const AVAILABILITY_RANK = { "in-stock": 0, "arriving-soon": 1, "out-of-stock": 2 } as const;
 
 export function ShopClient() {
+  const catalogue = useCatalogue();
   const [sort, setSort] = useState<Sort>("featured");
 
   const products = useMemo(() => {
-    const list = [...PRODUCTS];
+    const list = [...catalogue];
     switch (sort) {
       case "price-asc":
         list.sort((a, b) => lowestPrice(a) - lowestPrice(b));
@@ -41,7 +43,7 @@ export function ShopClient() {
         );
     }
     return list;
-  }, [sort]);
+  }, [sort, catalogue]);
 
   return (
     <>

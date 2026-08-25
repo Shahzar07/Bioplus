@@ -1,0 +1,348 @@
+// BioPlus Labs — commerce data model.
+// Prices are GBP. Money is Decimal(10,2) everywhere; never float.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------- accounts
+
+enum Role {
+  ADMIN
+  STAFF
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String?
+  name         String?
+  phone        String?
+  organisation String?
+  role         Role       @default(CUSTOMER)
+  status       UserStatus @default(ACTIVE)
+  notes        String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  addresses      Address[]
+  orders         Order[]
+  orderEvents    OrderEvent[]    @relation("OrderEventActor")
+  stockMovements StockMovement[] @relation("StockMovementActor")
+  activity       ActivityLog[]
+
+  @@index([role])
+  @@index([createdAt])
+}
+
+/// The "research address" the account area already exposes.
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isDefault Boolean  @default(false)
+  label     String?
+  org       String?
+  firstName String
+  lastName  String
+  line1     String
+  line2     String?
+  city      String
+  county    String?
+  postcode  String
+  country   String   @default("GB")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------- catalogue
+
+/// Mirrors the availability union the storefront already renders.
+enum Availability {
+  IN_STOCK
+  OUT_OF_STOCK
+  ARRIVING_SOON
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model Product {
+  id         String        @id @default(cuid())
+  slug       String        @unique
+  name       String
+  tagline    String
+  blurb      String
+  highlights String[]
+  form       String
+  bestSeller Boolean       @default(false)
+  isNew      Boolean       @default(false)
+  status     ProductStatus @default(ACTIVE)
+  sortOrder  Int           @default(0)
+  /// Overrides the /products/vial-<slug>.webp convention when set.
+  imageUrl   String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  variants Variant[]
+  coaFiles CoaFile[]
+
+  @@index([status, sortOrder])
+}
+
+model Variant {
+  id           String       @id @default(cuid())
+  productId    String
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku          String       @unique
+  label        String
+  strength     String
+  price        Decimal      @db.Decimal(10, 2)
+  availability Availability @default(IN_STOCK)
+  stockQty     Int          @default(0)
+  lowStockAt   Int          @default(5)
+  sortOrder    Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  orderItems     OrderItem[]
+  stockMovements StockMovement[]
+
+  @@index([productId, sortOrder])
+}
+
+// ---------------------------------------------------------------- orders
+
+enum OrderStatus {
+  AWAITING_PAYMENT
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+  FAILED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CARD
+  CRYPTO
+  OTHER
+}
+
+model Order {
+  id     String @id @default(cuid())
+  /// Human reference, e.g. BPL-100042. Sequential, never random.
+  number String @unique
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Contact + delivery snapshot; an order must survive account deletion.
+  email        String
+  phone        String?
+  organisation String?
+  firstName    String
+  lastName     String
+  line1        String
+  line2        String?
+  city         String
+  county       String?
+  postcode     String
+  country      String  @default("GB")
+
+  status        OrderStatus   @default(AWAITING_PAYMENT)
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod @default(BANK_TRANSFER)
+  /// Stripe payment intent / external processor reference, when one exists.
+  paymentRef    String?
+
+  subtotal Decimal @db.Decimal(10, 2)
+  shipping Decimal @db.Decimal(10, 2)
+  discount Decimal @default(0) @db.Decimal(10, 2)
+  total    Decimal @db.Decimal(10, 2)
+  currency String  @default("GBP")
+
+  discountCode String?
+
+  /// Research-Use-Only certification captured at checkout — compliance evidence.
+  ruoAcceptedAt DateTime?
+
+  trackingCarrier String?
+  trackingNumber  String?
+  customerNote    String?
+  internalNote    String?
+
+  placedAt    DateTime  @default(now())
+  paidAt      DateTime?
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+  cancelledAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  items    OrderItem[]
+  events   OrderEvent[]
+  coaFiles CoaFile[]
+
+  @@index([status, placedAt])
+  @@index([email])
+  @@index([placedAt])
+}
+
+/// Line items snapshot product data so history survives later catalogue edits.
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId String?
+  variant   Variant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  sku       String
+  name      String
+  label     String
+  slug      String
+  unitPrice Decimal @db.Decimal(10, 2)
+  qty       Int
+  lineTotal Decimal @db.Decimal(10, 2)
+
+  @@index([orderId])
+}
+
+enum OrderEventType {
+  PLACED
+  PAYMENT_RECEIVED
+  STATUS_CHANGED
+  TRACKING_ADDED
+  NOTE
+  CANCELLED
+  REFUNDED
+  EMAIL_SENT
+}
+
+model OrderEvent {
+  id        String         @id @default(cuid())
+  orderId   String
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type      OrderEventType
+  message   String
+  actorId   String?
+  actor     User?          @relation("OrderEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+  createdAt DateTime       @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+// ---------------------------------------------------------------- inventory
+
+enum StockReason {
+  ORDER_PLACED
+  ORDER_CANCELLED
+  MANUAL_ADJUSTMENT
+  RESTOCK
+  CORRECTION
+}
+
+model StockMovement {
+  id        String      @id @default(cuid())
+  variantId String
+  variant   Variant     @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  delta     Int
+  resulting Int
+  reason    StockReason
+  note      String?
+  orderId   String?
+  actorId   String?
+  actor     User?       @relation("StockMovementActor", fields: [actorId], references: [id], onDelete: SetNull)
+  createdAt DateTime    @default(now())
+
+  @@index([variantId, createdAt])
+}
+
+// ---------------------------------------------------------------- marketing
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+model Discount {
+  id         String       @id @default(cuid())
+  code       String       @unique
+  type       DiscountType @default(PERCENT)
+  value      Decimal      @db.Decimal(10, 2)
+  minSpend   Decimal?     @db.Decimal(10, 2)
+  startsAt   DateTime?
+  endsAt     DateTime?
+  usageLimit Int?
+  usedCount  Int          @default(0)
+  active     Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model CoaFile {
+  id        String   @id @default(cuid())
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  batch     String?
+  filename  String
+  url       String
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([orderId])
+}
+
+// ---------------------------------------------------------------- ops
+
+/// Free-form store configuration: shipping rules, bank details, store contact.
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+/// Single-row counter backing sequential order numbers.
+model Counter {
+  key   String @id
+  value Int    @default(0)
+}

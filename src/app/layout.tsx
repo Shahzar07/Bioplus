@@ -8,6 +8,8 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { AgeGate } from "@/components/AgeGate";
 import { SITE } from "@/lib/site";
+import { CatalogProvider } from "@/lib/catalog-context";
+import { getCatalogue } from "@/lib/catalog";
 
 const display = Space_Grotesk({
   subsets: ["latin"],
@@ -45,18 +47,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const catalogue = await getCatalogue();
+
   return (
     <html lang="en-GB" className={`${display.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-white antialiased">
-        <CartProvider>
-          <AgeGate />
-          <AnnouncementBar />
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+        <CatalogProvider catalogue={catalogue}>
+          <CartProvider>
+            <AgeGate />
+            <AnnouncementBar />
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <CartDrawer />
+          </CartProvider>
+        </CatalogProvider>
       </body>
     </html>
   );

@@ -7,11 +7,10 @@ import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ButtonLink } from "@/components/ui/Button";
 import { ProductImage } from "@/components/product/ProductImage";
-import { PRODUCTS, getProduct } from "@/lib/products";
+import { getProduct } from "@/lib/products";
+import { getCatalogue } from "@/lib/catalog";
 
-const FEATURED = ["bpc-157", "tb-500", "tirzepatide", "retatrutide", "ghk-cu", "mots-c"]
-  .map((s) => getProduct(s)!)
-  .filter(Boolean);
+const FEATURED_SLUGS = ["bpc-157", "tb-500", "tirzepatide", "retatrutide", "ghk-cu", "mots-c"];
 
 export const metadata: Metadata = {
   title: "Research Library",
@@ -24,7 +23,12 @@ const GUIDES = [
   { icon: Clock, title: "Documentation", text: "Each batch carries a Certificate of Analysis recording identity and purity, searchable by batch number." },
 ];
 
-export default function ResearchPage() {
+export default async function ResearchPage() {
+  const catalogue = await getCatalogue();
+  const FEATURED = FEATURED_SLUGS.map((s) => getProduct(catalogue, s)).filter(
+    (p): p is NonNullable<typeof p> => Boolean(p),
+  );
+
   return (
     <>
       <PageHero
@@ -52,7 +56,7 @@ export default function ResearchPage() {
                   />
                   <dl className="mt-8 grid grid-cols-3 gap-4 border-t border-white/10 pt-6">
                     {[
-                      { v: `${PRODUCTS.length}`, l: "Compounds" },
+                      { v: `${catalogue.length}`, l: "Compounds" },
                       { v: "UK", l: "Dispatch" },
                       { v: "≥98%", l: "Verified purity" },
                     ].map((s) => (

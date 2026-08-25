@@ -7,10 +7,11 @@ import { Container } from "@/components/ui/Container";
 import { useCart } from "@/lib/cart-context";
 import { formatGBP } from "@/lib/cn";
 import { ProductImage } from "@/components/product/ProductImage";
-import { variantBySku } from "@/lib/products";
+import { useVariantBySku } from "@/lib/catalog-context";
 
 export default function CheckoutPage() {
   const { detailedLines, subtotal, clear, count } = useCart();
+  const variantBySku = useVariantBySku();
   const [placed, setPlaced] = useState<string | null>(null);
   const [agree, setAgree] = useState(false);
 

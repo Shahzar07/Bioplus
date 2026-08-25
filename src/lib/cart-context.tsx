@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { variantBySku } from "./products";
+import { useCatalogue } from "./catalog-context";
 
 export type CartLine = {
   sku: string;
@@ -77,6 +78,7 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const catalogue = useCatalogue();
   const [state, dispatch] = useReducer(reducer, { lines: [] });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -106,7 +108,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const detailedLines = useMemo(() => {
     return state.lines
       .map((l) => {
-        const found = variantBySku(l.sku);
+        const found = variantBySku(catalogue, l.sku);
         if (!found) return null;
         const { product, variant } = found;
         return {
@@ -120,7 +122,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         };
       })
       .filter(Boolean) as CartContextValue["detailedLines"];
-  }, [state.lines]);
+  }, [state.lines, catalogue]);
 
   const value: CartContextValue = useMemo(
     () => ({

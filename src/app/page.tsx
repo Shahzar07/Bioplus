@@ -8,7 +8,8 @@ import { Hero } from "@/components/home/Hero";
 import { TrustBar } from "@/components/home/TrustBar";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Accordion } from "@/components/ui/Accordion";
-import { PRODUCTS, stacks, bestSellingPeptides } from "@/lib/products";
+import { stacks, bestSellingPeptides } from "@/lib/products";
+import { getCatalogue } from "@/lib/catalog";
 import { FAQS } from "@/data/faq";
 import { Testimonials } from "@/components/home/Testimonials";
 
@@ -26,7 +27,9 @@ const QUALITY = [
   { icon: Headset, title: "Responsive Support", text: "Knowledgeable assistance throughout the ordering process and beyond, from order placement through delivery." },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const catalogue = await getCatalogue();
+
   return (
     <>
       <Hero />
@@ -111,7 +114,7 @@ export default function HomePage() {
             align="center"
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {stacks.map((p) => (
+            {stacks(catalogue).map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}
           </div>
@@ -128,7 +131,7 @@ export default function HomePage() {
             align="center"
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {bestSellingPeptides.map((p) => (
+            {bestSellingPeptides(catalogue).map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}
           </div>

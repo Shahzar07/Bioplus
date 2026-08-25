@@ -6,10 +6,11 @@ import { Container } from "@/components/ui/Container";
 import { useCart } from "@/lib/cart-context";
 import { formatGBP } from "@/lib/cn";
 import { ProductImage } from "@/components/product/ProductImage";
-import { variantBySku } from "@/lib/products";
+import { useVariantBySku } from "@/lib/catalog-context";
 
 export default function CartPage() {
   const { detailedLines, subtotal, setQty, remove, count } = useCart();
+  const variantBySku = useVariantBySku();
   const freeShipThreshold = 250;
   const remaining = Math.max(0, freeShipThreshold - subtotal);
 

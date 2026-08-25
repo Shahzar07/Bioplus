@@ -6,10 +6,12 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductDetail } from "@/components/product/ProductDetail";
-import { PRODUCTS, getProduct, productAvailability } from "@/lib/products";
+import { getProduct, productAvailability } from "@/lib/products";
+import { getCatalogue, getCatalogueProduct } from "@/lib/catalog";
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const catalogue = await getCatalogue();
+  return catalogue.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
@@ -18,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getCatalogueProduct(slug);
   if (!product) return { title: "Product not found" };
   return {
     title: `${product.name} — ${product.tagline}`,
@@ -28,11 +30,13 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const catalogue = await getCatalogue();
+  const product = getProduct(catalogue, slug);
   if (!product) notFound();
 
   // No categories — show other in-stock products, then anything else, to fill four slots.
-  const related = PRODUCTS.filter((p) => p.slug !== product.slug)
+  const related = catalogue
+    .filter((p) => p.slug !== product.slug)
     .sort(
       (a, b) =>
         Number(productAvailability(b) === "in-stock") - Number(productAvailability(a) === "in-stock") ||
