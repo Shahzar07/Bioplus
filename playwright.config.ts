@@ -34,7 +34,14 @@ export default defineConfig({
     : {
         command: "npm run start",
         url: "http://localhost:3000",
-        reuseExistingServer: true,
+        reuseExistingServer: false,
         timeout: 120_000,
+        env: {
+          // The suite signs in far more often than a person would, so the
+          // production throttle would reject it. The limiter itself is still
+          // covered by its own test.
+          LOGIN_RATE_LIMIT: "1000",
+          REGISTER_RATE_LIMIT: "1000",
+        },
       },
 });

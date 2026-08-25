@@ -46,3 +46,18 @@ export async function seedCart(
     [CART_KEY, JSON.stringify(lines)] as [string, string],
   );
 }
+
+export const ADMIN = { email: "admin@biopluslabs.co.uk", password: "devpassword123" };
+
+/**
+ * Signs in as the seeded admin, asking explicitly for /admin so a leftover
+ * ?next= from an earlier navigation cannot redirect the session elsewhere.
+ */
+export async function signInAsAdmin(page: Page) {
+  await page.goto("/login?next=%2Fadmin");
+  const form = mainForm(page);
+  await form.getByLabel("Email address").fill(ADMIN.email);
+  await form.getByLabel("Password", { exact: true }).fill(ADMIN.password);
+  await form.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForURL(/\/admin/);
+}

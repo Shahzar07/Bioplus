@@ -1,15 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { acceptAgeGate, seedCart, mainForm as form } from "./helpers";
-
-const ADMIN = { email: "admin@biopluslabs.co.uk", password: "devpassword123" };
-
-async function signInAsAdmin(page: Page) {
-  await page.goto("/login");
-  await form(page).getByLabel("Email address").fill(ADMIN.email);
-  await form(page).getByLabel("Password", { exact: true }).fill(ADMIN.password);
-  await form(page).getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/admin/);
-}
+import { acceptAgeGate, seedCart, signInAsAdmin, mainForm as form } from "./helpers";
 
 test.beforeEach(async ({ context }) => {
   await acceptAgeGate(context);
