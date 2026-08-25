@@ -1,6 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/auth";
+import { limitFromEnv, pruneRateLimits, rateLimit } from "@/lib/rate-limit";
 import { placeOrder, resolveDiscount, type CartLineInput } from "@/lib/orders";
 import { db } from "@/lib/db";
 import { getSettings, shippingFor } from "@/lib/settings";
@@ -29,6 +31,22 @@ export async function submitOrder(
   _prev: CheckoutState,
   formData: FormData,
 ): Promise<CheckoutState> {
+  // Checkout is necessarily open to guests, so throttle it per IP: without
+  // this, orders could be flooded to reserve — and so deny — stock.
+  pruneRateLimits();
+  const requestHeaders = await headers();
+  const ip = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const limit = rateLimit(`checkout:${ip}`, {
+    limit: limitFromEnv("CHECKOUT_RATE_LIMIT", 10),
+    windowMs: 10 * 60_000,
+  });
+  if (!limit.ok) {
+    return {
+      status: "error",
+      error: `Too many orders from this connection. Try again in ${Math.ceil(limit.retryAfterSeconds / 60)} minutes, or email customerservice@biopluslabs.co.uk.`,
+    };
+  }
+
   const value = (key: string) => String(formData.get(key) ?? "").trim();
 
   const email = value("email").toLowerCase();

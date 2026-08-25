@@ -43,6 +43,7 @@ export default defineConfig({
           // covered by its own test.
           LOGIN_RATE_LIMIT: "1000",
           REGISTER_RATE_LIMIT: "1000",
+          CHECKOUT_RATE_LIMIT: "1000",
         },
       },
 });
