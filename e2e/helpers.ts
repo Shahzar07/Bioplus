@@ -22,3 +22,27 @@ export async function acceptAgeGate(context: BrowserContext) {
 
 /** The page's own form — the footer newsletter signup also has an email field. */
 export const mainForm = (page: Page) => page.locator("main form");
+
+export const CART_KEY = "bioplus-cart-v1";
+
+/**
+ * Seeds the cart before any page script runs.
+ *
+ * Setting localStorage after navigating races the cart provider, which writes
+ * its (empty) state back on hydration and can clobber the seeded value.
+ */
+export async function seedCart(
+  context: BrowserContext,
+  lines: { sku: string; qty: number }[],
+) {
+  await context.addInitScript(
+    ([key, value]) => {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch {
+        /* private mode */
+      }
+    },
+    [CART_KEY, JSON.stringify(lines)] as [string, string],
+  );
+}
