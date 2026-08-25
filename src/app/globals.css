@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/* ============================================================
+   BIOPLUS LABS — Design Tokens
+   Brand: heavy geometric wordmark, molecular ring counter,
+   brushed-metal plate. Accent: laboratory orange (#f85000).
+   Palette per client brief — metal-effect silver, black, orange.
+   ============================================================ */
+
+@theme {
+  /* Brand orange, sampled from the BioPlus Labs logo artwork */
+  --color-brand-50: #fff5ed;
+  --color-brand-100: #ffe8d5;
+  --color-brand-200: #ffcdaa;
+  --color-brand-300: #ffab74;
+  --color-brand-400: #ff8038; /* light accent for dark bands */
+  --color-brand-500: #fb6a12;
+  --color-brand-600: #f85000; /* core brand orange */
+  --color-brand-700: #cc3d02;
+  --color-brand-800: #a13209;
+  --color-brand-900: #822c0d;
+
+  /* Ink / graphite neutrals for the premium black bands */
+  --color-ink-950: #08080a;
+  --color-ink-900: #0d0e11;
+  --color-ink-800: #16181c;
+  --color-ink-700: #23262c;
+  --color-ink-600: #343841;
+  --color-ink-500: #565c68;
+
+  /* Surfaces — brushed-metal silver family */
+  --color-paper: #ffffff;
+  --color-mist: #f6f6f8;
+  --color-haze: #ebecef;
+  --color-line: #dee0e5;
+
+  --font-display: var(--font-display-src), "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  --radius-card: 14px;
+
+  --shadow-card: 0 1px 2px rgba(8, 8, 10, 0.05), 0 8px 24px -12px rgba(8, 8, 10, 0.14);
+  --shadow-pop: 0 24px 60px -20px rgba(120, 45, 5, 0.35);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink-900);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display headings echo the squared logo wordmark */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.uppercase-wide {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+/* The signature BioPlus orange gradient */
+.brand-gradient {
+  background-image: linear-gradient(120deg, var(--color-brand-700) 0%, var(--color-brand-600) 45%, var(--color-brand-400) 100%);
+}
+.brand-text-gradient {
+  background-image: linear-gradient(120deg, var(--color-brand-400) 0%, var(--color-brand-600) 55%, var(--color-brand-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Brushed silver plate — the metal-effect surface from the logo lockup */
+.metal-plate {
+  background-image: linear-gradient(
+    100deg,
+    #f2f3f5 0%,
+    #ffffff 18%,
+    #d9dbe0 38%,
+    #f7f8fa 55%,
+    #cfd2d8 74%,
+    #ffffff 88%,
+    #e7e9ed 100%
+  );
+}
+.metal-text-gradient {
+  background-image: linear-gradient(100deg, #ffffff 0%, #d4d7dd 35%, #ffffff 55%, #b9bdc6 78%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Dark premium band background with a warm brand glow */
+.band-dark {
+  background:
+    radial-gradient(900px 500px at 80% -10%, rgba(248, 80, 0, 0.22), transparent 60%),
+    radial-gradient(700px 500px at 0% 110%, rgba(255, 128, 56, 0.12), transparent 55%),
+    var(--color-ink-900);
+}
+
+.hairline-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Focus ring */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for dark areas */
+.scroll-slim::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-slim::-webkit-scrollbar-thumb { background: var(--color-ink-600); border-radius: 8px; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.5s ease both; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 30s linear infinite; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+@keyframes drift {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-18px) translateX(10px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+@keyframes helix-spin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+.hero-particle {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 168, 105, 0.9), rgba(248, 80, 0, 0));
+  animation: twinkle 4s ease-in-out infinite, drift 12s ease-in-out infinite;
+}
