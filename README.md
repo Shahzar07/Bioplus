@@ -84,6 +84,19 @@ muted and looped.
 
 Sign in at `/login` with a staff account and the dashboard is at **`/admin`**.
 
+### The first admin account
+
+There is no sign-up for staff — an admin exists only because the seed created one. The seed reads `ADMIN_EMAIL`
+and `ADMIN_PASSWORD` from the environment, so on a deployed site those must be set on the hosting project
+*before* the deploy that first populates the database. Sign in with exactly those two values.
+
+The seed never overwrites an existing account: if the email is already present it logs
+`admin: already exists` and moves on, and if `ADMIN_PASSWORD` is unset it logs
+`admin: skipped (set ADMIN_EMAIL and ADMIN_PASSWORD to create one)`. Either line in a build log means no new
+account was created — check there first when a sign-in is refused. Once the account exists the password lives
+only as a bcrypt hash, so changing `ADMIN_PASSWORD` afterwards has no effect; a forgotten password has to be
+reset against the database directly.
+
 | Section | What it does |
 | --- | --- |
 | **Overview** | Revenue today and over 30 days, average order value, orders awaiting payment, low-stock alerts, 30-day chart, recent orders |
