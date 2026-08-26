@@ -61,3 +61,25 @@ test("an uploaded product image is served and reaches the storefront", async ({ 
   await page.getByRole("button", { name: "Save & publish" }).click();
   await expect(page.getByText("Product saved and published.")).toBeVisible();
 });
+
+/**
+ * The dashboard is staff-only and has its own sidebar, so it should not carry
+ * the shop's header, footer or age gate — only a way back to the storefront.
+ */
+test("the dashboard drops the storefront chrome and offers a way home", async ({ page }) => {
+  await signInAsAdmin(page);
+  await page.goto("/admin");
+
+  await expect(page.getByRole("banner")).toHaveCount(0);
+  await expect(page.getByRole("contentinfo")).toHaveCount(0);
+  await expect(page.getByRole("main")).toHaveCount(1);
+
+  const home = page.getByRole("link", { name: "Back to Home" });
+  await expect(home).toBeVisible();
+  await home.click();
+  await expect(page).toHaveURL(/\/$/);
+
+  // The storefront itself still has both.
+  await expect(page.getByRole("banner")).toHaveCount(1);
+  await expect(page.getByRole("contentinfo")).toHaveCount(1);
+});
