@@ -92,7 +92,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     view === "vial" ? "border-brand-500 ring-1 ring-brand-500" : "border-line hover:border-brand-300",
                   )}
                 >
-                  <ProductImage slug={product.slug} name={product.name} className="h-14 w-auto" />
+                  <ProductImage slug={product.slug} name={product.name} imageUrl={product.imageUrl} className="h-14 w-auto" />
                 </button>
                 <button
                   onClick={() => setView("range")}
@@ -124,7 +124,7 @@ export function ProductDetail({ product }: { product: Product }) {
                   {data?.purity ?? "Research Grade"} Purity
                 </span>
                 {view === "vial" ? (
-                  <ProductImage slug={product.slug} name={product.name} priority className="h-[420px] w-auto py-8" />
+                  <ProductImage slug={product.slug} name={product.name} imageUrl={product.imageUrl} priority className="h-[420px] w-auto py-8" />
                 ) : (
                   <Image src="/products/bioplus-range.webp" alt="BioPlus Labs research vial range" width={1600} height={893} className="w-[92%] object-contain py-8" />
                 )}

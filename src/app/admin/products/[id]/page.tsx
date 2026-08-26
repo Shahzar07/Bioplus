@@ -49,7 +49,6 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
       </h1>
 
       <ProductForm
-        uploadsEnabled={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
         values={{
           id: product.id,
           slug: product.slug,

@@ -22,7 +22,6 @@ export default async function NewProductPage() {
       </h1>
 
       <ProductForm
-        uploadsEnabled={Boolean(process.env.BLOB_READ_WRITE_TOKEN)}
         values={{
           slug: "",
           name: "",

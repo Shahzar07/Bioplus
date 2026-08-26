@@ -65,7 +65,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                       className="flex items-center gap-3 rounded-xl px-3 py-2.5 hover:bg-mist"
                     >
                       <span className="flex h-12 w-10 items-center justify-center rounded-lg bg-white">
-                        <ProductImage slug={p.slug} name={p.name} className="h-11 w-auto" />
+                        <ProductImage slug={p.slug} name={p.name} imageUrl={p.imageUrl} className="h-11 w-auto" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-semibold">{p.name}</span>

@@ -45,7 +45,7 @@ export default function CartPage() {
                       href={`/product/${l.slug}`}
                       className="ml-1 flex h-28 w-24 shrink-0 items-center justify-center rounded-lg bg-mist"
                     >
-                      {found && <ProductImage slug={found.product.slug} name={l.name} className="h-24 w-auto" />}
+                      {found && <ProductImage slug={found.product.slug} name={l.name} imageUrl={found.product.imageUrl} className="h-24 w-auto" />}
                     </Link>
                     <div className="flex min-w-0 flex-1 flex-col">
                       <div className="flex items-start justify-between gap-3">

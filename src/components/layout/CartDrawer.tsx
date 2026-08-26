@@ -68,7 +68,7 @@ export function CartDrawer() {
                         onClick={() => setDrawerOpen(false)}
                         className="flex h-20 w-16 shrink-0 items-center justify-center rounded-lg bg-white"
                       >
-                        {found && <ProductImage slug={found.product.slug} name={l.name} className="h-16 w-auto" />}
+                        {found && <ProductImage slug={found.product.slug} name={l.name} imageUrl={found.product.imageUrl} className="h-16 w-auto" />}
                       </Link>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">

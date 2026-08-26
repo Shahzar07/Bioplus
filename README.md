@@ -53,6 +53,23 @@ database. [`src/lib/products.ts`](src/lib/products.ts) now holds the types and p
 [`src/lib/catalog.ts`](src/lib/catalog.ts), which caches under the `products` tag so every admin write can revalidate
 the storefront.
 
+## Product images
+
+Uploading a photograph from **Products → (a product) → Upload image** replaces the bundled vial shot for that
+product everywhere it appears — shop, product page, cart, checkout, search and the Research library. Clearing it
+with **Remove image** falls back to `/products/vial-<slug>.webp` again.
+
+Where the bytes go depends on one variable, and uploading works either way:
+
+| `BLOB_READ_WRITE_TOKEN` | Stored in | Served from |
+| --- | --- | --- |
+| set | Vercel Blob | the Blob CDN URL |
+| unset | the `MediaAsset` table | `/api/media/<id>` on this origin, cached immutably |
+
+The database path exists so a deployment with nothing but Postgres can still change product photography. Files are
+capped at 8 MB and must be JPEG, PNG, WebP, AVIF or PDF. Both paths are public-by-URL, which is what product
+photography needs.
+
 ## Brand assets
 
 Logo files are in [`public/brand/`](public/brand):
@@ -133,7 +150,7 @@ npm run dev
 | `DIRECT_DATABASE_URL` | yes | Unpooled connection for migrations (Neon's pooler cannot run DDL) |
 | `AUTH_SECRET` | yes | 32+ random bytes — `openssl rand -base64 32` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account. Nothing can sign in to `/admin` until it exists |
-| `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
+| `BLOB_READ_WRITE_TOKEN` | no | Stores uploads on Vercel Blob instead of in the database. Uploads work either way |
 | `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
 
@@ -174,7 +191,7 @@ the database (`/product/[slug]` is prerendered from it), so a deploy without the
 | `DIRECT_DATABASE_URL` | yes | Unpooled Neon connection, for migrations |
 | `AUTH_SECRET` | yes | `openssl rand -base64 32` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | yes, first deploy | The first admin account |
-| `BLOB_READ_WRITE_TOKEN` | no | Enables image and COA uploads |
+| `BLOB_READ_WRITE_TOKEN` | no | Stores uploads on Vercel Blob instead of in the database |
 | `RESEND_API_KEY` | no | Enables order emails |
 
 Attaching a Neon store to the project from **Storage** sets `POSTGRES_URL` and `DATABASE_URL_UNPOOLED` instead of

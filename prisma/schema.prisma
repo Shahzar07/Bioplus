@@ -346,3 +346,20 @@ model Counter {
   key   String @id
   value Int    @default(0)
 }
+
+/// Uploaded product images and COA documents.
+///
+/// Vercel Blob is used when BLOB_READ_WRITE_TOKEN is configured; otherwise the
+/// bytes live here, so the dashboard's upload works on a plain Postgres
+/// deployment with nothing else to set up. Files are capped at 8 MB, and a
+/// catalogue's worth of product photography is a few megabytes in total.
+model MediaAsset {
+  id          String   @id @default(cuid())
+  filename    String
+  contentType String
+  size        Int
+  data        Bytes
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}

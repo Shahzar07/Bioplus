@@ -96,7 +96,7 @@ export default async function ResearchPage() {
                   href={`/product/${p.slug}`}
                   className="group flex flex-col items-center p-5 transition-colors hover:bg-mist"
                 >
-                  <ProductImage slug={p.slug} name={p.name} className="h-28 w-auto transition-transform duration-500 group-hover:scale-105" />
+                  <ProductImage slug={p.slug} name={p.name} imageUrl={p.imageUrl} className="h-28 w-auto transition-transform duration-500 group-hover:scale-105" />
                   <span className="mt-3 text-center text-[12px] font-semibold text-ink-800 group-hover:text-brand-700">
                     {p.name}
                   </span>

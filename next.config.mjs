@@ -10,6 +10,9 @@ const nextConfig = {
   devIndicators: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Product images uploaded from the dashboard. Without a Blob token they are
+    // served from /api/media/<id> on this origin and need no entry here.
+    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
   },
 };
 

@@ -13,7 +13,6 @@ import {
   Settings,
   Menu,
   X,
-  ExternalLink,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -101,13 +100,6 @@ export function AdminSidebar({
         </nav>
 
         <div className="border-t border-white/10 px-3 py-4">
-          <Link
-            href="/"
-            target="_blank"
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[12.5px] font-semibold text-white/55 transition hover:bg-white/[0.04] hover:text-white"
-          >
-            <ExternalLink size={15} className="text-white/35" /> View storefront
-          </Link>
           <div className="mt-2 rounded-xl bg-white/[0.04] px-3 py-3">
             <p className="truncate text-[13px] font-semibold text-white">{user.name}</p>
             <p className="truncate text-[11.5px] text-white/45">{user.email}</p>

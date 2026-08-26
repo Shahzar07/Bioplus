@@ -58,6 +58,7 @@ export function ProductCard({ product }: { product: Product; index?: number }) {
         <ProductImage
           slug={product.slug}
           name={product.name}
+          imageUrl={product.imageUrl}
           className="h-52 w-auto transition-transform duration-500 group-hover:scale-105"
         />
       </Link>

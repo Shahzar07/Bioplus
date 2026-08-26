@@ -33,22 +33,28 @@ export function vialFor(slug: string): string {
   return VIAL_BY_SLUG[slug] ?? FALLBACK;
 }
 
+/**
+ * An image uploaded from the dashboard wins over the bundled photography; the
+ * vial shot is the fallback for products that have never had one set.
+ */
 export function ProductImage({
   slug,
   name,
+  imageUrl,
   className,
   sizes,
   priority = false,
 }: {
   slug: string;
   name: string;
+  imageUrl?: string | null;
   className?: string;
   sizes?: string;
   priority?: boolean;
 }) {
   return (
     <Image
-      src={vialFor(slug)}
+      src={imageUrl || vialFor(slug)}
       alt={`${name} — BioPlus Labs research vial`}
       width={880}
       height={1200}

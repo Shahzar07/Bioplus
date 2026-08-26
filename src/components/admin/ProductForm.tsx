@@ -46,10 +46,8 @@ const BLANK_VARIANT: ProductFormVariant = {
 
 export function ProductForm({
   values,
-  uploadsEnabled,
 }: {
   values: ProductFormValues;
-  uploadsEnabled: boolean;
 }) {
   const [state, action] = useActionState<ProductActionResult, FormData>(saveProduct, undefined);
   const [variants, setVariants] = useState<ProductFormVariant[]>(
@@ -227,27 +225,20 @@ export function ProductForm({
                 />
               )}
               <input type="hidden" name="imageUrl" value={imageUrl} />
-              {uploadsEnabled ? (
-                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-mist px-4 py-3 text-[13px] font-semibold text-ink-700 transition hover:border-brand-500 hover:text-brand-700">
-                  <Upload size={15} />
-                  {uploading ? "Uploading…" : imageUrl ? "Replace image" : "Upload image"}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploading}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) void uploadImage(file);
-                    }}
-                  />
-                </label>
-              ) : (
-                <p className="rounded-xl bg-mist px-4 py-3 text-[12.5px] leading-relaxed text-ink-600">
-                  Image uploads need <code className="font-mono">BLOB_READ_WRITE_TOKEN</code> set.
-                  Until then, products use the bundled photography.
-                </p>
-              )}
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-line bg-mist px-4 py-3 text-[13px] font-semibold text-ink-700 transition hover:border-brand-500 hover:text-brand-700">
+                <Upload size={15} />
+                {uploading ? "Uploading…" : imageUrl ? "Replace image" : "Upload image"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) void uploadImage(file);
+                  }}
+                />
+              </label>
               {imageUrl && (
                 <button
                   type="button"

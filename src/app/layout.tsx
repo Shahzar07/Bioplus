@@ -9,6 +9,7 @@ import { CartDrawer } from "@/components/layout/CartDrawer";
 import { AgeGate } from "@/components/AgeGate";
 import { SITE } from "@/lib/site";
 import { CatalogProvider } from "@/lib/catalog-context";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { getCatalogue } from "@/lib/catalog";
 
 const display = Space_Grotesk({
@@ -55,12 +56,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen bg-white antialiased">
         <CatalogProvider catalogue={catalogue}>
           <CartProvider>
-            <AgeGate />
-            <AnnouncementBar />
-            <Header />
-            <main>{children}</main>
-            <Footer />
-            <CartDrawer />
+            <SiteChrome
+              header={
+                <>
+                  <AgeGate />
+                  <AnnouncementBar />
+                  <Header />
+                </>
+              }
+              footer={
+                <>
+                  <Footer />
+                  <CartDrawer />
+                </>
+              }
+            >
+              {children}
+            </SiteChrome>
           </CartProvider>
         </CatalogProvider>
       </body>

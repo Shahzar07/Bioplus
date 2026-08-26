@@ -212,7 +212,7 @@ export function CheckoutClient({
                 return (
                   <li key={l.sku} className="flex items-center gap-3">
                     <span className="relative flex h-14 w-12 items-center justify-center rounded-lg bg-white">
-                      {found && <ProductImage slug={found.product.slug} name={l.name} className="h-12 w-auto" />}
+                      {found && <ProductImage slug={found.product.slug} name={l.name} imageUrl={found.product.imageUrl} className="h-12 w-auto" />}
                       <span className="brand-gradient absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full text-[10px] font-bold text-white">
                         {l.qty}
                       </span>
