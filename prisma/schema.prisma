@@ -158,6 +158,9 @@ model Order {
   id     String @id @default(cuid())
   /// Human reference, e.g. BPL-100042. Sequential, never random.
   number String @unique
+  /// Unguessable key that lets the person who placed the order reach its
+  /// payment page without an account — WooCommerce's order key, by another name.
+  accessKey String @unique
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)

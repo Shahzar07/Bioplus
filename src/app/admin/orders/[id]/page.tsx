@@ -9,10 +9,12 @@ import {
   Clock,
   Package,
   Landmark,
+  ExternalLink,
 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireStaff } from "@/lib/auth";
 import { formatGBP } from "@/lib/cn";
+import { gatewayTitle, orderReceivedPath } from "@/lib/payments";
 import {
   NEXT_STATUSES,
   ORDER_STATUS_LABEL,
@@ -233,7 +235,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
             <div className="space-y-2.5 p-5 text-[13.5px]">
               <div className="flex items-center gap-2 text-ink-700">
                 <Landmark size={15} className="text-ink-500" />
-                Bank transfer · reference{" "}
+                {gatewayTitle(order.paymentMethod)} · reference{" "}
                 <span className="font-semibold text-ink-900">{order.number}</span>
               </div>
               <p className="text-ink-600">
@@ -251,6 +253,14 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
               {order.paidAt && (
                 <p className="text-ink-600">Paid {formatOrderDate(order.paidAt)}</p>
               )}
+              {/* The customer's own payment page — for when they ask for the
+                  account details again rather than being sent them by hand. */}
+              <Link
+                href={orderReceivedPath(order.number, order.accessKey)}
+                className="inline-flex items-center gap-1.5 font-semibold text-brand-700 hover:underline"
+              >
+                Customer payment page <ExternalLink size={13} />
+              </Link>
             </div>
           </Panel>
 

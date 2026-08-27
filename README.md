@@ -30,7 +30,10 @@ npm run build
 - Product detail — mg variant selection, quantity, add-to-cart, image gallery (branded vial + range photo), and rich tabs: **Full Description** (headline, intro, purity badges, Product Details table with molecular formula / MW / CAS / form, Storage & Handling, Note), **Mixing Guide**, **Research**, **Usage**, **Reviews**
 - **Peptide Dosage Calculator** (`/dosage-calculator`) — desired dose / peptide strength / volume presets + custom, live syringe visual, ml-to-draw + insulin units + doses-per-vial
 - Cart (persisted to `localStorage`) + slide-in cart drawer
-- Checkout — full UK address form, server-priced order summary, discount codes, and bank-transfer confirmation
+- Checkout — full UK address form, server-priced order summary, discount codes, and a **direct bank transfer**
+  payment method that issues the account details and a payment reference automatically
+- **Order payment page** (`/checkout/order-received/<order>?key=…`) — the account details, the reference and the
+  order summary on a durable URL the customer can return to, reachable without an account
 
 **Account "Research Hub"** (`/account`) — dark dashboard, backed by real data
 - Dashboard, Orders, Files & COA, Research Address, Account Settings
@@ -100,9 +103,26 @@ New orders reach an open dashboard within about three seconds, with a toast and 
 
 Checkout re-prices every line **from the database**: the browser only supplies SKUs and quantities, so a tampered cart
 cannot change what is charged. Order creation, stock decrements and discount redemption run in one transaction, and
-selling the last vial takes a SKU off sale automatically. Payment is by **bank transfer** — the confirmation shows the
-account details and the order number as the reference, and the owner marks the order paid once funds clear. The
-`Order` model already carries `paymentMethod`/`paymentRef`, so a card processor can be added later without a migration.
+selling the last vial takes a SKU off sale automatically.
+
+### Direct bank transfer
+
+Payment works the way WooCommerce's BACS gateway does — the store issues the payment instructions, nobody types them
+out and no proof of payment is collected:
+
+1. **Direct bank transfer** is selected at checkout, where the account it will be paid into is previewed.
+2. Placing the order records it as `AWAITING_PAYMENT` and mints an unguessable `Order.accessKey`.
+3. The browser is redirected to that order's own payment page — the account details, and **the order number as the
+   payment reference**, each field copyable. It is a real URL, so a refresh, a closed tab or a different device all
+   reach the same page; guests get in on the key alone.
+4. The confirmation email carries the same details and links back to that page, so the customer never has to ask for
+   them again. Signed-in customers also see them against the order in the Research Hub.
+5. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
+
+The account is edited in **Settings → Bank transfer** and nowhere else: the payment page, the email and the Research
+Hub all render from [`bankTransferRows`](src/lib/payments.ts), so they cannot drift apart. Gateways are declared in
+that same module, so a card processor slots in beside bank transfer against the existing `paymentMethod`/`paymentRef`
+fields.
 
 ## Setup
 
@@ -122,6 +142,7 @@ npm run dev
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account |
 | `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
 | `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
+| `SITE_URL` | no | Origin used for links in email, e.g. the payment page. Defaults to the Vercel deployment URL, then `https://biopluslabs.co.uk` |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
 
 ### Tests
@@ -136,7 +157,8 @@ browser placing an order that appears on an untouched dashboard.
 
 ## Still to wire up
 
-1. **Card payments** — bank transfer is live; a processor can be added against the existing payment fields.
+1. **Card payments** — direct bank transfer is live; a processor can be added as a second gateway in
+   [`src/lib/payments.ts`](src/lib/payments.ts), against the existing payment fields.
 2. **Contact / affiliate / wholesale forms** — front-end only; connect to email or a CRM.
 3. **COA batch register** — the public register in [`CoaFinder`](src/components/coa/CoaFinder.tsx) still uses
    representative entries. Per-order COA files uploaded from the dashboard already reach the customer's Research Hub.

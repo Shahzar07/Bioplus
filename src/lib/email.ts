@@ -1,5 +1,6 @@
 import "server-only";
 import { formatGBP } from "@/lib/cn";
+import { bankTransferRows, hasBankDetails, orderReceivedPath } from "@/lib/payments";
 import type { BankTransferSettings } from "@/lib/settings";
 
 /**
@@ -11,6 +12,18 @@ import type { BankTransferSettings } from "@/lib/settings";
  */
 
 const FROM = process.env.ORDER_EMAIL_FROM ?? "BioPlus Labs <orders@biopluslabs.co.uk>";
+
+/**
+ * Absolute base for links in email. Vercel sets the production URL; locally
+ * SITE_URL covers a tunnel or a different port.
+ */
+function siteOrigin(): string {
+  const configured = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) return configured.replace(/\/$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (vercel) return `https://${vercel}`;
+  return "https://biopluslabs.co.uk";
+}
 
 type SendArgs = { to: string; subject: string; html: string; text: string };
 
@@ -67,6 +80,7 @@ function layout(heading: string, body: string): string {
 
 export type OrderEmailData = {
   number: string;
+  accessKey: string;
   email: string;
   firstName: string;
   total: number;
@@ -84,20 +98,32 @@ export async function sendOrderConfirmation(
     )
     .join("");
 
-  const bankBlock =
-    bank.sortCode && bank.accountNumber
-      ? `<table style="width:100%;font-size:14px;margin-top:8px">
-           <tr><td style="padding:4px 0;color:#565c68">Account name</td><td align="right">${escapeHtml(bank.accountName)}</td></tr>
-           <tr><td style="padding:4px 0;color:#565c68">Sort code</td><td align="right">${escapeHtml(bank.sortCode)}</td></tr>
-           <tr><td style="padding:4px 0;color:#565c68">Account number</td><td align="right">${escapeHtml(bank.accountNumber)}</td></tr>
-           <tr><td style="padding:4px 0;color:#565c68">Reference</td><td align="right"><strong>${escapeHtml(order.number)}</strong></td></tr>
-         </table>`
-      : `<p style="font-size:14px">We'll follow up with the account details. Please quote <strong>${escapeHtml(order.number)}</strong> as your payment reference.</p>`;
+  const details = bankTransferRows(bank, order.number);
+  const bankBlock = hasBankDetails(bank)
+    ? `<table style="width:100%;font-size:14px;margin-top:8px">${details
+        .map(
+          (row) =>
+            `<tr><td style="padding:4px 0;color:#565c68">${escapeHtml(row.label)}</td><td align="right">${
+              row.emphasise ? `<strong>${escapeHtml(row.value)}</strong>` : escapeHtml(row.value)
+            }</td></tr>`,
+        )
+        .join("")}</table>`
+    : `<p style="font-size:14px">We'll follow up with the account details. Please quote <strong>${escapeHtml(order.number)}</strong> as your payment reference.</p>`;
+
+  // The same page the customer saw after checking out, so the details survive
+  // a closed tab and never need to be re-sent by hand.
+  const paymentUrl = `${siteOrigin()}${orderReceivedPath(order.number, order.accessKey)}`;
 
   return send({
     to: order.email,
     subject: `Order ${order.number} received — BioPlus Labs`,
-    text: `Thank you for your order ${order.number}. Total ${formatGBP(order.total)}. Payment is by bank transfer using ${order.number} as the reference. ${bank.instructions}`,
+    text: [
+      `Thank you for your order ${order.number}. Total ${formatGBP(order.total)}.`,
+      `Payment is by direct bank transfer, quoting ${order.number} as the reference:`,
+      ...details.map((row) => `  ${row.label}: ${row.value}`),
+      bank.instructions,
+      `Payment details and order status: ${paymentUrl}`,
+    ].join("\n"),
     html: layout(
       `Thank you, ${escapeHtml(order.firstName)}`,
       `<p style="font-size:14px;line-height:1.6">Your order <strong>${escapeHtml(order.number)}</strong> has been received and is awaiting payment.</p>
@@ -105,7 +131,8 @@ export async function sendOrderConfirmation(
        <p style="font-size:16px;font-weight:700">Total ${formatGBP(order.total)}</p>
        <h2 style="font-size:15px;margin:24px 0 4px">Payment by bank transfer</h2>
        ${bankBlock}
-       <p style="font-size:13px;color:#565c68;line-height:1.6;margin-top:12px">${escapeHtml(bank.instructions)}</p>`,
+       <p style="font-size:13px;color:#565c68;line-height:1.6;margin-top:12px">${escapeHtml(bank.instructions)}</p>
+       <p style="margin:20px 0 0"><a href="${paymentUrl}" style="display:inline-block;background:#f85000;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:999px">View payment details</a></p>`,
     ),
   });
 }

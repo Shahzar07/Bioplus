@@ -6,12 +6,14 @@ import { limitFromEnv, pruneRateLimits, rateLimit } from "@/lib/rate-limit";
 import { placeOrder, resolveDiscount, type CartLineInput } from "@/lib/orders";
 import { db } from "@/lib/db";
 import { getSettings, shippingFor } from "@/lib/settings";
+import { DEFAULT_GATEWAY, isEnabledGateway, orderReceivedPath } from "@/lib/payments";
 import { multiplyMoney, round2, sumMoney } from "@/lib/money";
 
 export type CheckoutState =
   | { status: "idle" }
   | { status: "error"; error: string }
-  | { status: "placed"; orderNumber: string };
+  /** Where the browser is sent next: the order's own payment page. */
+  | { status: "placed"; orderNumber: string; redirectTo: string };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -67,6 +69,11 @@ export async function submitOrder(
     return { status: "error", error: "Please confirm the research-use declaration." };
   }
 
+  // Only a gateway we actually offer can be selected; a tampered field falls
+  // back to bank transfer rather than recording a method we cannot take money by.
+  const submittedMethod = value("paymentMethod");
+  const paymentMethod = isEnabledGateway(submittedMethod) ? submittedMethod : DEFAULT_GATEWAY;
+
   const user = await getCurrentUser();
 
   const result = await placeOrder({
@@ -86,12 +93,17 @@ export async function submitOrder(
     },
     discountCode: value("discountCode") || undefined,
     customerNote: value("customerNote") || undefined,
+    paymentMethod,
     userId: user?.id ?? null,
     ruoAccepted: true,
   });
 
   if (!result.ok) return { status: "error", error: result.error };
-  return { status: "placed", orderNumber: result.orderNumber };
+  return {
+    status: "placed",
+    orderNumber: result.orderNumber,
+    redirectTo: orderReceivedPath(result.orderNumber, result.accessKey),
+  };
 }
 
 export type QuoteResult = {

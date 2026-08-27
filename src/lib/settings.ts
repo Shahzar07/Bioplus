@@ -1,6 +1,7 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
+import { BANK_TRANSFER_DEFAULTS, type BankTransferSettings } from "@/lib/payments";
 
 /**
  * Store configuration held in the Setting table so the dashboard can change it
@@ -16,13 +17,7 @@ export type ShippingSettings = {
   countries: string[];
 };
 
-export type BankTransferSettings = {
-  accountName: string;
-  bankName: string;
-  sortCode: string;
-  accountNumber: string;
-  instructions: string;
-};
+export type { BankTransferSettings };
 
 export type StoreSettings = {
   email: string;
@@ -32,14 +27,7 @@ export type StoreSettings = {
 
 const DEFAULTS = {
   shipping: { freeThreshold: 250, flatRate: 12, countries: ["GB", "IE"] } satisfies ShippingSettings,
-  bankTransfer: {
-    accountName: "BioPlus Labs LTD",
-    bankName: "",
-    sortCode: "",
-    accountNumber: "",
-    instructions:
-      "Please use your order number as the payment reference. Orders are dispatched once payment clears.",
-  } satisfies BankTransferSettings,
+  bankTransfer: BANK_TRANSFER_DEFAULTS,
   store: {
     email: "customerservice@biopluslabs.co.uk",
     hours: "Monday – Friday, 9:00 – 18:00",

@@ -83,3 +83,39 @@ test("an empty cart cannot check out", async ({ page, context }) => {
   await page.goto("/checkout");
   await expect(page.getByRole("heading", { name: "Your cart is empty" })).toBeVisible();
 });
+
+test("the payment page is a durable URL that survives a reload", async ({ page, context }) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+
+  // Direct bank transfer is offered as a payment method and preselected.
+  await expect(form(page).getByRole("radio", { name: "Direct bank transfer" })).toBeChecked();
+
+  await fillDeliveryDetails(page, "durable@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Checkout hands over to the order's own page, keyed so a guest can return.
+  await expect(page).toHaveURL(/\/checkout\/order-received\/BPL-\d+\?key=/);
+  const orderNumber =
+    (await page.getByRole("strong").filter({ hasText: /^BPL-\d+$/ }).first().textContent()) ?? "";
+  expect(orderNumber).toMatch(/^BPL-\d+$/);
+
+  const paymentUrl = page.url();
+  await expect(page.getByRole("heading", { name: "Pay by direct bank transfer" })).toBeVisible();
+  await expect(page.getByText("Sort code", { exact: true })).toBeVisible();
+  await expect(page.getByText("Payment reference", { exact: true })).toBeVisible();
+
+  // The details are issued by the store, so coming back to them is a reload —
+  // not a request for someone to send them again.
+  await page.goto(paymentUrl);
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible();
+  await expect(page.getByText(orderNumber).first()).toBeVisible();
+
+  // The key is what grants a guest access; without it the order is not exposed.
+  await page.goto(`/checkout/order-received/${orderNumber}`);
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeHidden();
+});
