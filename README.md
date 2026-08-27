@@ -1,6 +1,6 @@
 # BioPlus Labs — biopluslabs.co.uk
 
-A production-grade storefront for **BioPlus Labs LTD**, built with **Next.js 15 (App Router) + TypeScript + Tailwind CSS v4**.
+A production-grade storefront for **BioPlus Labs**, built with **Next.js 15 (App Router) + TypeScript + Tailwind CSS v4**.
 
 Design direction, per the client brief: premium laboratory feel in **metal-effect silver, black and orange**, matching the
 product labels and the BioPlus Labs logo. Light primary canvas, deep-black premium bands, and the brand's **laboratory
@@ -166,5 +166,5 @@ browser placing an order that appears on an untouched dashboard.
 
 ## Contact (from the client brief)
 
-BioPlus Labs LTD · 35 Drummore Drive, Prestonpans, EH32 9BZ, United Kingdom
+BioPlus Labs · Scotland, East Lothian, Prestonpans
 07724 297209 (also WhatsApp) · customerservice@biopluslabs.co.uk
