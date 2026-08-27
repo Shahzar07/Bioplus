@@ -145,6 +145,30 @@ npm run dev
 | `SITE_URL` | no | Origin used for links in email, e.g. the payment page. Defaults to the Vercel deployment URL, then `https://biopluslabs.co.uk` |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
 
+## Deploying
+
+`npm run build` applies migrations before building:
+
+```
+prisma generate && prisma migrate deploy && next build
+```
+
+**This step is not optional.** The build reads the database anyway (product pages are prerendered from it), so a
+deploy that skipped migrations would ship code expecting columns the database does not have — checkout would fail
+with "We could not place your order" while the storefront looked fine. Vercel runs `vercel-build` when it exists,
+and that is defined as `npm run build`, so both entry points apply migrations. If the project overrides the build
+command in its Vercel settings, make sure the override runs `npm run build` rather than `next build` on its own.
+
+`DIRECT_DATABASE_URL` must be set for this to work on Neon: the pooled connection cannot run DDL. On a plain
+Postgres server it is the same value as `DATABASE_URL`.
+
+If a database was created with `prisma db push` rather than migrations, `migrate deploy` stops with P3005
+("the database schema is not empty"). Mark the baseline as already applied once, then deploy normally:
+
+```bash
+npx prisma migrate resolve --applied 20260825204247_init
+```
+
 ### Tests
 
 ```bash

@@ -1,9 +1,12 @@
 -- Adds the per-order access key that lets a guest reach their bank-transfer
 -- payment page. Existing orders are backfilled with a random key so the column
 -- can be made NOT NULL without losing history.
+--
+-- Written to be safe to re-apply: a database whose schema was pushed rather
+-- than migrated may already carry part of this.
 
 -- AlterTable
-ALTER TABLE "Order" ADD COLUMN "accessKey" TEXT;
+ALTER TABLE "Order" ADD COLUMN IF NOT EXISTS "accessKey" TEXT;
 
 -- Backfill
 UPDATE "Order"
@@ -14,4 +17,4 @@ WHERE "accessKey" IS NULL;
 ALTER TABLE "Order" ALTER COLUMN "accessKey" SET NOT NULL;
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Order_accessKey_key" ON "Order"("accessKey");
+CREATE UNIQUE INDEX IF NOT EXISTS "Order_accessKey_key" ON "Order"("accessKey");
