@@ -184,6 +184,10 @@ model Order {
   /// Stripe payment intent / external processor reference, when one exists.
   paymentRef    String?
 
+  /// Customer-uploaded proof of their bank transfer, and when it arrived.
+  paymentProofUrl        String?
+  paymentProofUploadedAt DateTime?
+
   subtotal Decimal @db.Decimal(10, 2)
   shipping Decimal @db.Decimal(10, 2)
   discount Decimal @default(0) @db.Decimal(10, 2)

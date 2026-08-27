@@ -253,6 +253,35 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
               {order.paidAt && (
                 <p className="text-ink-600">Paid {formatOrderDate(order.paidAt)}</p>
               )}
+              {order.paymentProofUrl && (
+                <a
+                  href={order.paymentProofUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 flex items-center gap-3 rounded-xl border border-line bg-mist p-2.5 transition hover:border-brand-400"
+                >
+                  {/* The customer's screenshot of their transfer. Evidence to
+                      check against the bank, never proof of payment itself. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={order.paymentProofUrl}
+                    alt="Payment screenshot from the customer"
+                    className="h-14 w-14 shrink-0 rounded-lg bg-white object-cover"
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-[13px] font-semibold text-ink-900">
+                      Payment screenshot
+                    </span>
+                    <span className="block text-[12px] text-ink-600">
+                      {order.paymentProofUploadedAt
+                        ? `Uploaded ${formatOrderDate(order.paymentProofUploadedAt)}`
+                        : "Uploaded by the customer"}
+                      {" · open"}
+                    </span>
+                  </span>
+                </a>
+              )}
+
               {/* The customer's own payment page — for when they ask for the
                   account details again rather than being sent them by hand. */}
               <Link

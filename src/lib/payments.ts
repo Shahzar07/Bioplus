@@ -120,6 +120,28 @@ export function bankTransferRows(
   return rows;
 }
 
+/**
+ * How long a customer is asked to complete their transfer in.
+ *
+ * The window is a prompt, not an expiry: nothing cancels the order or releases
+ * its stock when it lapses, because a bank transfer can legitimately take
+ * longer than this and losing a paid-for order would be far worse than a late
+ * one. The page keeps taking payment and proof after it runs out.
+ */
+export const PAYMENT_WINDOW_MINUTES = 20;
+
+/** Screenshots only — a photo of a banking app, not a document. */
+export const PAYMENT_PROOF_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+  "image/heic",
+  "image/heif",
+];
+
+export const PAYMENT_PROOF_MAX_BYTES = 8 * 1024 * 1024;
+
 /** The order's own payment page — WooCommerce's order-received URL. */
 export function orderReceivedPath(orderNumber: string, accessKey: string): string {
   return `/checkout/order-received/${encodeURIComponent(orderNumber)}?key=${encodeURIComponent(accessKey)}`;

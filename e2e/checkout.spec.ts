@@ -119,3 +119,26 @@ test("the payment page is a durable URL that survives a reload", async ({ page, 
   await page.goto(`/checkout/order-received/${orderNumber}`);
   await expect(page.getByRole("heading", { name: "Order received" })).toBeHidden();
 });
+
+test("the payment page counts down the transfer window", async ({ page, context }) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+  await fillDeliveryDetails(page, "countdown@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // A live countdown, starting just under the full window.
+  await expect(page.getByText("Please transfer within")).toBeVisible();
+  const clock = page.getByText(/^\d{2}:\d{2}$/);
+  await expect(clock).toBeVisible();
+  const first = await clock.textContent();
+  expect(first).toMatch(/^(19|20):\d{2}$/);
+
+  // It ticks rather than sitting on a rendered-once value.
+  await expect
+    .poll(async () => await clock.textContent(), { timeout: 5_000 })
+    .not.toBe(first);
+});

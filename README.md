@@ -117,7 +117,14 @@ out and no proof of payment is collected:
    reach the same page; guests get in on the key alone.
 4. The confirmation email carries the same details and links back to that page, so the customer never has to ask for
    them again. Signed-in customers also see them against the order in the Research Hub.
-5. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
+5. A **20-minute countdown** on that page asks for the transfer to be made now. It is a prompt, not an
+   expiry: nothing cancels the order or releases stock when it lapses, since a transfer can legitimately take
+   longer and losing a paid order would be worse than a late one. The page keeps working afterwards.
+6. The customer can attach a **screenshot of the payment** — optional, images only, 8 MB — which appears against
+   the order in the dashboard. It is a convenience for matching an unclear transfer, never proof of payment:
+   the funds arriving are. Uploads need `BLOB_READ_WRITE_TOKEN`; without it the box is hidden rather than
+   offered and then refused.
+7. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
 
 The account is edited in **Settings → Bank transfer** and nowhere else: the payment page, the email and the Research
 Hub all render from [`bankTransferRows`](src/lib/payments.ts), so they cannot drift apart. Gateways are declared in

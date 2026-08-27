@@ -4,11 +4,12 @@ import { notFound } from "next/navigation";
 import { Check, Landmark, Package, ShieldCheck, Truck } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { BankTransferDetails } from "@/components/checkout/BankTransferDetails";
+import { PaymentWindow } from "@/components/checkout/PaymentWindow";
 import { db } from "@/lib/db";
 import { getCurrentUser, isStaff } from "@/lib/auth";
 import { getSettings } from "@/lib/settings";
 import { formatGBP } from "@/lib/cn";
-import { hasBankDetails } from "@/lib/payments";
+import { hasBankDetails, PAYMENT_WINDOW_MINUTES } from "@/lib/payments";
 import { ORDER_STATUS_LABEL, ORDER_STATUS_LIGHT, formatOrderDate } from "@/lib/order-status";
 
 export const metadata: Metadata = {
@@ -53,6 +54,9 @@ export default async function OrderReceivedPage({
   const settings = await getSettings();
   const bank = settings.bankTransfer;
   const awaitingPayment = order.paymentStatus === "PENDING" && order.status === "AWAITING_PAYMENT";
+  // Without blob storage there is nowhere to put a screenshot, so the upload
+  // box is hidden rather than offered and then refused.
+  const uploadsEnabled = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
   return (
     <Container size="narrow" className="py-16">
@@ -87,10 +91,18 @@ export default async function OrderReceivedPage({
           <>
             <p className="mt-2 text-[13.5px] leading-relaxed text-ink-600">
               Transfer <strong className="text-ink-900">{formatGBP(Number(order.total))}</strong> to
-              the account below from your banking app, quoting the payment reference. Nothing else is
-              needed — no screenshot, no email. We match the transfer to your order by that reference.
+              the account below from your banking app, quoting the payment reference — that reference
+              is how we match your transfer to this order. Please pay within{" "}
+              {PAYMENT_WINDOW_MINUTES} minutes so we can dispatch today.
             </p>
             <BankTransferDetails bank={bank} reference={order.number} className="mt-4" />
+            <PaymentWindow
+              orderNumber={order.number}
+              accessKey={order.accessKey}
+              placedAt={order.placedAt.toISOString()}
+              existingProofUrl={order.paymentProofUrl}
+              uploadsEnabled={uploadsEnabled}
+            />
             <p className="mt-4 flex items-start gap-2 rounded-xl bg-mist px-4 py-3 text-[12.5px] leading-relaxed text-ink-600">
               <ShieldCheck size={15} className="mt-px shrink-0 text-brand-600" />
               <span>{bank.instructions}</span>
