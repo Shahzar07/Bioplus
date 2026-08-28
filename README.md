@@ -117,13 +117,16 @@ out and no proof of payment is collected:
    reach the same page; guests get in on the key alone.
 4. The confirmation email carries the same details and links back to that page, so the customer never has to ask for
    them again. Signed-in customers also see them against the order in the Research Hub.
-5. A **20-minute countdown** on that page asks for the transfer to be made now. It is a prompt, not an
-   expiry: nothing cancels the order or releases stock when it lapses, since a transfer can legitimately take
-   longer and losing a paid order would be worse than a late one. The page keeps working afterwards.
-6. The customer can attach a **screenshot of the payment** — optional, images only, 8 MB — which appears against
-   the order in the dashboard. It is a convenience for matching an unclear transfer, never proof of payment:
-   the funds arriving are. Uploads need `BLOB_READ_WRITE_TOKEN`; without it the box is hidden rather than
-   offered and then refused.
+5. A **20-minute countdown** runs on that page as a clock face — a ring that empties, red for the last five
+   minutes. It is a prompt, not an expiry: nothing cancels the order or releases stock when it lapses, since a
+   transfer can legitimately take longer and losing a paid order would be worse than a late one. The page keeps
+   working afterwards and says so.
+6. The customer can attach a **screenshot of the payment** — optional, images only. The browser downscales it to
+   1600px before sending, so it is stored in the database (`Order.paymentProofData`) rather than object storage:
+   **the upload needs nothing configured to work.** It appears against the order in the dashboard with a
+   timeline entry, and is served back through `/api/orders/payment-proof`, authorised by the order key or a
+   staff session. The screenshot is a convenience for matching an unclear transfer, never proof of payment —
+   the funds arriving are.
 7. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
 
 The account is edited in **Settings → Bank transfer** and nowhere else: the payment page, the email and the Research

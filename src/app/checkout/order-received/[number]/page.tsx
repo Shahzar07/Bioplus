@@ -54,9 +54,6 @@ export default async function OrderReceivedPage({
   const settings = await getSettings();
   const bank = settings.bankTransfer;
   const awaitingPayment = order.paymentStatus === "PENDING" && order.status === "AWAITING_PAYMENT";
-  // Without blob storage there is nowhere to put a screenshot, so the upload
-  // box is hidden rather than offered and then refused.
-  const uploadsEnabled = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
   return (
     <Container size="narrow" className="py-16">
@@ -100,8 +97,7 @@ export default async function OrderReceivedPage({
               orderNumber={order.number}
               accessKey={order.accessKey}
               placedAt={order.placedAt.toISOString()}
-              existingProofUrl={order.paymentProofUrl}
-              uploadsEnabled={uploadsEnabled}
+              hasProof={order.paymentProofUploadedAt !== null}
             />
             <p className="mt-4 flex items-start gap-2 rounded-xl bg-mist px-4 py-3 text-[12.5px] leading-relaxed text-ink-600">
               <ShieldCheck size={15} className="mt-px shrink-0 text-brand-600" />

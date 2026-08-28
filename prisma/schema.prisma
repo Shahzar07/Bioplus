@@ -184,8 +184,14 @@ model Order {
   /// Stripe payment intent / external processor reference, when one exists.
   paymentRef    String?
 
-  /// Customer-uploaded proof of their bank transfer, and when it arrived.
-  paymentProofUrl        String?
+  /// Customer-uploaded proof of their bank transfer.
+  ///
+  /// Held in the database rather than object storage: a screenshot is small
+  /// once the browser has downscaled it, there is at most one per order, and
+  /// storing it here means the upload works with no external service to
+  /// configure — which is the difference between the feature existing and not.
+  paymentProofData       Bytes?
+  paymentProofType       String?
   paymentProofUploadedAt DateTime?
 
   subtotal Decimal @db.Decimal(10, 2)

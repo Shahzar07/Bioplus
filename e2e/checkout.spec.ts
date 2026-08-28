@@ -130,15 +130,69 @@ test("the payment page counts down the transfer window", async ({ page, context 
     timeout: 15_000,
   });
 
-  // A live countdown, starting just under the full window.
-  await expect(page.getByText("Please transfer within")).toBeVisible();
-  const clock = page.getByText(/^\d{2}:\d{2}$/);
+  // A real clock face: a ring that empties, not a line of copy.
+  const clock = page.locator("[data-countdown-clock]");
+  const ring = page.locator("[data-countdown-ring]");
   await expect(clock).toBeVisible();
+  await expect(ring).toBeVisible();
+
   const first = await clock.textContent();
   expect(first).toMatch(/^(19|20):\d{2}$/);
 
-  // It ticks rather than sitting on a rendered-once value.
+  // It ticks, and the ring drains with it.
   await expect
     .poll(async () => await clock.textContent(), { timeout: 5_000 })
     .not.toBe(first);
+  const drained = Number(await ring.getAttribute("stroke-dashoffset"));
+  expect(drained).toBeGreaterThan(0);
+
+  // The screenshot box is always offered — it needs nothing configured.
+  await expect(page.getByText("Upload your payment screenshot")).toBeVisible();
+});
+
+test("a payment screenshot uploads, persists and is refused if it is not an image", async ({
+  page,
+  context,
+}) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+  await fillDeliveryDetails(page, "proof@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Anything that is not an image is refused before it leaves the browser.
+  await page.setInputFiles("input[type=file]", {
+    name: "statement.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from("not a screenshot"),
+  });
+  await expect(page.getByText(/That is not a screenshot/)).toBeVisible();
+
+  // A real image is stored and read back from the server, not from memory.
+  const png = await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 200;
+    canvas.height = 120;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#f85000";
+    context.fillRect(0, 0, 200, 120);
+    return canvas.toDataURL("image/png").split(",")[1];
+  });
+  await page.setInputFiles("input[type=file]", {
+    name: "payment.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(png, "base64"),
+  });
+  await expect(page.getByText("Screenshot received")).toBeVisible({ timeout: 15_000 });
+
+  // Still there on a reload, because it lives in the database.
+  await page.reload();
+  await expect(page.getByText("Screenshot received")).toBeVisible();
+  const width = await page.evaluate(() => {
+    const img = document.querySelector<HTMLImageElement>('img[alt="Your payment screenshot"]');
+    return img?.naturalWidth ?? 0;
+  });
+  expect(width).toBe(200);
 });

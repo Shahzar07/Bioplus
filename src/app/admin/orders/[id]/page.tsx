@@ -58,6 +58,8 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
   if (!order) notFound();
 
   const itemCount = order.items.reduce((sum, item) => sum + item.qty, 0);
+  // Staff are authorised by their session, so the order key is not needed here.
+  const proofUrl = `/api/orders/payment-proof?number=${encodeURIComponent(order.number)}`;
 
   return (
     <div className="space-y-5">
@@ -253,9 +255,9 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
               {order.paidAt && (
                 <p className="text-ink-600">Paid {formatOrderDate(order.paidAt)}</p>
               )}
-              {order.paymentProofUrl && (
+              {order.paymentProofUploadedAt && (
                 <a
-                  href={order.paymentProofUrl}
+                  href={proofUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="mt-1 flex items-center gap-3 rounded-xl border border-line bg-mist p-2.5 transition hover:border-brand-400"
@@ -264,7 +266,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
                       check against the bank, never proof of payment itself. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={order.paymentProofUrl}
+                    src={proofUrl}
                     alt="Payment screenshot from the customer"
                     className="h-14 w-14 shrink-0 rounded-lg bg-white object-cover"
                   />
