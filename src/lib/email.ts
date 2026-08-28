@@ -1,17 +1,53 @@
 import "server-only";
+import nodemailer, { type Transporter } from "nodemailer";
 import { formatGBP } from "@/lib/cn";
 import { bankTransferRows, hasBankDetails, orderReceivedPath } from "@/lib/payments";
 import type { BankTransferSettings } from "@/lib/settings";
 
 /**
- * Transactional email through Resend.
+ * Transactional email.
  *
- * Without RESEND_API_KEY nothing is sent and the intent is logged instead, so
- * the shop works end to end before email is configured and order placement is
- * never blocked by a mail failure.
+ * Sent over SMTP from the store's own mailbox when SMTP_PASSWORD is set —
+ * everything else has a working default, so that one secret is all a deployment
+ * needs. Resend is kept as a fallback for anyone using it, and with neither
+ * configured the intent is logged rather than sent: the shop works end to end
+ * before email is configured, and order placement is never blocked by a mail
+ * failure.
  */
 
-const FROM = process.env.ORDER_EMAIL_FROM ?? "BioPlus Labs <orders@biopluslabs.co.uk>";
+const SMTP = {
+  host: process.env.SMTP_HOST ?? "de9000-r.dnsiaas.com",
+  port: Number(process.env.SMTP_PORT ?? 465),
+  user: process.env.SMTP_USER ?? "alex@biopluslabs.co.uk",
+  password: process.env.SMTP_PASSWORD ?? "",
+};
+
+/** Port 465 is implicit TLS; 587 upgrades with STARTTLS. */
+const SMTP_SECURE = process.env.SMTP_SECURE
+  ? process.env.SMTP_SECURE === "true"
+  : SMTP.port === 465;
+
+/**
+ * The envelope sender defaults to the mailbox we authenticate as.
+ *
+ * A From that does not match the authenticated account is what gets mail
+ * refused by the server or filed as spam by the recipient, so overriding this
+ * is only safe when the domain's SPF and DKIM cover the address used.
+ */
+const FROM = process.env.ORDER_EMAIL_FROM ?? `BioPlus Labs <${SMTP.user}>`;
+
+let transporter: Transporter | null = null;
+
+function smtpTransport(): Transporter | null {
+  if (!SMTP.password) return null;
+  transporter ??= nodemailer.createTransport({
+    host: SMTP.host,
+    port: SMTP.port,
+    secure: SMTP_SECURE,
+    auth: { user: SMTP.user, pass: SMTP.password },
+  });
+  return transporter;
+}
 
 /**
  * Absolute base for links in email. Vercel sets the production URL; locally
@@ -28,9 +64,31 @@ function siteOrigin(): string {
 type SendArgs = { to: string; subject: string; html: string; text: string };
 
 async function send({ to, subject, html, text }: SendArgs): Promise<boolean> {
+  const smtp = smtpTransport();
+  if (smtp) {
+    try {
+      const info = await smtp.sendMail({
+        from: FROM,
+        to,
+        subject,
+        text,
+        html,
+        // Replies belong with the people who read the shop inbox.
+        replyTo: process.env.ORDER_EMAIL_REPLY_TO ?? SMTP.user,
+      });
+      console.info(`[email] sent via SMTP: "${subject}" → ${to} (${info.messageId})`);
+      return true;
+    } catch (error) {
+      console.error("[email] SMTP send failed", error);
+      // Fall through to Resend if it is configured, rather than losing the mail.
+    }
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.info(`[email] skipped (no RESEND_API_KEY): "${subject}" → ${to}`);
+    if (!smtp) {
+      console.info(`[email] skipped (no SMTP_PASSWORD and no RESEND_API_KEY): "${subject}" → ${to}`);
+    }
     return false;
   }
 

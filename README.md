@@ -151,7 +151,10 @@ npm run dev
 | `AUTH_SECRET` | yes | 32+ random bytes — `openssl rand -base64 32` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account |
 | `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
-| `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
+| `SMTP_PASSWORD` | for email | The store mailbox's password. Host, port and username default to the BioPlus mailbox, so this is normally the only email variable to set. Without it, emails are logged rather than sent and orders are unaffected |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_SECURE` | no | Only to point at a different mailbox or server. Defaults: `de9000-r.dnsiaas.com`, `465`, `alex@biopluslabs.co.uk`, implicit TLS on 465 |
+| `ORDER_EMAIL_FROM` / `ORDER_EMAIL_REPLY_TO` | no | Both default to the SMTP mailbox. Change `FROM` only if the domain's SPF and DKIM cover the address, or mail lands in spam |
+| `RESEND_API_KEY` | no | Fallback only, used if SMTP is unset or its send fails |
 | `SITE_URL` | no | Origin used for links in email, e.g. the payment page. Defaults to the Vercel deployment URL, then `https://biopluslabs.co.uk` |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
 
@@ -178,6 +181,16 @@ If a database was created with `prisma db push` rather than migrations, `migrate
 ```bash
 npx prisma migrate resolve --applied 20260825204247_init
 ```
+
+### Email
+
+Order confirmation and dispatch emails go out over SMTP from the store's own mailbox, authenticated with
+`SMTP_PASSWORD`. The `From` header defaults to that same mailbox: a `From` the server has not authenticated is
+the usual reason mail is refused or filed as spam, so override it only when the domain's **SPF** and **DKIM**
+records cover the address you put there. Add a **DMARC** record once both are in place — SMTP being correct is
+necessary for inbox delivery but not sufficient; those DNS records are what the receiving side checks.
+
+A send failure is logged and never blocks an order: the order is already recorded before the email is attempted.
 
 ### Tests
 
