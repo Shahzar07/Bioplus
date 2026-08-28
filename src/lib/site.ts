@@ -2,25 +2,27 @@
 
 export const SITE = {
   name: "BioPlus Labs",
-  legalName: "BioPlus Labs LTD",
+  legalName: "BioPlus Labs",
   shortName: "BioPlus",
   domain: "biopluslabs.co.uk",
   tagline: "Research-Grade Compounds, Verified to the Batch",
   /** Support is email-only — we do not publish a telephone number. */
   email: "customerservice@biopluslabs.co.uk",
+  /** Where the business is, to the town — no street address is published. */
   address: {
-    line1: "35 Drummore Drive",
-    city: "Prestonpans",
-    postcode: "EH32 9BZ",
-    country: "United Kingdom",
+    town: "Prestonpans",
+    county: "East Lothian",
+    country: "Scotland",
   },
-  addressLine: "35 Drummore Drive, Prestonpans, EH32 9BZ, United Kingdom",
-  locations: ["Prestonpans, Scotland", "United Kingdom"],
+  addressLine: "Scotland, East Lothian, Prestonpans",
+  locations: ["Prestonpans, East Lothian", "Scotland"],
   facebook: "https://www.facebook.com/",
   /**
    * Companies House registration number.
    * TODO: paste the client's number here — every place it is displayed is
    * hidden automatically while this is empty, so nothing is ever invented.
+   * The business is in Scotland, so registration reads "Registered in
+   * Scotland" wherever this is shown.
    */
   companyNumber: "",
   hours: {

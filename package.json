@@ -5,7 +5,7 @@
   "description": "BioPlus Labs — biopluslabs.co.uk storefront",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
@@ -13,17 +13,20 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "@types/nodemailer": "^8.0.1",
     "@vercel/blob": "^2.8.0",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "jose": "^6.2.10",
     "lucide-react": "^0.460.0",
     "next": "15.5.19",
+    "nodemailer": "^9.0.6",
     "pg": "^8.23.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",

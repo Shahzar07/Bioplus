@@ -1,11 +1,13 @@
 import "server-only";
+import { randomBytes } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { CATALOGUE_TAG } from "@/lib/catalog";
 import { getSettings, shippingFor } from "@/lib/settings";
 import { sendOrderConfirmation } from "@/lib/email";
+import { DEFAULT_GATEWAY, gatewayTitle } from "@/lib/payments";
 import { multiplyMoney, round2, sumMoney } from "@/lib/money";
-import type { Prisma } from "@/generated/prisma";
+import type { PaymentMethod, Prisma } from "@/generated/prisma";
 
 /**
  * Order placement.
@@ -34,12 +36,13 @@ export type PlaceOrderInput = {
   };
   discountCode?: string;
   customerNote?: string;
+  paymentMethod?: PaymentMethod;
   userId?: string | null;
   ruoAccepted: boolean;
 };
 
 export type PlaceOrderResult =
-  | { ok: true; orderNumber: string; orderId: string }
+  | { ok: true; orderNumber: string; orderId: string; accessKey: string }
   | { ok: false; error: string };
 
 const MAX_QTY_PER_LINE = 99;
@@ -58,6 +61,14 @@ async function nextOrderNumber(tx: Prisma.TransactionClient): Promise<string> {
     update: { value: { increment: 1 } },
   });
   return `BPL-${counter.value}`;
+}
+
+/**
+ * The key that lets whoever placed the order — signed in or not — reach its
+ * payment page. Unguessable, so the URL is the only thing that grants access.
+ */
+function newAccessKey(): string {
+  return randomBytes(24).toString("base64url");
 }
 
 export type ResolvedDiscount = {
@@ -162,12 +173,16 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   const total = round2(subtotal + shipping - (discount?.amount ?? 0));
 
   try {
+    const paymentMethod = input.paymentMethod ?? DEFAULT_GATEWAY;
+    const accessKey = newAccessKey();
+
     const order = await db.$transaction(async (tx) => {
       const number = await nextOrderNumber(tx);
 
       const created = await tx.order.create({
         data: {
           number,
+          accessKey,
           userId: input.userId ?? null,
           email: input.contact.email.toLowerCase(),
           phone: input.contact.phone || null,
@@ -182,7 +197,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
           country: input.contact.country,
           status: "AWAITING_PAYMENT",
           paymentStatus: "PENDING",
-          paymentMethod: "BANK_TRANSFER",
+          paymentMethod,
           subtotal,
           shipping,
           discount: discount?.amount ?? 0,
@@ -205,7 +220,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
           events: {
             create: {
               type: "PLACED",
-              message: `Order placed — £${total.toFixed(2)}, awaiting bank transfer.`,
+              message: `Order placed — £${total.toFixed(2)} by ${gatewayTitle(paymentMethod).toLowerCase()}, awaiting payment.`,
             },
           },
         },
@@ -265,6 +280,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     void sendOrderConfirmation(
       {
         number: order.number,
+        accessKey: order.accessKey,
         email: order.email,
         firstName: order.firstName,
         total,
@@ -288,7 +304,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
       }
     });
 
-    return { ok: true, orderNumber: order.number, orderId: order.id };
+    return { ok: true, orderNumber: order.number, orderId: order.id, accessKey: order.accessKey };
   } catch (error) {
     if (error instanceof OutOfStockError) {
       return { ok: false, error: `${error.item} sold out while you were checking out.` };

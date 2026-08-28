@@ -42,16 +42,15 @@ export default function ContactPage() {
                   Orders placed after 18:00 on a Friday are processed the following Monday.
                 </p>
               </ContactRow>
-              <ContactRow icon={MapPin} label="Registered address">
+              <ContactRow icon={MapPin} label="Location">
                 <p className="font-semibold text-white">{SITE.legalName}</p>
-                <p className="text-white/65">{SITE.address.line1}</p>
-                <p className="text-white/65">
-                  {SITE.address.city}, {SITE.address.postcode}
-                </p>
                 <p className="text-white/65">{SITE.address.country}</p>
+                <p className="text-white/65">
+                  {SITE.address.county}, {SITE.address.town}
+                </p>
                 {SITE.companyNumber && (
                   <p className="mt-1.5 text-white/65">
-                    Registered in England &amp; Wales, company no.{" "}
+                    Registered in Scotland, company no.{" "}
                     <span className="font-mono text-white/85">{SITE.companyNumber}</span>
                   </p>
                 )}

@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { requireStaff } from "@/lib/auth";
 import { SETTINGS_TAG } from "@/lib/settings";
+import { formatSortCode } from "@/lib/payments";
 
 export type SettingsResult = { ok?: string; error?: string } | undefined;
 
@@ -50,18 +51,29 @@ export async function saveBankTransfer(
   const staff = await requireStaff();
   const value = (key: string) => String(formData.get(key) ?? "").trim();
 
+  if (!value("accountName")) return { error: "Enter the name on the account." };
+  if (!/^\d{6}$/.test(value("sortCode").replace(/\D/g, ""))) {
+    return { error: "Enter a six-digit sort code." };
+  }
+  if (!/^\d{8}$/.test(value("accountNumber").replace(/\s/g, ""))) {
+    return { error: "Enter an eight-digit account number." };
+  }
+
   await writeSetting("bankTransfer", {
     accountName: value("accountName"),
     bankName: value("bankName"),
-    sortCode: value("sortCode"),
-    accountNumber: value("accountNumber"),
+    // Stored formatted, so what the customer is shown is what was entered.
+    sortCode: formatSortCode(value("sortCode")),
+    accountNumber: value("accountNumber").replace(/\s/g, ""),
+    iban: value("iban").replace(/\s/g, "").toUpperCase(),
+    bic: value("bic").replace(/\s/g, "").toUpperCase(),
     instructions: value("instructions"),
   });
   await db.activityLog.create({
     data: { actorId: staff.id, action: "settings.bank", entity: "Setting" },
   });
 
-  return { ok: "Payment details saved — they now show on the order confirmation." };
+  return { ok: "Payment details saved — new orders are issued these details automatically." };
 }
 
 export async function saveStore(

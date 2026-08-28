@@ -9,10 +9,12 @@ import {
   Clock,
   Package,
   Landmark,
+  ExternalLink,
 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireStaff } from "@/lib/auth";
 import { formatGBP } from "@/lib/cn";
+import { gatewayTitle, orderReceivedPath } from "@/lib/payments";
 import {
   NEXT_STATUSES,
   ORDER_STATUS_LABEL,
@@ -56,6 +58,8 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
   if (!order) notFound();
 
   const itemCount = order.items.reduce((sum, item) => sum + item.qty, 0);
+  // Staff are authorised by their session, so the order key is not needed here.
+  const proofUrl = `/api/orders/payment-proof?number=${encodeURIComponent(order.number)}`;
 
   return (
     <div className="space-y-5">
@@ -233,7 +237,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
             <div className="space-y-2.5 p-5 text-[13.5px]">
               <div className="flex items-center gap-2 text-ink-700">
                 <Landmark size={15} className="text-ink-500" />
-                Bank transfer · reference{" "}
+                {gatewayTitle(order.paymentMethod)} · reference{" "}
                 <span className="font-semibold text-ink-900">{order.number}</span>
               </div>
               <p className="text-ink-600">
@@ -251,6 +255,43 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
               {order.paidAt && (
                 <p className="text-ink-600">Paid {formatOrderDate(order.paidAt)}</p>
               )}
+              {order.paymentProofUploadedAt && (
+                <a
+                  href={proofUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-1 flex items-center gap-3 rounded-xl border border-line bg-mist p-2.5 transition hover:border-brand-400"
+                >
+                  {/* The customer's screenshot of their transfer. Evidence to
+                      check against the bank, never proof of payment itself. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={proofUrl}
+                    alt="Payment screenshot from the customer"
+                    className="h-14 w-14 shrink-0 rounded-lg bg-white object-cover"
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-[13px] font-semibold text-ink-900">
+                      Payment screenshot
+                    </span>
+                    <span className="block text-[12px] text-ink-600">
+                      {order.paymentProofUploadedAt
+                        ? `Uploaded ${formatOrderDate(order.paymentProofUploadedAt)}`
+                        : "Uploaded by the customer"}
+                      {" · open"}
+                    </span>
+                  </span>
+                </a>
+              )}
+
+              {/* The customer's own payment page — for when they ask for the
+                  account details again rather than being sent them by hand. */}
+              <Link
+                href={orderReceivedPath(order.number, order.accessKey)}
+                className="inline-flex items-center gap-1.5 font-semibold text-brand-700 hover:underline"
+              >
+                Customer payment page <ExternalLink size={13} />
+              </Link>
             </div>
           </Panel>
 

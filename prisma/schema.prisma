@@ -158,6 +158,9 @@ model Order {
   id     String @id @default(cuid())
   /// Human reference, e.g. BPL-100042. Sequential, never random.
   number String @unique
+  /// Unguessable key that lets the person who placed the order reach its
+  /// payment page without an account — WooCommerce's order key, by another name.
+  accessKey String @unique
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -180,6 +183,16 @@ model Order {
   paymentMethod PaymentMethod @default(BANK_TRANSFER)
   /// Stripe payment intent / external processor reference, when one exists.
   paymentRef    String?
+
+  /// Customer-uploaded proof of their bank transfer.
+  ///
+  /// Held in the database rather than object storage: a screenshot is small
+  /// once the browser has downscaled it, there is at most one per order, and
+  /// storing it here means the upload works with no external service to
+  /// configure — which is the difference between the feature existing and not.
+  paymentProofData       Bytes?
+  paymentProofType       String?
+  paymentProofUploadedAt DateTime?
 
   subtotal Decimal @db.Decimal(10, 2)
   shipping Decimal @db.Decimal(10, 2)

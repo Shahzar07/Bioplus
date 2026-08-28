@@ -1,6 +1,6 @@
 # BioPlus Labs — biopluslabs.co.uk
 
-A production-grade storefront for **BioPlus Labs LTD**, built with **Next.js 15 (App Router) + TypeScript + Tailwind CSS v4**.
+A production-grade storefront for **BioPlus Labs**, built with **Next.js 15 (App Router) + TypeScript + Tailwind CSS v4**.
 
 Design direction, per the client brief: premium laboratory feel in **metal-effect silver, black and orange**, matching the
 product labels and the BioPlus Labs logo. Light primary canvas, deep-black premium bands, and the brand's **laboratory
@@ -30,7 +30,10 @@ npm run build
 - Product detail — mg variant selection, quantity, add-to-cart, image gallery (branded vial + range photo), and rich tabs: **Full Description** (headline, intro, purity badges, Product Details table with molecular formula / MW / CAS / form, Storage & Handling, Note), **Mixing Guide**, **Research**, **Usage**, **Reviews**
 - **Peptide Dosage Calculator** (`/dosage-calculator`) — desired dose / peptide strength / volume presets + custom, live syringe visual, ml-to-draw + insulin units + doses-per-vial
 - Cart (persisted to `localStorage`) + slide-in cart drawer
-- Checkout — full UK address form, server-priced order summary, discount codes, and bank-transfer confirmation
+- Checkout — full UK address form, server-priced order summary, discount codes, and a **direct bank transfer**
+  payment method that issues the account details and a payment reference automatically
+- **Order payment page** (`/checkout/order-received/<order>?key=…`) — the account details, the reference and the
+  order summary on a durable URL the customer can return to, reachable without an account
 
 **Account "Research Hub"** (`/account`) — dark dashboard, backed by real data
 - Dashboard, Orders, Files & COA, Research Address, Account Settings
@@ -100,9 +103,36 @@ New orders reach an open dashboard within about three seconds, with a toast and 
 
 Checkout re-prices every line **from the database**: the browser only supplies SKUs and quantities, so a tampered cart
 cannot change what is charged. Order creation, stock decrements and discount redemption run in one transaction, and
-selling the last vial takes a SKU off sale automatically. Payment is by **bank transfer** — the confirmation shows the
-account details and the order number as the reference, and the owner marks the order paid once funds clear. The
-`Order` model already carries `paymentMethod`/`paymentRef`, so a card processor can be added later without a migration.
+selling the last vial takes a SKU off sale automatically.
+
+### Direct bank transfer
+
+Payment works the way WooCommerce's BACS gateway does — the store issues the payment instructions, nobody types them
+out and no proof of payment is collected:
+
+1. **Direct bank transfer** is selected at checkout, where the account it will be paid into is previewed.
+2. Placing the order records it as `AWAITING_PAYMENT` and mints an unguessable `Order.accessKey`.
+3. The browser is redirected to that order's own payment page — the account details, and **the order number as the
+   payment reference**, each field copyable. It is a real URL, so a refresh, a closed tab or a different device all
+   reach the same page; guests get in on the key alone.
+4. The confirmation email carries the same details and links back to that page, so the customer never has to ask for
+   them again. Signed-in customers also see them against the order in the Research Hub.
+5. A **20-minute countdown** runs on that page as a clock face — a ring that empties, red for the last five
+   minutes. It is a prompt, not an expiry: nothing cancels the order or releases stock when it lapses, since a
+   transfer can legitimately take longer and losing a paid order would be worse than a late one. The page keeps
+   working afterwards and says so.
+6. The customer can attach a **screenshot of the payment** — optional, images only. The browser downscales it to
+   1600px before sending, so it is stored in the database (`Order.paymentProofData`) rather than object storage:
+   **the upload needs nothing configured to work.** It appears against the order in the dashboard with a
+   timeline entry, and is served back through `/api/orders/payment-proof`, authorised by the order key or a
+   staff session. The screenshot is a convenience for matching an unclear transfer, never proof of payment —
+   the funds arriving are.
+7. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
+
+The account is edited in **Settings → Bank transfer** and nowhere else: the payment page, the email and the Research
+Hub all render from [`bankTransferRows`](src/lib/payments.ts), so they cannot drift apart. Gateways are declared in
+that same module, so a card processor slots in beside bank transfer against the existing `paymentMethod`/`paymentRef`
+fields.
 
 ## Setup
 
@@ -121,8 +151,46 @@ npm run dev
 | `AUTH_SECRET` | yes | 32+ random bytes — `openssl rand -base64 32` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account |
 | `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
-| `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
+| `SMTP_PASSWORD` | for email | The store mailbox's password. Host, port and username default to the BioPlus mailbox, so this is normally the only email variable to set. Without it, emails are logged rather than sent and orders are unaffected |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_SECURE` | no | Only to point at a different mailbox or server. Defaults: `de9000-r.dnsiaas.com`, `465`, `alex@biopluslabs.co.uk`, implicit TLS on 465 |
+| `ORDER_EMAIL_FROM` / `ORDER_EMAIL_REPLY_TO` | no | Both default to the SMTP mailbox. Change `FROM` only if the domain's SPF and DKIM cover the address, or mail lands in spam |
+| `RESEND_API_KEY` | no | Fallback only, used if SMTP is unset or its send fails |
+| `SITE_URL` | no | Origin used for links in email, e.g. the payment page. Defaults to the Vercel deployment URL, then `https://biopluslabs.co.uk` |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
+
+## Deploying
+
+`npm run build` applies migrations before building:
+
+```
+prisma generate && prisma migrate deploy && next build
+```
+
+**This step is not optional.** The build reads the database anyway (product pages are prerendered from it), so a
+deploy that skipped migrations would ship code expecting columns the database does not have — checkout would fail
+with "We could not place your order" while the storefront looked fine. Vercel runs `vercel-build` when it exists,
+and that is defined as `npm run build`, so both entry points apply migrations. If the project overrides the build
+command in its Vercel settings, make sure the override runs `npm run build` rather than `next build` on its own.
+
+`DIRECT_DATABASE_URL` must be set for this to work on Neon: the pooled connection cannot run DDL. On a plain
+Postgres server it is the same value as `DATABASE_URL`.
+
+If a database was created with `prisma db push` rather than migrations, `migrate deploy` stops with P3005
+("the database schema is not empty"). Mark the baseline as already applied once, then deploy normally:
+
+```bash
+npx prisma migrate resolve --applied 20260825204247_init
+```
+
+### Email
+
+Order confirmation and dispatch emails go out over SMTP from the store's own mailbox, authenticated with
+`SMTP_PASSWORD`. The `From` header defaults to that same mailbox: a `From` the server has not authenticated is
+the usual reason mail is refused or filed as spam, so override it only when the domain's **SPF** and **DKIM**
+records cover the address you put there. Add a **DMARC** record once both are in place — SMTP being correct is
+necessary for inbox delivery but not sufficient; those DNS records are what the receiving side checks.
+
+A send failure is logged and never blocks an order: the order is already recorded before the email is attempted.
 
 ### Tests
 
@@ -136,7 +204,8 @@ browser placing an order that appears on an untouched dashboard.
 
 ## Still to wire up
 
-1. **Card payments** — bank transfer is live; a processor can be added against the existing payment fields.
+1. **Card payments** — direct bank transfer is live; a processor can be added as a second gateway in
+   [`src/lib/payments.ts`](src/lib/payments.ts), against the existing payment fields.
 2. **Contact / affiliate / wholesale forms** — front-end only; connect to email or a CRM.
 3. **COA batch register** — the public register in [`CoaFinder`](src/components/coa/CoaFinder.tsx) still uses
    representative entries. Per-order COA files uploaded from the dashboard already reach the customer's Research Hub.
@@ -144,5 +213,5 @@ browser placing an order that appears on an untouched dashboard.
 
 ## Contact (from the client brief)
 
-BioPlus Labs LTD · 35 Drummore Drive, Prestonpans, EH32 9BZ, United Kingdom
+BioPlus Labs · Scotland, East Lothian, Prestonpans
 07724 297209 (also WhatsApp) · customerservice@biopluslabs.co.uk

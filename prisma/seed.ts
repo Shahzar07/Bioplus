@@ -3,6 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import { PrismaClient, type Availability } from "../src/generated/prisma";
 import { SEED_PRODUCTS } from "./seed-data";
+import { BANK_TRANSFER_DEFAULTS } from "../src/lib/payments";
 
 /**
  * Seeds the catalogue exactly as it shipped on the hardcoded storefront, plus
@@ -118,14 +119,7 @@ async function seedSettings() {
   // Mirrors the values the storefront previously hardcoded.
   const defaults: Record<string, unknown> = {
     shipping: { freeThreshold: 250, flatRate: 12, countries: ["GB", "IE"] },
-    bankTransfer: {
-      accountName: "BioPlus Labs LTD",
-      bankName: "",
-      sortCode: "",
-      accountNumber: "",
-      instructions:
-        "Please use your order number as the payment reference. Orders are dispatched once payment clears.",
-    },
+    bankTransfer: BANK_TRANSFER_DEFAULTS,
     store: {
       email: "customerservice@biopluslabs.co.uk",
       hours: "Monday – Friday, 9:00 – 18:00",
@@ -140,6 +134,7 @@ async function seedSettings() {
       update: {},
     });
   }
+
   console.log(`  settings: ${Object.keys(defaults).length} keys`);
 }
 

@@ -1,23 +1,94 @@
 import "server-only";
+import nodemailer, { type Transporter } from "nodemailer";
 import { formatGBP } from "@/lib/cn";
+import { bankTransferRows, hasBankDetails, orderReceivedPath } from "@/lib/payments";
 import type { BankTransferSettings } from "@/lib/settings";
 
 /**
- * Transactional email through Resend.
+ * Transactional email.
  *
- * Without RESEND_API_KEY nothing is sent and the intent is logged instead, so
- * the shop works end to end before email is configured and order placement is
- * never blocked by a mail failure.
+ * Sent over SMTP from the store's own mailbox when SMTP_PASSWORD is set —
+ * everything else has a working default, so that one secret is all a deployment
+ * needs. Resend is kept as a fallback for anyone using it, and with neither
+ * configured the intent is logged rather than sent: the shop works end to end
+ * before email is configured, and order placement is never blocked by a mail
+ * failure.
  */
 
-const FROM = process.env.ORDER_EMAIL_FROM ?? "BioPlus Labs <orders@biopluslabs.co.uk>";
+const SMTP = {
+  host: process.env.SMTP_HOST ?? "de9000-r.dnsiaas.com",
+  port: Number(process.env.SMTP_PORT ?? 465),
+  user: process.env.SMTP_USER ?? "alex@biopluslabs.co.uk",
+  password: process.env.SMTP_PASSWORD ?? "",
+};
+
+/** Port 465 is implicit TLS; 587 upgrades with STARTTLS. */
+const SMTP_SECURE = process.env.SMTP_SECURE
+  ? process.env.SMTP_SECURE === "true"
+  : SMTP.port === 465;
+
+/**
+ * The envelope sender defaults to the mailbox we authenticate as.
+ *
+ * A From that does not match the authenticated account is what gets mail
+ * refused by the server or filed as spam by the recipient, so overriding this
+ * is only safe when the domain's SPF and DKIM cover the address used.
+ */
+const FROM = process.env.ORDER_EMAIL_FROM ?? `BioPlus Labs <${SMTP.user}>`;
+
+let transporter: Transporter | null = null;
+
+function smtpTransport(): Transporter | null {
+  if (!SMTP.password) return null;
+  transporter ??= nodemailer.createTransport({
+    host: SMTP.host,
+    port: SMTP.port,
+    secure: SMTP_SECURE,
+    auth: { user: SMTP.user, pass: SMTP.password },
+  });
+  return transporter;
+}
+
+/**
+ * Absolute base for links in email. Vercel sets the production URL; locally
+ * SITE_URL covers a tunnel or a different port.
+ */
+function siteOrigin(): string {
+  const configured = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) return configured.replace(/\/$/, "");
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (vercel) return `https://${vercel}`;
+  return "https://biopluslabs.co.uk";
+}
 
 type SendArgs = { to: string; subject: string; html: string; text: string };
 
 async function send({ to, subject, html, text }: SendArgs): Promise<boolean> {
+  const smtp = smtpTransport();
+  if (smtp) {
+    try {
+      const info = await smtp.sendMail({
+        from: FROM,
+        to,
+        subject,
+        text,
+        html,
+        // Replies belong with the people who read the shop inbox.
+        replyTo: process.env.ORDER_EMAIL_REPLY_TO ?? SMTP.user,
+      });
+      console.info(`[email] sent via SMTP: "${subject}" → ${to} (${info.messageId})`);
+      return true;
+    } catch (error) {
+      console.error("[email] SMTP send failed", error);
+      // Fall through to Resend if it is configured, rather than losing the mail.
+    }
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.info(`[email] skipped (no RESEND_API_KEY): "${subject}" → ${to}`);
+    if (!smtp) {
+      console.info(`[email] skipped (no SMTP_PASSWORD and no RESEND_API_KEY): "${subject}" → ${to}`);
+    }
     return false;
   }
 
@@ -67,6 +138,7 @@ function layout(heading: string, body: string): string {
 
 export type OrderEmailData = {
   number: string;
+  accessKey: string;
   email: string;
   firstName: string;
   total: number;
@@ -84,20 +156,32 @@ export async function sendOrderConfirmation(
     )
     .join("");
 
-  const bankBlock =
-    bank.sortCode && bank.accountNumber
-      ? `<table style="width:100%;font-size:14px;margin-top:8px">
-           <tr><td style="padding:4px 0;color:#565c68">Account name</td><td align="right">${escapeHtml(bank.accountName)}</td></tr>
-           <tr><td style="padding:4px 0;color:#565c68">Sort code</td><td align="right">${escapeHtml(bank.sortCode)}</td></tr>
-           <tr><td style="padding:4px 0;color:#565c68">Account number</td><td align="right">${escapeHtml(bank.accountNumber)}</td></tr>
-           <tr><td style="padding:4px 0;color:#565c68">Reference</td><td align="right"><strong>${escapeHtml(order.number)}</strong></td></tr>
-         </table>`
-      : `<p style="font-size:14px">We'll follow up with the account details. Please quote <strong>${escapeHtml(order.number)}</strong> as your payment reference.</p>`;
+  const details = bankTransferRows(bank, order.number);
+  const bankBlock = hasBankDetails(bank)
+    ? `<table style="width:100%;font-size:14px;margin-top:8px">${details
+        .map(
+          (row) =>
+            `<tr><td style="padding:4px 0;color:#565c68">${escapeHtml(row.label)}</td><td align="right">${
+              row.emphasise ? `<strong>${escapeHtml(row.value)}</strong>` : escapeHtml(row.value)
+            }</td></tr>`,
+        )
+        .join("")}</table>`
+    : `<p style="font-size:14px">We'll follow up with the account details. Please quote <strong>${escapeHtml(order.number)}</strong> as your payment reference.</p>`;
+
+  // The same page the customer saw after checking out, so the details survive
+  // a closed tab and never need to be re-sent by hand.
+  const paymentUrl = `${siteOrigin()}${orderReceivedPath(order.number, order.accessKey)}`;
 
   return send({
     to: order.email,
     subject: `Order ${order.number} received — BioPlus Labs`,
-    text: `Thank you for your order ${order.number}. Total ${formatGBP(order.total)}. Payment is by bank transfer using ${order.number} as the reference. ${bank.instructions}`,
+    text: [
+      `Thank you for your order ${order.number}. Total ${formatGBP(order.total)}.`,
+      `Payment is by direct bank transfer, quoting ${order.number} as the reference:`,
+      ...details.map((row) => `  ${row.label}: ${row.value}`),
+      bank.instructions,
+      `Payment details and order status: ${paymentUrl}`,
+    ].join("\n"),
     html: layout(
       `Thank you, ${escapeHtml(order.firstName)}`,
       `<p style="font-size:14px;line-height:1.6">Your order <strong>${escapeHtml(order.number)}</strong> has been received and is awaiting payment.</p>
@@ -105,7 +189,8 @@ export async function sendOrderConfirmation(
        <p style="font-size:16px;font-weight:700">Total ${formatGBP(order.total)}</p>
        <h2 style="font-size:15px;margin:24px 0 4px">Payment by bank transfer</h2>
        ${bankBlock}
-       <p style="font-size:13px;color:#565c68;line-height:1.6;margin-top:12px">${escapeHtml(bank.instructions)}</p>`,
+       <p style="font-size:13px;color:#565c68;line-height:1.6;margin-top:12px">${escapeHtml(bank.instructions)}</p>
+       <p style="margin:20px 0 0"><a href="${paymentUrl}" style="display:inline-block;background:#f85000;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:999px">View payment details</a></p>`,
     ),
   });
 }
