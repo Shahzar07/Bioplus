@@ -22,17 +22,31 @@ export function PaymentWindow({
   accessKey,
   placedAt,
   hasProof,
+  confirmedAt,
 }: {
   orderNumber: string;
   accessKey: string;
   /** ISO string; the deadline is this plus the payment window. */
   placedAt: string;
   hasProof: boolean;
+  /** ISO string once the customer has pressed "I have paid". */
+  confirmedAt: string | null;
 }) {
+  // Confirming is what stops the clock, so both halves share the state.
+  const [proofUploaded, setProofUploaded] = useState(hasProof);
+  const [confirmed, setConfirmed] = useState(Boolean(confirmedAt));
+
   return (
     <>
-      <CountdownRing placedAt={placedAt} />
-      <ProofUpload orderNumber={orderNumber} accessKey={accessKey} hasProof={hasProof} />
+      <CountdownRing placedAt={placedAt} stopped={confirmed} />
+      <ProofUpload
+        orderNumber={orderNumber}
+        accessKey={accessKey}
+        hasProof={proofUploaded}
+        confirmed={confirmed}
+        onUploaded={() => setProofUploaded(true)}
+        onConfirmed={() => setConfirmed(true)}
+      />
     </>
   );
 }
@@ -42,7 +56,7 @@ const RING_STROKE = 9;
 const RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-function CountdownRing({ placedAt }: { placedAt: string }) {
+function CountdownRing({ placedAt, stopped }: { placedAt: string; stopped: boolean }) {
   const total = PAYMENT_WINDOW_MINUTES * 60_000;
   const deadline = new Date(placedAt).getTime() + total;
 
@@ -51,11 +65,30 @@ function CountdownRing({ placedAt }: { placedAt: string }) {
   const [remaining, setRemaining] = useState(() => Math.max(0, deadline - Date.now()));
 
   useEffect(() => {
+    // Once the customer has confirmed, the clock is irrelevant — freeze it.
+    if (stopped) return;
     const tick = () => setRemaining(Math.max(0, deadline - Date.now()));
     tick();
     const id = window.setInterval(tick, 250);
     return () => window.clearInterval(id);
-  }, [deadline]);
+  }, [deadline, stopped]);
+
+  if (stopped) {
+    return (
+      <div className="mt-5 flex flex-col items-center gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-6 sm:flex-row sm:gap-6">
+        <span className="grid h-[132px] w-[132px] shrink-0 place-items-center rounded-full border-[9px] border-emerald-500 text-emerald-700">
+          <Check size={52} strokeWidth={3} />
+        </span>
+        <div className="text-center sm:text-left">
+          <p className="font-display text-lg font-bold text-emerald-900">Payment confirmed — thank you</p>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-emerald-900/75">
+            The timer has stopped. We&apos;re checking the transfer against your screenshot and will
+            email you as soon as it clears and your order is on its way.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const expired = remaining <= 0;
   const seconds = Math.ceil(remaining / 1000);
@@ -177,12 +210,19 @@ function ProofUpload({
   orderNumber,
   accessKey,
   hasProof,
+  confirmed,
+  onUploaded,
+  onConfirmed,
 }: {
   orderNumber: string;
   accessKey: string;
   hasProof: boolean;
+  confirmed: boolean;
+  onUploaded: () => void;
+  onConfirmed: () => void;
 }) {
   const [uploaded, setUploaded] = useState(hasProof);
+  const [confirming, setConfirming] = useState(false);
   /**
    * Bumped after each upload to bust the browser cache on the thumbnail.
    * The preview reads the stored image back rather than showing a local
@@ -232,6 +272,7 @@ function ProofUpload({
 
       setVersion((n) => n + 1);
       setUploaded(true);
+      onUploaded();
     } catch {
       setError("Upload failed. Please check your connection and try again.");
     } finally {
@@ -244,12 +285,12 @@ function ProofUpload({
     <div className="mt-4 rounded-2xl border border-line bg-white p-5">
       <p className="font-display text-[15px] font-bold text-ink-900">
         Upload your payment screenshot{" "}
-        <span className="text-[13px] font-normal text-ink-500">(optional)</span>
+        <span className="text-[13px] font-bold text-brand-700">(required)</span>
       </p>
       <p className="mt-1 text-[12.5px] leading-relaxed text-ink-600">
         A screenshot of the payment itself — the confirmation from your banking app showing the amount
-        and the reference. It lets us match your transfer straight away. Please don&apos;t upload
-        anything else.
+        and the reference. Attach it, then press <strong className="text-ink-900">Done</strong> below to
+        confirm. Please don&apos;t upload anything else.
       </p>
 
       {uploaded ? (
@@ -321,6 +362,53 @@ function ProofUpload({
           if (file) void upload(file);
         }}
       />
+
+      {confirmed ? (
+        <p className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-[13px] font-bold text-emerald-800">
+          <Check size={16} /> Payment confirmed — nothing more to do
+        </p>
+      ) : (
+        <>
+          <button
+            type="button"
+            disabled={!uploaded || confirming}
+            onClick={async () => {
+              setError(null);
+              setConfirming(true);
+              try {
+                const res = await fetch("/api/orders/confirm-payment", {
+                  method: "POST",
+                  headers: { "content-type": "application/json" },
+                  body: JSON.stringify({ number: orderNumber, key: accessKey }),
+                });
+                const data = (await res.json().catch(() => ({}))) as { error?: string };
+                if (!res.ok) {
+                  setError(data.error ?? "Could not confirm. Please try again.");
+                  return;
+                }
+                onConfirmed();
+              } catch {
+                setError("Could not confirm. Please check your connection and try again.");
+              } finally {
+                setConfirming(false);
+              }
+            }}
+            className="brand-gradient mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold text-white transition enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {confirming ? (
+              <Loader2 size={17} className="animate-spin" />
+            ) : (
+              <Check size={17} strokeWidth={3} />
+            )}
+            {confirming ? "Confirming…" : "Done — I have paid"}
+          </button>
+          {!uploaded && (
+            <p className="mt-2 text-center text-[11.5px] text-ink-500">
+              Attach your screenshot to enable this.
+            </p>
+          )}
+        </>
+      )}
 
       {error && (
         <p

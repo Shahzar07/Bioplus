@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { CATALOGUE_TAG } from "@/lib/catalog";
 import { getSettings, shippingFor } from "@/lib/settings";
-import { sendOrderConfirmation } from "@/lib/email";
+import { sendOrderAdminAlert, sendOrderConfirmation } from "@/lib/email";
 import { DEFAULT_GATEWAY, gatewayTitle } from "@/lib/payments";
 import { multiplyMoney, round2, sumMoney } from "@/lib/money";
 import type { PaymentMethod, Prisma } from "@/generated/prisma";
@@ -302,6 +302,21 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
           },
         });
       }
+    });
+
+    // The shop's own copy. Separate from the customer's so one failing does not
+    // take the other with it.
+    void sendOrderAdminAlert({
+      number: order.number,
+      accessKey: order.accessKey,
+      customerEmail: order.email,
+      customerName: `${order.firstName} ${order.lastName}`.trim(),
+      total,
+      items: priced.map((p) => ({
+        name: p.variant.product.name,
+        label: p.variant.label,
+        qty: p.qty,
+      })),
     });
 
     return { ok: true, orderNumber: order.number, orderId: order.id, accessKey: order.accessKey };

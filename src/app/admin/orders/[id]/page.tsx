@@ -10,6 +10,7 @@ import {
   Package,
   Landmark,
   ExternalLink,
+  Check,
 } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireStaff } from "@/lib/auth";
@@ -255,6 +256,17 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
               {order.paidAt && (
                 <p className="text-ink-600">Paid {formatOrderDate(order.paidAt)}</p>
               )}
+              {order.paymentConfirmedAt && (
+                <p className="flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-[12.5px] leading-relaxed text-emerald-900">
+                  <Check size={15} className="mt-px shrink-0 text-emerald-700" />
+                  <span>
+                    <strong className="font-semibold">Customer confirmed payment</strong>{" "}
+                    {formatOrderDate(order.paymentConfirmedAt)}. Check the account before dispatching —
+                    a screenshot is not proof the funds arrived.
+                  </span>
+                </p>
+              )}
+
               {order.paymentProofUploadedAt && (
                 <a
                   href={proofUrl}

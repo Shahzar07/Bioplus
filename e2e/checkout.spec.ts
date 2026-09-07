@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { acceptAgeGate, seedCart, mainForm as form, CART_KEY } from "./helpers";
+import { acceptAgeGate, seedCart, mainForm as form, signInAsAdmin, CART_KEY } from "./helpers";
 
 test.beforeEach(async ({ context }) => {
   await acceptAgeGate(context);
@@ -195,4 +195,70 @@ test("a payment screenshot uploads, persists and is refused if it is not an imag
     return img?.naturalWidth ?? 0;
   });
   expect(width).toBe(200);
+});
+
+test("the screenshot is required before payment can be confirmed, and confirming stops the timer", async ({
+  page,
+  context,
+}) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+  await fillDeliveryDetails(page, "confirm@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // The upload is required, and Done cannot be pressed without it.
+  await expect(page.getByText("(required)")).toBeVisible();
+  const done = page.getByRole("button", { name: /Done — I have paid/ });
+  await expect(done).toBeDisabled();
+  await expect(page.locator("[data-countdown-clock]")).toBeVisible();
+
+  const png = await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 160;
+    canvas.height = 100;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#0a7";
+    context.fillRect(0, 0, 160, 100);
+    return canvas.toDataURL("image/png").split(",")[1];
+  });
+  await page.setInputFiles("input[type=file]", {
+    name: "pay.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(png, "base64"),
+  });
+  await expect(page.getByText("Screenshot received")).toBeVisible({ timeout: 15_000 });
+  await expect(done).toBeEnabled();
+
+  await done.click();
+  await expect(page.getByText("Payment confirmed — thank you")).toBeVisible({ timeout: 15_000 });
+  // The clock is gone, not merely paused at a value.
+  await expect(page.locator("[data-countdown-clock]")).toHaveCount(0);
+
+  // And it survives a reload, because it is recorded against the order.
+  await page.reload();
+  await expect(page.getByText("Payment confirmed — thank you")).toBeVisible();
+});
+
+test("a contact form submission is stored and acknowledged", async ({ page }) => {
+  await page.goto("/contact");
+  const contact = page.locator("main form");
+  await contact.getByLabel("First name").fill("Ada");
+  await contact.getByLabel("Last name").fill("Enquirer");
+  await contact.getByLabel("Email").fill("ada-enquiry@lab.ac.uk");
+  await contact.getByLabel("Subject").fill("Wholesale terms");
+  await contact
+    .getByLabel("Message")
+    .fill("Please send trade terms for a university research group.");
+  await contact.getByRole("button", { name: /Send message/ }).click();
+
+  await expect(page.getByText("Message sent")).toBeVisible({ timeout: 15_000 });
+
+  // It reaches the dashboard, which is the record that cannot be lost.
+  await signInAsAdmin(page);
+  await page.goto("/admin/contact");
+  await expect(page.getByText("ada-enquiry@lab.ac.uk")).toBeVisible();
+  await expect(page.getByText("Please send trade terms for a university research group.")).toBeVisible();
 });

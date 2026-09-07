@@ -36,6 +36,9 @@ const SMTP_SECURE = process.env.SMTP_SECURE
  */
 const FROM = process.env.ORDER_EMAIL_FROM ?? `BioPlus Labs <${SMTP.user}>`;
 
+/** Where notifications for the shop itself go. Defaults to the store mailbox. */
+const ADMIN_INBOX = process.env.ADMIN_NOTIFY_EMAIL ?? SMTP.user;
+
 let transporter: Transporter | null = null;
 
 function smtpTransport(): Transporter | null {
@@ -61,9 +64,16 @@ function siteOrigin(): string {
   return "https://biopluslabs.co.uk";
 }
 
-type SendArgs = { to: string; subject: string; html: string; text: string };
+type SendArgs = {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  /** Overrides the default reply address — used for contact enquiries. */
+  replyTo?: string;
+};
 
-async function send({ to, subject, html, text }: SendArgs): Promise<boolean> {
+async function send({ to, subject, html, text, replyTo }: SendArgs): Promise<boolean> {
   const smtp = smtpTransport();
   if (smtp) {
     try {
@@ -74,7 +84,7 @@ async function send({ to, subject, html, text }: SendArgs): Promise<boolean> {
         text,
         html,
         // Replies belong with the people who read the shop inbox.
-        replyTo: process.env.ORDER_EMAIL_REPLY_TO ?? SMTP.user,
+        replyTo: replyTo ?? process.env.ORDER_EMAIL_REPLY_TO ?? SMTP.user,
       });
       console.info(`[email] sent via SMTP: "${subject}" → ${to} (${info.messageId})`);
       return true;
@@ -217,6 +227,99 @@ export async function sendShippedEmail(order: {
     html: layout(
       "Your order is on its way",
       `<p style="font-size:14px;line-height:1.6">Order <strong>${escapeHtml(order.number)}</strong> has been dispatched.</p>${tracking}`,
+    ),
+  });
+}
+
+
+/**
+ * Tells the shop an order has come in, so a sale is not missed while nobody is
+ * watching the dashboard. Sent alongside the customer's confirmation, never
+ * instead of it.
+ */
+export async function sendOrderAdminAlert(order: {
+  number: string;
+  accessKey: string;
+  customerEmail: string;
+  customerName: string;
+  total: number;
+  items: { name: string; label: string; qty: number }[];
+}): Promise<boolean> {
+  const lines = order.items
+    .map((i) => `<li>${i.qty} × ${escapeHtml(i.name)} ${escapeHtml(i.label)}</li>`)
+    .join("");
+
+  return send({
+    to: ADMIN_INBOX,
+    subject: `New order ${order.number} — ${formatGBP(order.total)}`,
+    text: [
+      `New order ${order.number} for ${formatGBP(order.total)}.`,
+      `Customer: ${order.customerName} <${order.customerEmail}>`,
+      ...order.items.map((i) => `  ${i.qty} × ${i.name} ${i.label}`),
+      `Awaiting bank transfer, reference ${order.number}.`,
+      `${siteOrigin()}/admin/orders`,
+    ].join("\n"),
+    html: layout(
+      `New order ${escapeHtml(order.number)}`,
+      `<p style="font-size:15px;font-weight:700">${formatGBP(order.total)} — awaiting bank transfer</p>
+       <p style="font-size:14px;line-height:1.6">${escapeHtml(order.customerName)} &lt;${escapeHtml(order.customerEmail)}&gt;</p>
+       <ul style="font-size:14px;line-height:1.7">${lines}</ul>
+       <p style="font-size:13px;color:#565c68">The payment reference is the order number. Mark it paid once the funds land.</p>
+       <p style="margin:20px 0 0"><a href="${siteOrigin()}/admin/orders" style="display:inline-block;background:#f85000;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:999px">Open the dashboard</a></p>`,
+    ),
+  });
+}
+
+/** Tells the shop the customer says they have paid and attached a screenshot. */
+export async function sendPaymentConfirmedAlert(order: {
+  number: string;
+  customerEmail: string;
+  total: number;
+}): Promise<boolean> {
+  return send({
+    to: ADMIN_INBOX,
+    subject: `Payment confirmed by customer — ${order.number}`,
+    text: `${order.customerEmail} says they have paid ${formatGBP(order.total)} for ${order.number} and attached a screenshot. Check the bank, then mark it paid: ${siteOrigin()}/admin/orders`,
+    html: layout(
+      `Customer confirmed payment — ${escapeHtml(order.number)}`,
+      `<p style="font-size:14px;line-height:1.6">${escapeHtml(order.customerEmail)} has marked order
+       <strong>${escapeHtml(order.number)}</strong> (${formatGBP(order.total)}) as paid and attached a
+       screenshot.</p>
+       <p style="font-size:13px;color:#565c68;line-height:1.6">A screenshot is not proof the funds arrived —
+       check the account before dispatching.</p>
+       <p style="margin:20px 0 0"><a href="${siteOrigin()}/admin/orders" style="display:inline-block;background:#f85000;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:999px">Open the order</a></p>`,
+    ),
+  });
+}
+
+/** A contact-form enquiry, sent to the shop inbox with the sender as Reply-To. */
+export async function sendContactEnquiry(enquiry: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}): Promise<boolean> {
+  return send({
+    to: ADMIN_INBOX,
+    // Hitting reply in the mail client answers the customer directly.
+    replyTo: enquiry.email,
+    subject: `Contact form: ${enquiry.subject || "New enquiry"} — ${enquiry.name}`,
+    text: [
+      `From: ${enquiry.name} <${enquiry.email}>`,
+      `Subject: ${enquiry.subject || "(none)"}`,
+      "",
+      enquiry.message,
+      "",
+      `${siteOrigin()}/admin/contact`,
+    ].join("\n"),
+    html: layout(
+      "New contact form enquiry",
+      `<p style="font-size:14px;line-height:1.6"><strong>${escapeHtml(enquiry.name)}</strong>
+       &lt;${escapeHtml(enquiry.email)}&gt;</p>
+       <p style="font-size:14px;line-height:1.6"><strong>Subject:</strong> ${escapeHtml(enquiry.subject || "(none)")}</p>
+       <div style="white-space:pre-wrap;font-size:14px;line-height:1.7;border-left:3px solid #f85000;padding-left:14px;margin:16px 0">${escapeHtml(enquiry.message)}</div>
+       <p style="font-size:13px;color:#565c68">Reply to this email to answer them directly.</p>
+       <p style="margin:20px 0 0"><a href="${siteOrigin()}/admin/contact" style="display:inline-block;background:#f85000;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:999px">See it in the dashboard</a></p>`,
     ),
   });
 }

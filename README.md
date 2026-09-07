@@ -121,13 +121,17 @@ out and no proof of payment is collected:
    minutes. It is a prompt, not an expiry: nothing cancels the order or releases stock when it lapses, since a
    transfer can legitimately take longer and losing a paid order would be worse than a late one. The page keeps
    working afterwards and says so.
-6. The customer can attach a **screenshot of the payment** — optional, images only. The browser downscales it to
+6. The customer attaches a **screenshot of the payment** — required, images only — and presses
+   **Done — I have paid**, which is disabled until the screenshot is there. Confirming stops the countdown,
+   records `paymentConfirmedAt`, and emails the shop. It does not mark the order paid: only the funds
+   arriving does that, and only staff record it.
+7. The screenshot itself: The browser downscales it to
    1600px before sending, so it is stored in the database (`Order.paymentProofData`) rather than object storage:
    **the upload needs nothing configured to work.** It appears against the order in the dashboard with a
    timeline entry, and is served back through `/api/orders/payment-proof`, authorised by the order key or a
    staff session. The screenshot is a convenience for matching an unclear transfer, never proof of payment —
    the funds arriving are.
-7. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
+8. The owner marks the order paid in the dashboard once the funds land, which moves it into fulfilment.
 
 The account is edited in **Settings → Bank transfer** and nowhere else: the payment page, the email and the Research
 Hub all render from [`bankTransferRows`](src/lib/payments.ts), so they cannot drift apart. Gateways are declared in
@@ -181,6 +185,21 @@ If a database was created with `prisma db push` rather than migrations, `migrate
 ```bash
 npx prisma migrate resolve --applied 20260825204247_init
 ```
+
+### Who gets emailed
+
+| Event | To the customer | To the shop (`ADMIN_NOTIFY_EMAIL`, default the SMTP mailbox) |
+| --- | --- | --- |
+| Order placed | Confirmation with the bank details and a link to the payment page | "New order BPL-… — £x" with the items and a dashboard link |
+| Customer presses Done | — | "Payment confirmed by customer", so someone checks the bank |
+| Order shipped | Dispatch note with tracking | — |
+| Contact form submitted | On-page acknowledgement | The full enquiry, with the sender set as `Reply-To` |
+
+### Contact form
+
+Submissions are written to `ContactMessage` **before** the notification email is attempted, so an enquiry
+survives a mail failure — the dashboard, not the inbox, is the record. **Admin → Contact** lists them with an
+unread badge, marks them read or archived, and flags any whose notification email did not send.
 
 ### Email
 

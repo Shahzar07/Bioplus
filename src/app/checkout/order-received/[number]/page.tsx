@@ -98,6 +98,7 @@ export default async function OrderReceivedPage({
               accessKey={order.accessKey}
               placedAt={order.placedAt.toISOString()}
               hasProof={order.paymentProofUploadedAt !== null}
+              confirmedAt={order.paymentConfirmedAt?.toISOString() ?? null}
             />
             <p className="mt-4 flex items-start gap-2 rounded-xl bg-mist px-4 py-3 text-[12.5px] leading-relaxed text-ink-600">
               <ShieldCheck size={15} className="mt-px shrink-0 text-brand-600" />
