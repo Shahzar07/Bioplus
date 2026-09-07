@@ -128,6 +128,7 @@ async function seedSettings() {
     },
     store: {
       email: "customerservice@biopluslabs.co.uk",
+      orderNotificationEmail: "customerservice@biopluslabs.co.uk",
       hours: "Monday – Friday, 9:00 – 18:00",
       lowStockThreshold: 5,
     },

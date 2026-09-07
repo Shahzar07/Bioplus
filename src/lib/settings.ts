@@ -26,6 +26,11 @@ export type BankTransferSettings = {
 
 export type StoreSettings = {
   email: string;
+  /**
+   * Where the new-order notification is sent. Separate several addresses with
+   * commas — see `orderNotificationRecipients`.
+   */
+  orderNotificationEmail: string;
   hours: string;
   lowStockThreshold: number;
 };
@@ -42,6 +47,7 @@ const DEFAULTS = {
   } satisfies BankTransferSettings,
   store: {
     email: "customerservice@biopluslabs.co.uk",
+    orderNotificationEmail: "customerservice@biopluslabs.co.uk",
     hours: "Monday – Friday, 9:00 – 18:00",
     lowStockThreshold: 5,
   } satisfies StoreSettings,
@@ -71,6 +77,23 @@ export const getSettings = unstable_cache(readSettings, ["settings"], { tags: [S
 export function shippingFor(subtotal: number, shipping: ShippingSettings): number {
   if (subtotal <= 0) return 0;
   return subtotal >= shipping.freeThreshold ? 0 : shipping.flatRate;
+}
+
+/**
+ * Addresses the new-order notification goes to.
+ *
+ * Held in one field so the dashboard keeps a single box, but split here so the
+ * client can add a colleague without a deploy. A cleared field falls back to
+ * the contact address rather than silently notifying nobody.
+ */
+export function orderNotificationRecipients(store: StoreSettings): string[] {
+  const raw =
+    store.orderNotificationEmail?.trim() ||
+    store.email?.trim() ||
+    DEFAULTS.store.orderNotificationEmail;
+
+  const addresses = raw.split(",").map((address) => address.trim().toLowerCase());
+  return [...new Set(addresses.filter(Boolean))];
 }
 
 export { DEFAULTS as SETTING_DEFAULTS };

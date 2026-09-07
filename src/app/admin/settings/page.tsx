@@ -95,6 +95,12 @@ export default async function SettingsPage() {
             type="email"
             defaultValue={settings.store.email}
           />
+          <SettingField
+            label="New-order notification email"
+            name="orderNotificationEmail"
+            defaultValue={settings.store.orderNotificationEmail}
+            hint="Emailed the moment a customer places an order. Separate several addresses with commas."
+          />
           <SettingField label="Opening hours" name="hours" defaultValue={settings.store.hours} />
           <SettingField
             label="Default low-stock threshold"
