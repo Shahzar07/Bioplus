@@ -15,9 +15,10 @@ export const dynamic = "force-dynamic";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await requireStaff();
 
-  const [pendingOrders, latest] = await Promise.all([
+  const [pendingOrders, latest, unreadEnquiries] = await Promise.all([
     db.order.count({ where: { status: "AWAITING_PAYMENT" } }),
     db.order.findFirst({ orderBy: { placedAt: "desc" }, select: { id: true } }),
+    db.contactMessage.count({ where: { status: "NEW" } }),
   ]);
 
   return (
@@ -25,6 +26,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AdminSidebar
         user={{ name: user.name ?? user.email, email: user.email, role: user.role }}
         pendingOrders={pendingOrders}
+        unreadEnquiries={unreadEnquiries}
       />
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
       <OrderAlerts initialLatestOrderId={latest?.id ?? null} />

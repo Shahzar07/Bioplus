@@ -118,7 +118,7 @@ export function Footer() {
           <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-6 text-[12px] text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
             <p>
               © {new Date().getFullYear()} {SITE.legalName}. All rights reserved.
-              {SITE.companyNumber && <> · Registered in England &amp; Wales no. {SITE.companyNumber}</>}
+              {SITE.companyNumber && <> · Registered in Scotland no. {SITE.companyNumber}</>}
             </p>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <Link href="/legal/privacy" className="hover:text-white">

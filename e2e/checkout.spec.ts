@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { acceptAgeGate, seedCart, mainForm as form, CART_KEY } from "./helpers";
+import { acceptAgeGate, seedCart, mainForm as form, signInAsAdmin, CART_KEY } from "./helpers";
 
 test.beforeEach(async ({ context }) => {
   await acceptAgeGate(context);
@@ -82,4 +82,183 @@ test("an empty cart cannot check out", async ({ page, context }) => {
   await seedCart(context, []);
   await page.goto("/checkout");
   await expect(page.getByRole("heading", { name: "Your cart is empty" })).toBeVisible();
+});
+
+test("the payment page is a durable URL that survives a reload", async ({ page, context }) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+
+  // Direct bank transfer is offered as a payment method and preselected.
+  await expect(form(page).getByRole("radio", { name: "Direct bank transfer" })).toBeChecked();
+
+  await fillDeliveryDetails(page, "durable@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Checkout hands over to the order's own page, keyed so a guest can return.
+  await expect(page).toHaveURL(/\/checkout\/order-received\/BPL-\d+\?key=/);
+  const orderNumber =
+    (await page.getByRole("strong").filter({ hasText: /^BPL-\d+$/ }).first().textContent()) ?? "";
+  expect(orderNumber).toMatch(/^BPL-\d+$/);
+
+  const paymentUrl = page.url();
+  await expect(page.getByRole("heading", { name: "Pay by direct bank transfer" })).toBeVisible();
+  await expect(page.getByText("Sort code", { exact: true })).toBeVisible();
+  await expect(page.getByText("Payment reference", { exact: true })).toBeVisible();
+
+  // The details are issued by the store, so coming back to them is a reload —
+  // not a request for someone to send them again.
+  await page.goto(paymentUrl);
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible();
+  await expect(page.getByText(orderNumber).first()).toBeVisible();
+
+  // The key is what grants a guest access; without it the order is not exposed.
+  await page.goto(`/checkout/order-received/${orderNumber}`);
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeHidden();
+});
+
+test("the payment page counts down the transfer window", async ({ page, context }) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+  await fillDeliveryDetails(page, "countdown@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // A real clock face: a ring that empties, not a line of copy.
+  const clock = page.locator("[data-countdown-clock]");
+  const ring = page.locator("[data-countdown-ring]");
+  await expect(clock).toBeVisible();
+  await expect(ring).toBeVisible();
+
+  const first = await clock.textContent();
+  expect(first).toMatch(/^(19|20):\d{2}$/);
+
+  // It ticks, and the ring drains with it.
+  await expect
+    .poll(async () => await clock.textContent(), { timeout: 5_000 })
+    .not.toBe(first);
+  const drained = Number(await ring.getAttribute("stroke-dashoffset"));
+  expect(drained).toBeGreaterThan(0);
+
+  // The screenshot box is always offered — it needs nothing configured.
+  await expect(page.getByText("Upload your payment screenshot")).toBeVisible();
+});
+
+test("a payment screenshot uploads, persists and is refused if it is not an image", async ({
+  page,
+  context,
+}) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+  await fillDeliveryDetails(page, "proof@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Anything that is not an image is refused before it leaves the browser.
+  await page.setInputFiles("input[type=file]", {
+    name: "statement.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from("not a screenshot"),
+  });
+  await expect(page.getByText(/That is not a screenshot/)).toBeVisible();
+
+  // A real image is stored and read back from the server, not from memory.
+  const png = await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 200;
+    canvas.height = 120;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#f85000";
+    context.fillRect(0, 0, 200, 120);
+    return canvas.toDataURL("image/png").split(",")[1];
+  });
+  await page.setInputFiles("input[type=file]", {
+    name: "payment.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(png, "base64"),
+  });
+  await expect(page.getByText("Screenshot received")).toBeVisible({ timeout: 15_000 });
+
+  // Still there on a reload, because it lives in the database.
+  await page.reload();
+  await expect(page.getByText("Screenshot received")).toBeVisible();
+  const width = await page.evaluate(() => {
+    const img = document.querySelector<HTMLImageElement>('img[alt="Your payment screenshot"]');
+    return img?.naturalWidth ?? 0;
+  });
+  expect(width).toBe(200);
+});
+
+test("the screenshot is required before payment can be confirmed, and confirming stops the timer", async ({
+  page,
+  context,
+}) => {
+  await seedCart(context, [{ sku: "BPL-BPC10", qty: 1 }]);
+  await page.goto("/checkout");
+  await fillDeliveryDetails(page, "confirm@lab.ac.uk");
+  await form(page).getByRole("button", { name: /Place order/ }).click();
+  await expect(page.getByRole("heading", { name: "Order received" })).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // The upload is required, and Done cannot be pressed without it.
+  await expect(page.getByText("(required)")).toBeVisible();
+  const done = page.getByRole("button", { name: /Done — I have paid/ });
+  await expect(done).toBeDisabled();
+  await expect(page.locator("[data-countdown-clock]")).toBeVisible();
+
+  const png = await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 160;
+    canvas.height = 100;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#0a7";
+    context.fillRect(0, 0, 160, 100);
+    return canvas.toDataURL("image/png").split(",")[1];
+  });
+  await page.setInputFiles("input[type=file]", {
+    name: "pay.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(png, "base64"),
+  });
+  await expect(page.getByText("Screenshot received")).toBeVisible({ timeout: 15_000 });
+  await expect(done).toBeEnabled();
+
+  await done.click();
+  await expect(page.getByText("Payment confirmed — thank you")).toBeVisible({ timeout: 15_000 });
+  // The clock is gone, not merely paused at a value.
+  await expect(page.locator("[data-countdown-clock]")).toHaveCount(0);
+
+  // And it survives a reload, because it is recorded against the order.
+  await page.reload();
+  await expect(page.getByText("Payment confirmed — thank you")).toBeVisible();
+});
+
+test("a contact form submission is stored and acknowledged", async ({ page }) => {
+  await page.goto("/contact");
+  const contact = page.locator("main form");
+  await contact.getByLabel("First name").fill("Ada");
+  await contact.getByLabel("Last name").fill("Enquirer");
+  await contact.getByLabel("Email").fill("ada-enquiry@lab.ac.uk");
+  await contact.getByLabel("Subject").fill("Wholesale terms");
+  await contact
+    .getByLabel("Message")
+    .fill("Please send trade terms for a university research group.");
+  await contact.getByRole("button", { name: /Send message/ }).click();
+
+  await expect(page.getByText("Message sent")).toBeVisible({ timeout: 15_000 });
+
+  // It reaches the dashboard, which is the record that cannot be lost.
+  await signInAsAdmin(page);
+  await page.goto("/admin/contact");
+  await expect(page.getByText("ada-enquiry@lab.ac.uk")).toBeVisible();
+  await expect(page.getByText("Please send trade terms for a university research group.")).toBeVisible();
 });

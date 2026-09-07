@@ -158,6 +158,9 @@ model Order {
   id     String @id @default(cuid())
   /// Human reference, e.g. BPL-100042. Sequential, never random.
   number String @unique
+  /// Unguessable key that lets the person who placed the order reach its
+  /// payment page without an account — WooCommerce's order key, by another name.
+  accessKey String @unique
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -180,6 +183,19 @@ model Order {
   paymentMethod PaymentMethod @default(BANK_TRANSFER)
   /// Stripe payment intent / external processor reference, when one exists.
   paymentRef    String?
+
+  /// Customer-uploaded proof of their bank transfer.
+  ///
+  /// Held in the database rather than object storage: a screenshot is small
+  /// once the browser has downscaled it, there is at most one per order, and
+  /// storing it here means the upload works with no external service to
+  /// configure — which is the difference between the feature existing and not.
+  paymentProofData       Bytes?
+  paymentProofType       String?
+  paymentProofUploadedAt DateTime?
+  /// When the customer pressed "I have paid" — their own confirmation, which
+  /// stops the countdown. Not the same as the money arriving: paidAt is that.
+  paymentConfirmedAt     DateTime?
 
   subtotal Decimal @db.Decimal(10, 2)
   shipping Decimal @db.Decimal(10, 2)
@@ -326,6 +342,31 @@ model Setting {
   key       String   @id
   value     Json
   updatedAt DateTime @updatedAt
+}
+
+enum ContactStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+/// A message from the public contact form. Kept in the database so an enquiry
+/// is never lost if the notification email fails or is deleted.
+model ContactMessage {
+  id        String        @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  subject   String?
+  message   String
+  status    ContactStatus @default(NEW)
+  /// Whether the notification email to the shop reached the mail server.
+  notified  Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  readAt    DateTime?
+
+  @@index([status, createdAt])
+  @@index([createdAt])
 }
 
 model ActivityLog {

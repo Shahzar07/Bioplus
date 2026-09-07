@@ -10,6 +10,7 @@ import {
   Boxes,
   Users,
   Ticket,
+  MessageSquare,
   Settings,
   Menu,
   X,
@@ -26,15 +27,18 @@ const NAV = [
   { href: "/admin/inventory", label: "Inventory", icon: Boxes },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/discounts", label: "Discounts", icon: Ticket },
+  { href: "/admin/contact", label: "Contact", icon: MessageSquare },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export function AdminSidebar({
   user,
   pendingOrders,
+  unreadEnquiries,
 }: {
   user: { name: string; email: string; role: string };
   pendingOrders: number;
+  unreadEnquiries: number;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -90,6 +94,11 @@ export function AdminSidebar({
               >
                 <item.icon size={17} className={active ? "text-brand-400" : "text-white/35"} />
                 {item.label}
+                {item.href === "/admin/contact" && unreadEnquiries > 0 && (
+                  <span className="ml-auto rounded-full bg-brand-600 px-1.5 py-0.5 text-[11px] font-bold text-white">
+                    {unreadEnquiries}
+                  </span>
+                )}
                 {item.href === "/admin/orders" && pendingOrders > 0 && (
                   <span className="brand-gradient ml-auto grid h-5 min-w-[20px] place-items-center rounded-full px-1.5 text-[10.5px] font-bold text-white">
                     {pendingOrders}

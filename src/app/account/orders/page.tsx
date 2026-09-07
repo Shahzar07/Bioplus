@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { Package, ShoppingBag } from "lucide-react";
+import { ExternalLink, Landmark, Package, ShoppingBag } from "lucide-react";
 import { PanelHeader } from "@/components/account/AccountShell";
+import { BankTransferDetails } from "@/components/checkout/BankTransferDetails";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { formatGBP } from "@/lib/cn";
+import { getSettings } from "@/lib/settings";
+import { hasBankDetails, orderReceivedPath } from "@/lib/payments";
 import { ORDER_STATUS_DARK, ORDER_STATUS_LABEL, formatOrderDate } from "@/lib/order-status";
 
 export default async function OrdersPage() {
@@ -14,6 +17,8 @@ export default async function OrdersPage() {
     orderBy: { placedAt: "desc" },
     include: { items: true, coaFiles: true },
   });
+  const { bankTransfer } = await getSettings();
+  const bankDetailsReady = hasBankDetails(bankTransfer);
 
   return (
     <div className="space-y-6">
@@ -69,10 +74,31 @@ export default async function OrdersPage() {
               </ul>
 
               {o.status === "AWAITING_PAYMENT" && (
-                <p className="mt-4 rounded-xl border border-amber-400/25 bg-amber-500/10 px-4 py-2.5 text-[12.5px] text-amber-200">
-                  Awaiting bank transfer — please quote{" "}
-                  <strong className="font-semibold">{o.number}</strong> as your payment reference.
-                </p>
+                <div className="mt-4 rounded-xl border border-amber-400/25 bg-amber-500/10 p-4">
+                  <p className="flex items-center gap-2 text-[12.5px] font-semibold text-amber-200">
+                    <Landmark size={15} /> Awaiting your bank transfer of{" "}
+                    {formatGBP(Number(o.total))}
+                  </p>
+                  {bankDetailsReady ? (
+                    <BankTransferDetails
+                      bank={bankTransfer}
+                      reference={o.number}
+                      tone="dark"
+                      className="mt-2"
+                    />
+                  ) : (
+                    <p className="mt-1.5 text-[12.5px] text-amber-100/80">
+                      We&apos;ll email you the account details — please quote{" "}
+                      <strong className="font-semibold">{o.number}</strong> as your reference.
+                    </p>
+                  )}
+                  <Link
+                    href={orderReceivedPath(o.number, o.accessKey)}
+                    className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-brand-300 hover:text-brand-200"
+                  >
+                    Open payment page <ExternalLink size={13} />
+                  </Link>
+                </div>
               )}
 
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">

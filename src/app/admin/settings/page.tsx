@@ -59,7 +59,7 @@ export default async function SettingsPage() {
 
         <SettingsPanel
           title="Bank transfer"
-          subtitle="Shown on the order confirmation as payment instructions."
+          subtitle="The account customers pay into. Every new order is issued these details with its own order number as the payment reference — on the payment page, in the confirmation email and in the customer's Research Hub."
           action={saveBankTransfer}
         >
           <SettingField
@@ -79,6 +79,18 @@ export default async function SettingsPage() {
             name="accountNumber"
             placeholder="12345678"
             defaultValue={settings.bankTransfer.accountNumber}
+          />
+          <SettingField
+            label="IBAN (optional)"
+            name="iban"
+            placeholder="GB00 TIDE 0000 0000 0000 00"
+            defaultValue={settings.bankTransfer.iban}
+            hint="Only needed for transfers from outside the UK."
+          />
+          <SettingField
+            label="BIC / SWIFT (optional)"
+            name="bic"
+            defaultValue={settings.bankTransfer.bic}
           />
           <SettingTextArea
             label="Payment instructions"

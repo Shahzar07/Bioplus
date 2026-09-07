@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Lock,
   Check,
@@ -12,14 +13,20 @@ import {
   ArrowLeft,
   AlertCircle,
   Landmark,
-  Copy,
+  Loader2,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { useCart } from "@/lib/cart-context";
 import { useVariantBySku } from "@/lib/catalog-context";
 import { formatGBP } from "@/lib/cn";
 import { ProductImage } from "@/components/product/ProductImage";
-import type { BankTransferSettings } from "@/lib/settings";
+import { BankTransferDetails } from "@/components/checkout/BankTransferDetails";
+import {
+  DEFAULT_GATEWAY,
+  ENABLED_GATEWAYS,
+  hasBankDetails,
+  type BankTransferSettings,
+} from "@/lib/payments";
 import { submitOrder, quoteCart, type CheckoutState, type QuoteResult } from "./actions";
 
 type Prefill = {
@@ -49,12 +56,14 @@ export function CheckoutClient({
 }) {
   const { detailedLines, lines, clear, count } = useCart();
   const variantBySku = useVariantBySku();
+  const router = useRouter();
   const [state, formAction] = useActionState<CheckoutState, FormData>(submitOrder, {
     status: "idle",
   });
   const [agree, setAgree] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [quote, setQuote] = useState<QuoteResult | null>(null);
+  const [method, setMethod] = useState(DEFAULT_GATEWAY);
 
   // Totals are quoted by the server so the figure shown is the figure charged.
   useEffect(() => {
@@ -68,21 +77,31 @@ export function CheckoutClient({
     };
   }, [lines, discountCode, state.status]);
 
+  const showBankPreview = hasBankDetails(bankTransfer);
   const placed = state.status === "placed";
+  const redirectTo = state.status === "placed" ? state.redirectTo : null;
 
-  // Clear the cart once, after the order is safely recorded.
+  // Clear the cart once the order is safely recorded, then hand over to the
+  // order's own payment page. Replacing rather than pushing keeps Back from
+  // returning to a checkout form whose cart has already been consumed.
   useEffect(() => {
-    if (placed) {
-      clear();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    if (!redirectTo) return;
+    clear();
+    router.replace(redirectTo);
     // `clear` is stable enough for this one-shot effect; re-running on cart
     // identity changes would wipe a cart the customer has started rebuilding.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [placed]);
+  }, [redirectTo]);
 
   if (placed) {
-    return <OrderPlaced orderNumber={state.orderNumber} bankTransfer={bankTransfer} signedIn={signedIn} />;
+    return (
+      <Container size="narrow" className="py-24 text-center">
+        <Loader2 size={28} className="mx-auto animate-spin text-brand-600" />
+        <p className="mt-4 text-sm font-semibold text-ink-700">
+          Order {state.orderNumber} placed — opening your payment details…
+        </p>
+      </Container>
+    );
   }
 
   if (count === 0) {
@@ -166,16 +185,52 @@ export function CheckoutClient({
             </div>
           </Fieldset>
 
-          <Fieldset step="3" title="Payment">
-            <div className="col-span-full">
-              <div className="flex items-start gap-3 rounded-xl border border-line bg-mist px-4 py-3.5 text-[13px] text-ink-700">
-                <Landmark size={18} className="mt-px shrink-0 text-brand-600" />
-                <span>
-                  <strong className="font-semibold text-ink-900">Bank transfer.</strong> Place your
-                  order and we&apos;ll show the account details along with your payment reference.
-                  Orders are dispatched once payment clears — usually the same working day.
-                </span>
-              </div>
+          <Fieldset step="3" title="Payment method">
+            <div className="col-span-full space-y-3">
+              {ENABLED_GATEWAYS.map((gateway) => {
+                const selected = method === gateway.id;
+                return (
+                  <label
+                    key={gateway.id}
+                    className={`block cursor-pointer rounded-xl border px-4 py-3.5 transition ${
+                      selected ? "border-brand-500 bg-brand-50/50" : "border-line bg-white hover:border-brand-300"
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={gateway.id}
+                        checked={selected}
+                        onChange={() => setMethod(gateway.id)}
+                        className="h-4 w-4 accent-brand-600"
+                      />
+                      <Landmark size={17} className="shrink-0 text-brand-600" />
+                      <span className="text-[14px] font-bold text-ink-900">{gateway.title}</span>
+                    </span>
+                    {selected && (
+                      <span className="mt-2.5 block pl-7 text-[12.5px] leading-relaxed text-ink-600">
+                        {gateway.description}
+                      </span>
+                    )}
+                  </label>
+                );
+              })}
+
+              {method === "BANK_TRANSFER" && showBankPreview && (
+                <div className="rounded-xl border border-line bg-mist px-4 py-3.5">
+                  <p className="text-[12px] font-semibold uppercase tracking-wide text-ink-500">
+                    You&apos;ll be paying into
+                  </p>
+                  <BankTransferDetails
+                    bank={bankTransfer}
+                    reference="Your order number"
+                    copyable={false}
+                    className="mt-1.5"
+                  />
+                </div>
+              )}
+
               <Field
                 label="Order notes (optional)"
                 name="customerNote"
@@ -333,94 +388,6 @@ function DiscountField({
         </p>
       )}
       {error && <p className="mt-1.5 text-[11.5px] font-medium text-red-700">{error}</p>}
-    </div>
-  );
-}
-
-function OrderPlaced({
-  orderNumber,
-  bankTransfer,
-  signedIn,
-}: {
-  orderNumber: string;
-  bankTransfer: BankTransferSettings;
-  signedIn: boolean;
-}) {
-  const hasBankDetails = Boolean(bankTransfer.accountNumber && bankTransfer.sortCode);
-
-  return (
-    <Container size="narrow" className="py-20">
-      <div className="text-center">
-        <div className="brand-gradient mx-auto grid h-16 w-16 place-items-center rounded-full text-white">
-          <Check size={30} strokeWidth={3} />
-        </div>
-        <h1 className="font-display mt-6 text-4xl font-extrabold tracking-tight">Order received</h1>
-        <p className="mt-3 text-ink-600">
-          Thank you. Your order <strong className="text-ink-900">{orderNumber}</strong> has been
-          recorded and is awaiting payment. You&apos;ll receive tracking once it ships.
-        </p>
-      </div>
-
-      <div className="mt-8 rounded-2xl border border-line bg-white p-6 text-left shadow-card">
-        <h2 className="font-display flex items-center gap-2 text-lg font-bold">
-          <Landmark size={19} className="text-brand-600" /> Payment by bank transfer
-        </h2>
-        {hasBankDetails ? (
-          <dl className="mt-4 space-y-2.5 text-sm">
-            <Row label="Account name" value={bankTransfer.accountName} />
-            {bankTransfer.bankName && <Row label="Bank" value={bankTransfer.bankName} />}
-            <Row label="Sort code" value={bankTransfer.sortCode} />
-            <Row label="Account number" value={bankTransfer.accountNumber} />
-            <Row label="Payment reference" value={orderNumber} emphasise />
-          </dl>
-        ) : (
-          <p className="mt-3 text-[13.5px] leading-relaxed text-ink-600">
-            We&apos;ll email you the account details shortly. Please quote{" "}
-            <strong className="text-ink-900">{orderNumber}</strong> as your payment reference.
-          </p>
-        )}
-        {bankTransfer.instructions && (
-          <p className="mt-4 rounded-xl bg-mist px-4 py-3 text-[12.5px] leading-relaxed text-ink-600">
-            {bankTransfer.instructions}
-          </p>
-        )}
-      </div>
-
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <Link
-          href={signedIn ? "/account/orders" : "/register"}
-          className="brand-gradient rounded-full px-6 py-3 text-sm font-bold text-white"
-        >
-          {signedIn ? "View order in Research Hub" : "Create an account to track it"}
-        </Link>
-        <Link
-          href="/shop"
-          className="rounded-full border border-ink-900/15 px-6 py-3 text-sm font-semibold text-ink-800 hover:border-brand-500"
-        >
-          Continue shopping
-        </Link>
-      </div>
-    </Container>
-  );
-}
-
-function Row({ label, value, emphasise }: { label: string; value: string; emphasise?: boolean }) {
-  return (
-    <div className="flex items-center justify-between gap-4 border-b border-line pb-2.5 last:border-0">
-      <dt className="text-ink-600">{label}</dt>
-      <dd className="flex items-center gap-2">
-        <span className={emphasise ? "font-display text-base font-bold text-brand-700" : "font-semibold"}>
-          {value}
-        </span>
-        <button
-          type="button"
-          onClick={() => navigator.clipboard?.writeText(value)}
-          className="text-ink-500 transition hover:text-brand-600"
-          aria-label={`Copy ${label}`}
-        >
-          <Copy size={13} />
-        </button>
-      </dd>
     </div>
   );
 }
