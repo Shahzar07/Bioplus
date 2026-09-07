@@ -121,7 +121,10 @@ npm run dev
 | `AUTH_SECRET` | yes | 32+ random bytes — `openssl rand -base64 32` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | first seed | Creates the first admin account |
 | `BLOB_READ_WRITE_TOKEN` | no | Vercel Blob, for product images and COA uploads. Without it, uploads are disabled and products use the bundled photography |
-| `RESEND_API_KEY` | no | Order confirmation and dispatch emails. Without it, emails are logged rather than sent and orders are unaffected |
+| `SMTP_PASSWORD` | for email | Password for the shop mailbox. Set it and order emails go out over SMTP through `mail.biopluslabs.co.uk:465` as `customerservice@biopluslabs.co.uk` |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` | no | Override those defaults for another mailbox |
+| `RESEND_API_KEY` | no | Alternative to SMTP, used only when `SMTP_PASSWORD` is empty. With neither set, emails are logged rather than sent and orders are unaffected |
+| `ORDER_EMAIL_FROM` | no | Sender address. Defaults to the SMTP mailbox — an address it cannot send as will be rejected |
 | `LOGIN_RATE_LIMIT` / `REGISTER_RATE_LIMIT` | no | Per-IP throttles (default 15 sign-ins / 5 min, 20 registrations / hour). Raise for a shared institutional IP |
 
 ### Tests

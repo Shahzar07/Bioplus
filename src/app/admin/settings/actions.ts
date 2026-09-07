@@ -64,6 +64,8 @@ export async function saveBankTransfer(
   return { ok: "Payment details saved — they now show on the order confirmation." };
 }
 
+const EMAIL_RE = /^[^\s@,]+@[^\s@,]+\.[^\s@,]+$/;
+
 export async function saveStore(
   _prev: SettingsResult,
   formData: FormData,
@@ -71,13 +73,30 @@ export async function saveStore(
   const staff = await requireStaff();
 
   const email = String(formData.get("email") ?? "").trim();
+  const orderNotificationEmail = String(formData.get("orderNotificationEmail") ?? "").trim();
   const hours = String(formData.get("hours") ?? "").trim();
   const lowStockThreshold = Number.parseInt(String(formData.get("lowStockThreshold") ?? ""), 10);
 
   if (!email) return { error: "Enter a contact email address." };
+  if (!EMAIL_RE.test(email)) return { error: "Enter a valid contact email address." };
+
+  // Several people can be told about an order, so this field is a list. It is
+  // validated here rather than in the browser because a typo would silently
+  // stop the notification reaching anyone.
+  const notificationAddresses = orderNotificationEmail
+    .split(",")
+    .map((address) => address.trim())
+    .filter(Boolean);
+
+  if (notificationAddresses.length === 0) {
+    return { error: "Enter an address to send new-order notifications to." };
+  }
+  const invalid = notificationAddresses.find((address) => !EMAIL_RE.test(address));
+  if (invalid) return { error: `"${invalid}" is not a valid email address.` };
 
   await writeSetting("store", {
     email,
+    orderNotificationEmail: notificationAddresses.join(", "),
     hours,
     lowStockThreshold: Number.isFinite(lowStockThreshold) ? lowStockThreshold : 5,
   });

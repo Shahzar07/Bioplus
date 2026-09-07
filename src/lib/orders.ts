@@ -2,10 +2,10 @@ import "server-only";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { CATALOGUE_TAG } from "@/lib/catalog";
-import { getSettings, shippingFor } from "@/lib/settings";
-import { sendOrderConfirmation } from "@/lib/email";
+import { getSettings, orderNotificationRecipients, shippingFor } from "@/lib/settings";
+import { sendNewOrderAlert, sendOrderConfirmation } from "@/lib/email";
 import { multiplyMoney, round2, sumMoney } from "@/lib/money";
-import type { Prisma } from "@/generated/prisma";
+import type { Order, Prisma } from "@/generated/prisma";
 
 /**
  * Order placement.
@@ -260,33 +260,9 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     // Stock changed, so the storefront's cached catalogue is stale.
     revalidateTag(CATALOGUE_TAG);
 
-    // The order is already safe in the database; a mail failure must not undo
-    // it, so this is deliberately not awaited into the result.
-    void sendOrderConfirmation(
-      {
-        number: order.number,
-        email: order.email,
-        firstName: order.firstName,
-        total,
-        items: priced.map((p) => ({
-          name: p.variant.product.name,
-          label: p.variant.label,
-          qty: p.qty,
-          lineTotal: p.lineTotal,
-        })),
-      },
-      settings.bankTransfer,
-    ).then((sent) => {
-      if (sent) {
-        return db.orderEvent.create({
-          data: {
-            orderId: order.id,
-            type: "EMAIL_SENT",
-            message: "Order confirmation emailed to the customer.",
-          },
-        });
-      }
-    });
+    // The order is already safe in the database and neither send throws, so a
+    // mail failure can only be logged — it can never undo a placed order.
+    await sendOrderEmails(order, priced, settings);
 
     return { ok: true, orderNumber: order.number, orderId: order.id };
   } catch (error) {
@@ -296,6 +272,96 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     console.error("placeOrder failed", error);
     return { ok: false, error: "We could not place your order. Please try again." };
   }
+}
+
+/**
+ * The customer's confirmation and the shop's new-order notification.
+ *
+ * Awaited rather than left running in the background: a serverless instance is
+ * free to stop executing the moment the action returns, and the notification
+ * the team relies on to know an order exists must not be what gets dropped.
+ * Both sends swallow their own failures, so this can only ever cost the time
+ * of two HTTP calls, made together.
+ */
+async function sendOrderEmails(
+  order: Order,
+  priced: {
+    variant: { product: { name: string }; label: string };
+    qty: number;
+    lineTotal: number;
+  }[],
+  settings: Awaited<ReturnType<typeof getSettings>>,
+): Promise<void> {
+  try {
+    await dispatch(order, priced, settings);
+  } catch (error) {
+    // Belt and braces: the order is committed, so nothing that happens while
+    // telling people about it may surface as a failed checkout.
+    console.error(`order emails for ${order.number} failed`, error);
+  }
+}
+
+async function dispatch(
+  order: Order,
+  priced: {
+    variant: { product: { name: string }; label: string };
+    qty: number;
+    lineTotal: number;
+  }[],
+  settings: Awaited<ReturnType<typeof getSettings>>,
+): Promise<void> {
+  const confirmation = {
+    number: order.number,
+    email: order.email,
+    firstName: order.firstName,
+    total: Number(order.total),
+    items: priced.map((p) => ({
+      name: p.variant.product.name,
+      label: p.variant.label,
+      qty: p.qty,
+      lineTotal: p.lineTotal,
+    })),
+  };
+
+  const recipients = orderNotificationRecipients(settings.store);
+
+  const [confirmed, notified] = await Promise.all([
+    sendOrderConfirmation(confirmation, settings.bankTransfer),
+    sendNewOrderAlert(
+      {
+        ...confirmation,
+        orderId: order.id,
+        lastName: order.lastName,
+        phone: order.phone,
+        organisation: order.organisation,
+        address: [
+          `${order.firstName} ${order.lastName}`.trim(),
+          order.line1,
+          order.line2,
+          order.city,
+          order.county,
+          order.postcode,
+          order.country,
+        ].filter((part): part is string => Boolean(part?.trim())),
+        subtotal: Number(order.subtotal),
+        shipping: Number(order.shipping),
+        discount: Number(order.discount),
+        discountCode: order.discountCode,
+        customerNote: order.customerNote,
+        placedAt: order.placedAt,
+      },
+      recipients,
+    ),
+  ]);
+
+  const events: string[] = [];
+  if (confirmed) events.push("Order confirmation emailed to the customer.");
+  if (notified) events.push(`New-order notification emailed to ${recipients.join(", ")}.`);
+  if (events.length === 0) return;
+
+  await db.orderEvent.createMany({
+    data: events.map((message) => ({ orderId: order.id, type: "EMAIL_SENT" as const, message })),
+  });
 }
 
 class OutOfStockError extends Error {
