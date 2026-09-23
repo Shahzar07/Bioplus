@@ -1,0 +1,15 @@
+{
+  "name": "bioplus-labs-wordpress-theme",
+  "private": true,
+  "description": "Build tooling for the BioPlus Labs WordPress theme (stylesheet + zip).",
+  "scripts": {
+    "build:css": "tailwindcss -i bioplus-labs/src/tailwind.css -o bioplus-labs/assets/css/theme.css --minify",
+    "watch:css": "tailwindcss -i bioplus-labs/src/tailwind.css -o bioplus-labs/assets/css/theme.css --watch",
+    "zip": "cd . && rm -f bioplus-labs.zip && zip -rq bioplus-labs.zip bioplus-labs -x 'bioplus-labs/src/*' -x '*.DS_Store'",
+    "build": "npm run build:css && npm run zip"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.1.13",
+    "tailwindcss": "4.1.13"
+  }
+}

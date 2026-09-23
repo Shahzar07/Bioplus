@@ -1,0 +1,24 @@
+/*
+Theme Name: BioPlus Labs
+Theme URI: https://www.biopluslabs.co.uk/
+Author: Eagle Studio
+Author URI: https://www.biopluslabs.co.uk/
+Description: Premium research-laboratory storefront theme for BioPlus Labs — a pixel-faithful WordPress + WooCommerce conversion of the biopluslabs.co.uk Next.js storefront. Metal-effect silver, black and laboratory orange; dark hero with DNA video, product range, research hub account area, Certificates of Analysis register, peptide dosage calculator, research-access age gate, direct bank transfer checkout with a 20-minute payment window and payment-screenshot upload, a "Forms" inbox for every lead, and Elementor widgets for every section.
+Version: 1.0.0
+Requires at least: 6.2
+Tested up to: 6.8
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bioplus
+Domain Path: /languages
+Tags: e-commerce, custom-menu, custom-logo, featured-images, full-width-template, theme-options, translation-ready, block-styles
+WC requires at least: 7.0
+WC tested up to: 9.9
+*/
+
+/*
+ * The design system is compiled from src/tailwind.css into assets/css/theme.css
+ * (see README.md → "Rebuilding the stylesheet"). This file only carries the
+ * theme header so WordPress can identify the theme.
+ */

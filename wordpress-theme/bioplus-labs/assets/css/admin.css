@@ -1,0 +1,16 @@
+/* BioPlus Labs — wp-admin touches (Forms inbox, order box, setup). */
+.bioplus-pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; background: #f6f6f8; color: #343841; border: 1px solid #dee0e5; }
+.bioplus-pill--contact { background: #fff5ed; color: #cc3d02; border-color: #ffcdaa; }
+.bioplus-pill--affiliate { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.bioplus-pill--wholesale { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.bioplus-pill--newsletter { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+.bioplus-new { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 10px; font-weight: 700; text-transform: uppercase; background: #f85000; color: #fff; }
+.bioplus-entry th { width: 180px; font-weight: 600; }
+.bioplus-entry td { white-space: pre-wrap; }
+.bioplus-box p { margin: 0 0 10px; }
+.bioplus-proof-thumb { display: block; max-width: 100%; max-height: 220px; margin: 6px 0; border: 1px solid #dcdcde; border-radius: 6px; }
+.bioplus-coa-row { display: grid; gap: 4px; padding: 8px 0; border-bottom: 1px solid #f0f0f1; }
+.bioplus-coa-row code { font-size: 11px; word-break: break-all; }
+.bioplus-coa-row .button-link-delete { justify-self: start; }
+.bioplus-setup .about-text { font-size: 15px; max-width: 760px; }
+.bioplus-log { list-style: disc; margin-left: 20px; }

@@ -1,0 +1,3430 @@
+# Copyright (C) 2026 Eagle Studio
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: BioPlus Labs 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/bioplus-labs\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-23T19:17:50+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: bioplus\n"
+
+#. Theme Name of the theme
+#: style.css
+#: inc/customizer.php:44
+#: inc/elementor.php:24
+msgid "BioPlus Labs"
+msgstr ""
+
+#. Theme URI of the theme
+#. Author URI of the theme
+#: style.css
+msgid "https://www.biopluslabs.co.uk/"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "Premium research-laboratory storefront theme for BioPlus Labs — a pixel-faithful WordPress + WooCommerce conversion of the biopluslabs.co.uk Next.js storefront. Metal-effect silver, black and laboratory orange; dark hero with DNA video, product range, research hub account area, Certificates of Analysis register, peptide dosage calculator, research-access age gate, direct bank transfer checkout with a 20-minute payment window and payment-screenshot upload, a \"Forms\" inbox for every lead, and Elementor widgets for every section."
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "Eagle Studio"
+msgstr ""
+
+#: 404.php:14
+msgid "Page not found"
+msgstr ""
+
+#: 404.php:15
+msgid "The page you're looking for doesn't exist or may have moved. Let's get you back to the lab."
+msgstr ""
+
+#: 404.php:20
+msgid "Back to home"
+msgstr ""
+
+#: 404.php:27
+#: index.php:44
+msgid "Browse the catalogue"
+msgstr ""
+
+#. translators: %d: comment count.
+#: comments.php:14
+#, php-format
+msgid "%d comment"
+msgid_plural "%d comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/account.php:42
+#: inc/importer.php:396
+#: inc/navigation.php:57
+msgid "Research Hub"
+msgstr ""
+
+#: inc/account.php:43
+#: inc/navigation.php:58
+#: woocommerce/myaccount/orders.php:16
+msgid "Orders"
+msgstr ""
+
+#: inc/account.php:44
+msgid "Files & COA"
+msgstr ""
+
+#: inc/account.php:45
+#: inc/navigation.php:60
+#: woocommerce/myaccount/research-address.php:19
+msgid "Research Address"
+msgstr ""
+
+#: inc/account.php:46
+#: woocommerce/myaccount/form-edit-account.php:17
+msgid "Account Settings"
+msgstr ""
+
+#: inc/account.php:60
+#: woocommerce/myaccount/dashboard.php:38
+#: woocommerce/myaccount/navigation.php:35
+msgid "Log out"
+msgstr ""
+
+#: inc/account.php:159
+msgid "first name"
+msgstr ""
+
+#: inc/account.php:159
+msgid "last name"
+msgstr ""
+
+#: inc/account.php:159
+msgid "address"
+msgstr ""
+
+#: inc/account.php:159
+msgid "town or city"
+msgstr ""
+
+#: inc/account.php:159
+msgid "postcode"
+msgstr ""
+
+#. translators: %s: field label.
+#: inc/account.php:162
+#, php-format
+msgid "Enter your %s."
+msgstr ""
+
+#: inc/account.php:174
+msgid "Research address saved."
+msgstr ""
+
+#: inc/account.php:224
+msgid "Your new password must be at least 10 characters."
+msgstr ""
+
+#: inc/account.php:240
+#: inc/forms.php:308
+msgid "Enter your name."
+msgstr ""
+
+#: inc/account.php:244
+msgid "Choose a password of at least 10 characters."
+msgstr ""
+
+#: inc/assets.php:60
+msgid "results"
+msgstr ""
+
+#: inc/assets.php:61
+msgid "result"
+msgstr ""
+
+#: inc/assets.php:62
+#: template-parts/layout/search-overlay.php:21
+msgid "Popular products"
+msgstr ""
+
+#: inc/assets.php:63
+msgid "No products match"
+msgstr ""
+
+#: inc/assets.php:64
+#: woocommerce/single-product.php:152
+msgid "Added to cart"
+msgstr ""
+
+#: inc/assets.php:65
+#: woocommerce/single-product.php:151
+msgid "Add to cart"
+msgstr ""
+
+#: inc/assets.php:66
+#: inc/forms.php:341
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: inc/assets.php:67
+msgid "Sending…"
+msgstr ""
+
+#: inc/cart.php:78
+msgid "That product is no longer available."
+msgstr ""
+
+#: inc/cart.php:88
+msgid "That option could not be added to your cart."
+msgstr ""
+
+#: inc/cart.php:95
+msgid "That item is no longer in your cart."
+msgstr ""
+
+#: inc/cart.php:107
+msgid "Unknown cart action."
+msgstr ""
+
+#: inc/checkout.php:28
+#: template-parts/layout/site-footer.php:90
+#: woocommerce/myaccount/bioplus-auth.php:45
+#: woocommerce/myaccount/bioplus-auth.php:48
+#: woocommerce/myaccount/form-edit-account.php:30
+#: woocommerce/myaccount/form-lost-password.php:20
+msgid "Email address"
+msgstr ""
+
+#: inc/checkout.php:29
+#: inc/forms.php:40
+#: template-parts/sections/wholesale-form.php:27
+msgid "Phone"
+msgstr ""
+
+#: inc/checkout.php:30
+#: woocommerce/myaccount/bioplus-auth.php:44
+#: woocommerce/myaccount/form-edit-account.php:32
+#: woocommerce/myaccount/research-address.php:44
+msgid "Institution / Lab (optional)"
+msgstr ""
+
+#: inc/checkout.php:30
+#: woocommerce/myaccount/bioplus-auth.php:44
+#: woocommerce/myaccount/research-address.php:44
+msgid "University Research Lab"
+msgstr ""
+
+#: inc/checkout.php:31
+#: inc/forms.php:37
+#: template-parts/sections/contact.php:58
+#: woocommerce/myaccount/form-edit-account.php:28
+#: woocommerce/myaccount/research-address.php:46
+msgid "First name"
+msgstr ""
+
+#: inc/checkout.php:32
+#: inc/forms.php:38
+#: template-parts/sections/contact.php:59
+#: woocommerce/myaccount/form-edit-account.php:29
+#: woocommerce/myaccount/research-address.php:47
+msgid "Last name"
+msgstr ""
+
+#: inc/checkout.php:33
+#: woocommerce/myaccount/research-address.php:48
+msgid "Address line 1"
+msgstr ""
+
+#: inc/checkout.php:33
+#: woocommerce/myaccount/research-address.php:48
+msgid "House number and street"
+msgstr ""
+
+#: inc/checkout.php:34
+#: woocommerce/myaccount/research-address.php:49
+msgid "Address line 2 (optional)"
+msgstr ""
+
+#: inc/checkout.php:35
+#: woocommerce/myaccount/research-address.php:50
+msgid "Town / City"
+msgstr ""
+
+#: inc/checkout.php:36
+#: inc/checkout.php:69
+#: woocommerce/myaccount/research-address.php:51
+msgid "County (optional)"
+msgstr ""
+
+#: inc/checkout.php:37
+#: woocommerce/myaccount/research-address.php:52
+msgid "Postcode"
+msgstr ""
+
+#: inc/checkout.php:38
+#: inc/customizer.php:60
+#: woocommerce/myaccount/research-address.php:54
+msgid "Country"
+msgstr ""
+
+#: inc/checkout.php:52
+msgid "Order notes (optional)"
+msgstr ""
+
+#: inc/checkout.php:53
+msgid "Anything we should know about this order"
+msgstr ""
+
+#: inc/checkout.php:91
+msgid "Please confirm the research-use declaration."
+msgstr ""
+
+#: inc/checkout.php:115
+#: woocommerce/checkout/form-checkout.php:204
+#: woocommerce/checkout/form-checkout.php:206
+msgid "Place order"
+msgstr ""
+
+#: inc/checkout.php:127
+msgid "Research-use declaration"
+msgstr ""
+
+#. translators: %s: date.
+#: inc/checkout.php:127
+#, php-format
+msgid "Accepted %s"
+msgstr ""
+
+#: inc/checkout.php:196
+msgid "Account name"
+msgstr ""
+
+#: inc/checkout.php:198
+msgid "Bank"
+msgstr ""
+
+#: inc/checkout.php:200
+msgid "Sort code"
+msgstr ""
+
+#: inc/checkout.php:201
+msgid "Account number"
+msgstr ""
+
+#: inc/checkout.php:208
+msgid "Payment reference"
+msgstr ""
+
+#. translators: %s: field label.
+#: inc/checkout.php:253
+#, php-format
+msgid "Copy %s"
+msgstr ""
+
+#: inc/coa.php:23
+#: inc/coa.php:27
+msgid "COA Batches"
+msgstr ""
+
+#: inc/coa.php:24
+msgid "COA Batch"
+msgstr ""
+
+#: inc/coa.php:25
+msgid "Add COA batch"
+msgstr ""
+
+#: inc/coa.php:26
+msgid "Edit COA batch"
+msgstr ""
+
+#: inc/coa.php:44
+msgid "Batch details"
+msgstr ""
+
+#: inc/coa.php:57
+#: inc/payment.php:324
+msgid "Batch number"
+msgstr ""
+
+#: inc/coa.php:58
+msgid "Purity (%)"
+msgstr ""
+
+#: inc/coa.php:59
+msgid "Tested (e.g. Jun 2026)"
+msgstr ""
+
+#: inc/coa.php:60
+msgid "Certificate PDF URL (upload in Media, paste the file URL)"
+msgstr ""
+
+#: inc/coa.php:62
+msgid "The entry title is the product name shown in the register (e.g. \"TB-500 (Thymosin β4)\")."
+msgstr ""
+
+#: inc/coa.php:64
+msgid "Linked product"
+msgstr ""
+
+#: inc/customizer.php:51
+msgid "Contact & company"
+msgstr ""
+
+#: inc/customizer.php:53
+msgid "Contact / customer service email"
+msgstr ""
+
+#: inc/customizer.php:54
+msgid "Office days"
+msgstr ""
+
+#: inc/customizer.php:55
+#: template-parts/sections/contact.php:13
+msgid "Office hours"
+msgstr ""
+
+#: inc/customizer.php:56
+msgid "Hours note"
+msgstr ""
+
+#: inc/customizer.php:57
+msgid "Legal / trading name"
+msgstr ""
+
+#: inc/customizer.php:58
+msgid "Town"
+msgstr ""
+
+#: inc/customizer.php:59
+msgid "County"
+msgstr ""
+
+#: inc/customizer.php:61
+msgid "Companies House number (hidden when empty)"
+msgstr ""
+
+#: inc/customizer.php:62
+msgid "Facebook URL"
+msgstr ""
+
+#: inc/customizer.php:66
+msgid "Logos"
+msgstr ""
+
+#: inc/customizer.php:68
+msgid "Logo for light backgrounds (header)"
+msgstr ""
+
+#: inc/customizer.php:69
+msgid "Logo for dark backgrounds (footer, age gate)"
+msgstr ""
+
+#: inc/customizer.php:73
+msgid "Header & announcement bar"
+msgstr ""
+
+#: inc/customizer.php:75
+msgid "Announcement 1"
+msgstr ""
+
+#: inc/customizer.php:76
+msgid "Announcement 2"
+msgstr ""
+
+#: inc/customizer.php:77
+msgid "Announcement 3"
+msgstr ""
+
+#: inc/customizer.php:78
+msgid "Announcement 4"
+msgstr ""
+
+#: inc/customizer.php:79
+msgid "Header button label"
+msgstr ""
+
+#: inc/customizer.php:83
+msgid "Footer"
+msgstr ""
+
+#: inc/customizer.php:85
+msgid "About text"
+msgstr ""
+
+#: inc/customizer.php:86
+msgid "Research-use-only disclaimer"
+msgstr ""
+
+#: inc/customizer.php:87
+msgid "Newsletter heading"
+msgstr ""
+
+#: inc/customizer.php:88
+msgid "Newsletter text"
+msgstr ""
+
+#: inc/customizer.php:89
+msgid "\"Powered by\" credit"
+msgstr ""
+
+#: inc/customizer.php:93
+msgid "Research access verification"
+msgstr ""
+
+#: inc/customizer.php:95
+msgid "Show the 18+ / research-use gate on first visit"
+msgstr ""
+
+#: inc/customizer.php:96
+msgid "\"Leave site\" destination"
+msgstr ""
+
+#: inc/customizer.php:100
+msgid "Checkout & payment"
+msgstr ""
+
+#: inc/customizer.php:102
+msgid "Free UK delivery threshold (£) shown on the cart"
+msgstr ""
+
+#: inc/customizer.php:103
+msgid "Bank transfer payment window (minutes)"
+msgstr ""
+
+#: inc/customizer.php:104
+msgid "Ask for a payment screenshot before \"I have paid\""
+msgstr ""
+
+#: inc/elementor/class-section-widget.php:82
+msgid "A page path such as \"shop\", or a full URL"
+msgstr ""
+
+#: inc/elementor/class-section-widget.php:139
+msgid "Content"
+msgstr ""
+
+#: inc/elementor/class-section-widget.php:150
+msgid "Tip: wrap words in [[double brackets]] in a title to give them the orange gradient."
+msgstr ""
+
+#: inc/forms.php:22
+#: inc/navigation.php:29
+msgid "Contact"
+msgstr ""
+
+#: inc/forms.php:23
+msgid "Affiliate application"
+msgstr ""
+
+#: inc/forms.php:24
+msgid "Wholesale quote"
+msgstr ""
+
+#: inc/forms.php:25
+msgid "Newsletter"
+msgstr ""
+
+#: inc/forms.php:36
+#: inc/sections.php:273
+#: woocommerce/single-product.php:189
+msgid "Name"
+msgstr ""
+
+#: inc/forms.php:39
+#: inc/forms.php:151
+#: template-parts/sections/affiliate-signup.php:40
+#: template-parts/sections/contact.php:60
+#: template-parts/sections/wholesale-form.php:26
+msgid "Email"
+msgstr ""
+
+#: inc/forms.php:41
+#: template-parts/sections/wholesale-form.php:25
+msgid "Company / Institution"
+msgstr ""
+
+#: inc/forms.php:42
+#: template-parts/sections/affiliate-signup.php:41
+msgid "Website / Social"
+msgstr ""
+
+#: inc/forms.php:43
+#: template-parts/sections/contact.php:61
+msgid "Subject"
+msgstr ""
+
+#: inc/forms.php:44
+#: inc/forms.php:152
+#: template-parts/sections/contact.php:62
+msgid "Message"
+msgstr ""
+
+#: inc/forms.php:56
+#: inc/forms.php:58
+msgid "Forms"
+msgstr ""
+
+#: inc/forms.php:57
+#: inc/forms.php:60
+msgid "Form entry"
+msgstr ""
+
+#: inc/forms.php:59
+msgid "All entries"
+msgstr ""
+
+#: inc/forms.php:61
+msgid "View entry"
+msgstr ""
+
+#: inc/forms.php:62
+msgid "Search entries"
+msgstr ""
+
+#: inc/forms.php:63
+msgid "No form entries yet."
+msgstr ""
+
+#: inc/forms.php:64
+msgid "No form entries in the bin."
+msgstr ""
+
+#: inc/forms.php:89
+msgid "Export CSV"
+msgstr ""
+
+#: inc/forms.php:149
+msgid "From"
+msgstr ""
+
+#: inc/forms.php:150
+#: inc/forms.php:238
+#: inc/product-meta.php:39
+#: woocommerce/single-product.php:202
+msgid "Form"
+msgstr ""
+
+#: inc/forms.php:153
+msgid "Emailed to shop"
+msgstr ""
+
+#: inc/forms.php:154
+#: inc/forms.php:239
+msgid "Received"
+msgstr ""
+
+#: inc/forms.php:174
+#: template-parts/components/product-card.php:32
+#: woocommerce/single-product.php:83
+msgid "New"
+msgstr ""
+
+#: inc/forms.php:186
+msgid "The notification email could not be sent — check your mail settings."
+msgstr ""
+
+#: inc/forms.php:196
+msgid "Submission"
+msgstr ""
+
+#: inc/forms.php:198
+msgid "Entry"
+msgstr ""
+
+#: inc/forms.php:241
+msgid "Page"
+msgstr ""
+
+#: inc/forms.php:245
+msgid "Reply by email"
+msgstr ""
+
+#: inc/forms.php:247
+msgid "Move to bin"
+msgstr ""
+
+#: inc/forms.php:282
+msgid "Unknown form."
+msgstr ""
+
+#. translators: %s: email.
+#: inc/forms.php:285
+#, php-format
+msgid "You've sent several messages already. Please email us directly at %s instead."
+msgstr ""
+
+#: inc/forms.php:302
+msgid "Enter your first name."
+msgstr ""
+
+#: inc/forms.php:304
+msgid "Enter your last name."
+msgstr ""
+
+#: inc/forms.php:311
+msgid "Enter your company or institution."
+msgstr ""
+
+#: inc/forms.php:314
+msgid "Enter a valid email address."
+msgstr ""
+
+#: inc/forms.php:319
+msgid "Please write a little more so we can help."
+msgstr ""
+
+#: inc/forms.php:321
+msgid "That message is too long — please shorten it."
+msgstr ""
+
+#: inc/forms.php:366
+msgid "View in wp-admin:"
+msgstr ""
+
+#: inc/forms.php:383
+msgid "Export form entries"
+msgstr ""
+
+#: inc/forms.php:385
+msgid "All forms"
+msgstr ""
+
+#: inc/forms.php:389
+msgid "Download CSV"
+msgstr ""
+
+#: inc/forms.php:397
+#: inc/importer.php:102
+msgid "Not allowed."
+msgstr ""
+
+#. translators: %s: site name.
+#: inc/helpers.php:554
+#, php-format
+msgid "%s — home"
+msgstr ""
+
+#: inc/importer.php:24
+msgid "BioPlus Setup"
+msgstr ""
+
+#: inc/importer.php:41
+msgid "BioPlus Labs:"
+msgstr ""
+
+#: inc/importer.php:42
+msgid "import the pages, products, menus and shop settings in one click."
+msgstr ""
+
+#: inc/importer.php:44
+msgid "Open BioPlus Setup"
+msgstr ""
+
+#: inc/importer.php:62
+msgid "BioPlus Labs — Setup"
+msgstr ""
+
+#: inc/importer.php:63
+msgid "Recreates the biopluslabs.co.uk storefront on this site. Safe to run more than once — existing pages and products are updated, not duplicated."
+msgstr ""
+
+#: inc/importer.php:66
+msgid "Setup finished."
+msgstr ""
+
+#: inc/importer.php:70
+msgid "View the site"
+msgstr ""
+
+#: inc/importer.php:73
+msgid "Plugins"
+msgstr ""
+
+#: inc/importer.php:76
+msgid "required for the shop, cart, checkout, orders and Research Hub."
+msgstr ""
+
+#: inc/importer.php:76
+#: inc/importer.php:77
+msgid "Active"
+msgstr ""
+
+#: inc/importer.php:76
+#: inc/importer.php:77
+msgid "Install"
+msgstr ""
+
+#: inc/importer.php:77
+msgid "recommended: edit every section visually with the BioPlus Labs widgets."
+msgstr ""
+
+#: inc/importer.php:84
+msgid "What to import"
+msgstr ""
+
+#: inc/importer.php:85
+msgid "Pages (home, about, research, COAs, calculator, FAQ, contact, affiliate, wholesale, shipping, policies, sign in, register) and set the home page"
+msgstr ""
+
+#: inc/importer.php:86
+msgid "WooCommerce settings: GBP, UK & Ireland, £12 delivery / free over £250, direct bank transfer, account pages, store emails to"
+msgstr ""
+
+#: inc/importer.php:87
+msgid "All 18 products with their vial options, SKUs, prices, stock and photography"
+msgstr ""
+
+#: inc/importer.php:88
+msgid "COA batch register entries"
+msgstr ""
+
+#: inc/importer.php:89
+msgid "Header and footer menus"
+msgstr ""
+
+#: inc/importer.php:90
+msgid "Build every page in Elementor with the BioPlus Labs widgets (overwrites existing Elementor layouts on those pages)"
+msgstr ""
+
+#: inc/importer.php:91
+msgid "Run setup"
+msgstr ""
+
+#: inc/importer.php:224
+#: inc/navigation.php:22
+#: template-parts/sections/page-hero.php:29
+#: woocommerce/archive-product.php:61
+#: woocommerce/single-product.php:51
+msgid "Home"
+msgstr ""
+
+#: inc/importer.php:225
+#: inc/navigation.php:25
+msgid "About"
+msgstr ""
+
+#: inc/importer.php:226
+#: inc/navigation.php:37
+#: inc/navigation.php:48
+msgid "Research Library"
+msgstr ""
+
+#: inc/importer.php:227
+#: inc/navigation.php:36
+#: inc/navigation.php:46
+#: inc/navigation.php:59
+#: inc/payment.php:298
+#: woocommerce/myaccount/dashboard.php:25
+msgid "Certificates of Analysis"
+msgstr ""
+
+#: inc/importer.php:228
+#: inc/sections.php:469
+msgid "Peptide Dosage Calculator"
+msgstr ""
+
+#: inc/importer.php:229
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: inc/importer.php:230
+#: inc/navigation.php:51
+msgid "Contact Us"
+msgstr ""
+
+#: inc/importer.php:231
+#: inc/navigation.php:50
+msgid "Affiliate Programme"
+msgstr ""
+
+#: inc/importer.php:232
+msgid "Wholesale & Bulk Pricing"
+msgstr ""
+
+#: inc/importer.php:233
+#: inc/navigation.php:93
+msgid "Shipping & Delivery"
+msgstr ""
+
+#: inc/importer.php:234
+#: woocommerce/checkout/form-checkout.php:95
+#: woocommerce/myaccount/bioplus-auth.php:27
+#: woocommerce/myaccount/bioplus-auth.php:72
+#: woocommerce/myaccount/bioplus-auth.php:79
+msgid "Sign in"
+msgstr ""
+
+#: inc/importer.php:235
+msgid "Create an account"
+msgstr ""
+
+#. translators: %d: number.
+#: inc/importer.php:240
+#, php-format
+msgid "%d storefront pages ready."
+msgstr ""
+
+#: inc/importer.php:245
+msgid "Our policies:"
+msgstr ""
+
+#: inc/importer.php:250
+#: page-templates/template-legal.php:30
+msgid "Legal"
+msgstr ""
+
+#. translators: %d: number.
+#: inc/importer.php:276
+#, php-format
+msgid "%d policy pages ready under /legal/."
+msgstr ""
+
+#: inc/importer.php:282
+msgid "Permalinks set to \"Post name\"."
+msgstr ""
+
+#: inc/importer.php:290
+msgid "Home page set as the front page."
+msgstr ""
+
+#. translators: %s: email.
+#: inc/importer.php:352
+#, php-format
+msgid "Store emails (new, cancelled and failed orders, low stock) now go to %s; customer emails are sent from it."
+msgstr ""
+
+#: inc/importer.php:389
+msgid "Direct bank transfer enabled (edit the account under WooCommerce → Settings → Payments → Direct bank transfer)."
+msgstr ""
+
+#: inc/importer.php:393
+#: inc/navigation.php:23
+#: inc/navigation.php:33
+#: woocommerce/archive-product.php:51
+#: woocommerce/single-product.php:53
+msgid "Shop"
+msgstr ""
+
+#: inc/importer.php:394
+#: inc/navigation.php:39
+#: inc/navigation.php:61
+#: template-parts/layout/site-header.php:46
+msgid "Cart"
+msgstr ""
+
+#: inc/importer.php:395
+#: woocommerce/checkout/form-checkout.php:90
+msgid "Checkout"
+msgstr ""
+
+#: inc/importer.php:415
+msgid "Shop, Cart, Checkout and Research Hub (/account/) pages configured."
+msgstr ""
+
+#: inc/importer.php:454
+msgid "Delivery: UK & Ireland, £12 tracked, free over £250."
+msgstr ""
+
+#: inc/importer.php:545
+msgid "Catalogue data missing — products were not imported."
+msgstr ""
+
+#: inc/importer.php:549
+msgid "Research Peptides"
+msgstr ""
+
+#: inc/importer.php:550
+msgid "Research Stacks"
+msgstr ""
+
+#: inc/importer.php:551
+msgid "Laboratory Supplies"
+msgstr ""
+
+#. translators: 1: created, 2: updated.
+#: inc/importer.php:641
+#, php-format
+msgid "Products: %1$d created, %2$d updated (every vial option, SKU, price and stock level)."
+msgstr ""
+
+#. translators: %d: count.
+#: inc/importer.php:685
+#, php-format
+msgid "COA register: %d batch entries added."
+msgstr ""
+
+#: inc/importer.php:749
+msgid "Header, footer and policy menus created (Appearance → Menus)."
+msgstr ""
+
+#. translators: %d: count.
+#: inc/importer.php:873
+#, php-format
+msgid "Elementor: %d pages built from BioPlus Labs widgets — open any of them with \"Edit with Elementor\"."
+msgstr ""
+
+#: inc/navigation.php:24
+msgid "COAs"
+msgstr ""
+
+#: inc/navigation.php:26
+#: woocommerce/single-product.php:182
+msgid "Research"
+msgstr ""
+
+#: inc/navigation.php:27
+msgid "Calculator"
+msgstr ""
+
+#: inc/navigation.php:28
+msgid "FAQ"
+msgstr ""
+
+#: inc/navigation.php:35
+msgid "All Products"
+msgstr ""
+
+#: inc/navigation.php:38
+#: inc/navigation.php:47
+msgid "Dosage Calculator"
+msgstr ""
+
+#: inc/navigation.php:43
+msgid "Company"
+msgstr ""
+
+#: inc/navigation.php:45
+msgid "About BioPlus Labs"
+msgstr ""
+
+#: inc/navigation.php:49
+msgid "Wholesale Programme"
+msgstr ""
+
+#: inc/navigation.php:55
+#: template-parts/layout/site-header.php:43
+msgid "Account"
+msgstr ""
+
+#: inc/navigation.php:65
+msgid "Compliance & Legal"
+msgstr ""
+
+#: inc/navigation.php:71
+msgid "Privacy"
+msgstr ""
+
+#: inc/navigation.php:72
+msgid "Terms"
+msgstr ""
+
+#: inc/navigation.php:73
+msgid "Regulatory Notice"
+msgstr ""
+
+#: inc/navigation.php:74
+msgid "Shipping"
+msgstr ""
+
+#: inc/navigation.php:78
+#: page-templates/template-legal.php:39
+msgid "Policies"
+msgstr ""
+
+#: inc/navigation.php:91
+msgid "Research-Use-Only Disclaimer"
+msgstr ""
+
+#: inc/navigation.php:92
+msgid "Regulatory & Legal Notice"
+msgstr ""
+
+#: inc/navigation.php:94
+msgid "Returns & Refunds"
+msgstr ""
+
+#: inc/navigation.php:95
+msgid "Privacy Policy"
+msgstr ""
+
+#: inc/navigation.php:96
+msgid "Terms & Conditions"
+msgstr ""
+
+#: inc/no-woocommerce.php:21
+msgid "BioPlus Labs theme:"
+msgstr ""
+
+#: inc/no-woocommerce.php:22
+msgid "install and activate WooCommerce to enable the shop, cart, checkout and Research Hub, then run Appearance → BioPlus Setup."
+msgstr ""
+
+#: inc/no-woocommerce.php:24
+msgid "Install WooCommerce"
+msgstr ""
+
+#: inc/no-woocommerce.php:36
+#: inc/woocommerce.php:25
+msgid "In stock"
+msgstr ""
+
+#: inc/no-woocommerce.php:37
+#: inc/woocommerce.php:26
+msgid "Out of stock"
+msgstr ""
+
+#: inc/no-woocommerce.php:38
+#: inc/woocommerce.php:27
+#: woocommerce/single-product.php:158
+#: woocommerce/single-product.php:159
+msgid "Arriving soon"
+msgstr ""
+
+#: inc/payment.php:86
+#: inc/payment.php:187
+msgid "Order not found."
+msgstr ""
+
+#: inc/payment.php:89
+#: inc/payment.php:117
+msgid "Upload failed. Please try again."
+msgstr ""
+
+#: inc/payment.php:95
+msgid "That image is too large. Try cropping it to just the payment confirmation."
+msgstr ""
+
+#: inc/payment.php:101
+msgid "That is not a screenshot. Upload an image of your payment — JPEG, PNG, WebP or HEIC."
+msgstr ""
+
+#: inc/payment.php:126
+msgid "Customer uploaded a payment screenshot."
+msgstr ""
+
+#: inc/payment.php:190
+msgid "Upload your payment screenshot first."
+msgstr ""
+
+#: inc/payment.php:198
+msgid "Customer confirmed they have paid and attached a screenshot."
+msgstr ""
+
+#. translators: %s: order number.
+#: inc/payment.php:216
+#, php-format
+msgid "Payment confirmed by customer — order %s"
+msgstr ""
+
+#. translators: 1: customer email, 2: order number.
+#: inc/payment.php:219
+#, php-format
+msgid "%1$s says they have paid for order %2$s and attached a screenshot."
+msgstr ""
+
+#. translators: %s: amount.
+#: inc/payment.php:221
+#, php-format
+msgid "Amount due: %s"
+msgstr ""
+
+#: inc/payment.php:222
+msgid "Check the bank for the transfer, then mark the order Processing."
+msgstr ""
+
+#. translators: %s: URL.
+#: inc/payment.php:243
+#, php-format
+msgid "Your payment page (bank details, timer and screenshot upload): %s"
+msgstr ""
+
+#: inc/payment.php:249
+msgid "Open your payment page"
+msgstr ""
+
+#: inc/payment.php:265
+msgid "BioPlus — payment, tracking & COA"
+msgstr ""
+
+#: inc/payment.php:285
+msgid "Payment screenshot"
+msgstr ""
+
+#. translators: %s: date.
+#: inc/payment.php:289
+#, php-format
+msgid "Uploaded %s"
+msgstr ""
+
+#: inc/payment.php:291
+msgid "None uploaded yet."
+msgstr ""
+
+#: inc/payment.php:293
+msgid "Customer confirmation"
+msgstr ""
+
+#. translators: %s: date.
+#: inc/payment.php:294
+#, php-format
+msgid "\"I have paid\" pressed %s"
+msgstr ""
+
+#. translators: %s: date.
+#: inc/payment.php:294
+msgid "Not yet confirmed."
+msgstr ""
+
+#: inc/payment.php:296
+msgid "Carrier"
+msgstr ""
+
+#: inc/payment.php:297
+msgid "Tracking number"
+msgstr ""
+
+#: inc/payment.php:298
+msgid "Shown in the customer's Research Hub → Files & COA."
+msgstr ""
+
+#: inc/payment.php:306
+msgid "Attach COA file"
+msgstr ""
+
+#: inc/payment.php:323
+msgid "Product (e.g. BPC-157)"
+msgstr ""
+
+#. translators: %s: coupon code.
+#: inc/payment.php:325
+#: template-parts/layout/cart-drawer-inner.php:39
+#: woocommerce/cart/cart.php:45
+#: woocommerce/checkout/review-order.php:24
+msgid "Remove"
+msgstr ""
+
+#: inc/payment.php:388
+msgid "Payment proof"
+msgstr ""
+
+#: inc/payment.php:409
+msgid "Paid (customer)"
+msgstr ""
+
+#: inc/payment.php:411
+msgid "Screenshot"
+msgstr ""
+
+#: inc/product-meta.php:22
+msgid "BioPlus research data"
+msgstr ""
+
+#: inc/product-meta.php:37
+msgid "Tagline"
+msgstr ""
+
+#: inc/product-meta.php:37
+msgid "Shown under the name on cards and the product page, e.g. \"Triple GLP-1 / GIP / glucagon agonist\"."
+msgstr ""
+
+#: inc/product-meta.php:38
+msgid "Research highlights (one per line)"
+msgstr ""
+
+#: inc/product-meta.php:38
+msgid "The \"Research\" tab."
+msgstr ""
+
+#: inc/product-meta.php:39
+msgid "e.g. Lyophilised powder"
+msgstr ""
+
+#: inc/product-meta.php:40
+msgid "Best Seller badge"
+msgstr ""
+
+#: inc/product-meta.php:41
+msgid "New badge"
+msgstr ""
+
+#: inc/product-meta.php:42
+#: woocommerce/single-product.php:86
+msgid "Purity"
+msgstr ""
+
+#: inc/product-meta.php:42
+msgid "e.g. ≥99%"
+msgstr ""
+
+#: inc/product-meta.php:43
+msgid "Full chemical name"
+msgstr ""
+
+#: inc/product-meta.php:44
+msgid "Molecular formula"
+msgstr ""
+
+#: inc/product-meta.php:45
+msgid "Molecular weight"
+msgstr ""
+
+#: inc/product-meta.php:46
+msgid "CAS number"
+msgstr ""
+
+#: inc/product-meta.php:47
+msgid "Blend note"
+msgstr ""
+
+#: inc/product-meta.php:85
+msgid "The short description is the product blurb. The product image falls back to the bundled vial photograph when none is set."
+msgstr ""
+
+#: inc/product-meta.php:122
+msgid "Strength per vial (e.g. 20 mg)"
+msgstr ""
+
+#: inc/product-meta.php:131
+msgid "Show as \"Arriving soon\" while out of stock"
+msgstr ""
+
+#: inc/sections.php:75
+#: inc/sections.php:120
+#: inc/sections.php:608
+msgid "Icon"
+msgstr ""
+
+#: inc/sections.php:76
+#: inc/sections.php:88
+#: inc/sections.php:156
+#: inc/sections.php:171
+#: inc/sections.php:191
+#: inc/sections.php:220
+#: inc/sections.php:245
+#: inc/sections.php:259
+#: inc/sections.php:287
+#: inc/sections.php:312
+#: inc/sections.php:350
+#: inc/sections.php:392
+#: inc/sections.php:411
+#: inc/sections.php:421
+#: inc/sections.php:434
+#: inc/sections.php:447
+#: inc/sections.php:534
+#: inc/sections.php:553
+#: inc/sections.php:593
+#: inc/sections.php:609
+msgid "Title"
+msgstr ""
+
+#: inc/sections.php:77
+#: inc/sections.php:104
+#: inc/sections.php:246
+#: inc/sections.php:382
+#: inc/sections.php:435
+msgid "Text"
+msgstr ""
+
+#: inc/sections.php:84
+msgid "Page Hero (brushed plate)"
+msgstr ""
+
+#: inc/sections.php:87
+#: inc/sections.php:155
+#: inc/sections.php:170
+#: inc/sections.php:190
+#: inc/sections.php:219
+#: inc/sections.php:258
+#: inc/sections.php:286
+#: inc/sections.php:311
+#: inc/sections.php:349
+#: inc/sections.php:391
+#: inc/sections.php:410
+#: inc/sections.php:420
+#: inc/sections.php:446
+#: inc/sections.php:533
+#: inc/sections.php:552
+#: inc/sections.php:592
+msgid "Eyebrow"
+msgstr ""
+
+#: inc/sections.php:89
+#: inc/sections.php:157
+#: inc/sections.php:192
+#: inc/sections.php:221
+#: inc/sections.php:260
+#: inc/sections.php:288
+#: inc/sections.php:313
+#: inc/sections.php:351
+#: inc/sections.php:393
+#: inc/sections.php:412
+#: inc/sections.php:422
+#: inc/sections.php:448
+msgid "Intro"
+msgstr ""
+
+#: inc/sections.php:90
+msgid "Breadcrumb — current page"
+msgstr ""
+
+#: inc/sections.php:91
+msgid "Breadcrumb — parent label (optional)"
+msgstr ""
+
+#: inc/sections.php:92
+msgid "Breadcrumb — parent link"
+msgstr ""
+
+#: inc/sections.php:98
+msgid "Home Hero (video)"
+msgstr ""
+
+#: inc/sections.php:101
+#: inc/sections.php:244
+msgid "Badge"
+msgstr ""
+
+#: inc/sections.php:102
+msgid "Title line 1"
+msgstr ""
+
+#: inc/sections.php:103
+msgid "Title line 2 (gradient)"
+msgstr ""
+
+#: inc/sections.php:105
+msgid "Primary button"
+msgstr ""
+
+#: inc/sections.php:106
+msgid "Primary link"
+msgstr ""
+
+#: inc/sections.php:107
+msgid "Secondary button"
+msgstr ""
+
+#: inc/sections.php:108
+msgid "Secondary link"
+msgstr ""
+
+#: inc/sections.php:111
+msgid "Proof points"
+msgstr ""
+
+#: inc/sections.php:121
+#: inc/sections.php:338
+#: inc/sections.php:497
+msgid "Label"
+msgstr ""
+
+#: inc/sections.php:125
+msgid "Background video (MP4)"
+msgstr ""
+
+#: inc/sections.php:126
+msgid "Display image"
+msgstr ""
+
+#: inc/sections.php:127
+msgid "Image caption (left)"
+msgstr ""
+
+#: inc/sections.php:128
+msgid "Image caption (right)"
+msgstr ""
+
+#: inc/sections.php:133
+msgid "Trust Bar"
+msgstr ""
+
+#: inc/sections.php:138
+msgid "Badges"
+msgstr ""
+
+#: inc/sections.php:151
+msgid "Range Feature (image + checklist)"
+msgstr ""
+
+#: inc/sections.php:154
+#: inc/sections.php:400
+msgid "Image"
+msgstr ""
+
+#: inc/sections.php:158
+msgid "Checklist (one per line)"
+msgstr ""
+
+#: inc/sections.php:159
+#: inc/sections.php:210
+#: inc/sections.php:222
+#: inc/sections.php:247
+#: inc/sections.php:290
+#: inc/sections.php:315
+#: inc/sections.php:398
+#: inc/sections.php:449
+msgid "Button"
+msgstr ""
+
+#: inc/sections.php:160
+#: inc/sections.php:211
+#: inc/sections.php:223
+#: inc/sections.php:248
+#: inc/sections.php:291
+#: inc/sections.php:316
+#: inc/sections.php:399
+#: inc/sections.php:450
+msgid "Button link"
+msgstr ""
+
+#: inc/sections.php:161
+#: inc/sections.php:224
+#: inc/sections.php:249
+#: inc/sections.php:451
+msgid "Second button"
+msgstr ""
+
+#: inc/sections.php:162
+#: inc/sections.php:225
+#: inc/sections.php:250
+#: inc/sections.php:452
+msgid "Second button link"
+msgstr ""
+
+#: inc/sections.php:167
+msgid "Process Band (dark, numbered)"
+msgstr ""
+
+#: inc/sections.php:174
+#: inc/sections.php:425
+#: inc/sections.php:537
+msgid "Steps"
+msgstr ""
+
+#: inc/sections.php:187
+msgid "Product Grid"
+msgstr ""
+
+#: inc/sections.php:195
+msgid "Products"
+msgstr ""
+
+#: inc/sections.php:199
+msgid "Best sellers & new (excluding stacks)"
+msgstr ""
+
+#: inc/sections.php:200
+msgid "Research stacks"
+msgstr ""
+
+#: inc/sections.php:201
+msgid "New arrivals"
+msgstr ""
+
+#: inc/sections.php:202
+msgid "All products"
+msgstr ""
+
+#: inc/sections.php:203
+msgid "Chosen products (slugs below)"
+msgstr ""
+
+#: inc/sections.php:207
+msgid "Product slugs (comma separated)"
+msgstr ""
+
+#: inc/sections.php:208
+msgid "Maximum products (0 = all)"
+msgstr ""
+
+#: inc/sections.php:209
+#: inc/sections.php:355
+msgid "Background"
+msgstr ""
+
+#: inc/sections.php:216
+msgid "Quality Commitment (split)"
+msgstr ""
+
+#: inc/sections.php:228
+#: inc/sections.php:359
+msgid "Cards"
+msgstr ""
+
+#: inc/sections.php:241
+msgid "Affiliate Band (dark CTA)"
+msgstr ""
+
+#: inc/sections.php:255
+#: inc/sections.php:264
+msgid "Testimonials"
+msgstr ""
+
+#: inc/sections.php:261
+msgid "Small print"
+msgstr ""
+
+#: inc/sections.php:272
+msgid "Quote"
+msgstr ""
+
+#: inc/sections.php:274
+msgid "Role"
+msgstr ""
+
+#: inc/sections.php:275
+msgid "Initials"
+msgstr ""
+
+#: inc/sections.php:283
+msgid "FAQ Accordion"
+msgstr ""
+
+#: inc/sections.php:289
+msgid "Questions shown (0 = all)"
+msgstr ""
+
+#: inc/sections.php:294
+#: inc/sections.php:504
+msgid "Questions"
+msgstr ""
+
+#: inc/sections.php:298
+#: inc/sections.php:508
+msgid "Question"
+msgstr ""
+
+#: inc/sections.php:299
+#: inc/sections.php:509
+msgid "Answer"
+msgstr ""
+
+#: inc/sections.php:308
+msgid "About — Commitment, Mission & Vision"
+msgstr ""
+
+#: inc/sections.php:314
+msgid "Body"
+msgstr ""
+
+#: inc/sections.php:317
+msgid "Mission"
+msgstr ""
+
+#: inc/sections.php:318
+msgid "Vision"
+msgstr ""
+
+#: inc/sections.php:323
+msgid "Stat Tiles"
+msgstr ""
+
+#: inc/sections.php:328
+msgid "Stats"
+msgstr ""
+
+#: inc/sections.php:337
+msgid "Value"
+msgstr ""
+
+#: inc/sections.php:346
+msgid "Icon Cards"
+msgstr ""
+
+#: inc/sections.php:352
+msgid "Heading alignment"
+msgstr ""
+
+#: inc/sections.php:353
+msgid "Columns"
+msgstr ""
+
+#: inc/sections.php:354
+msgid "Card style"
+msgstr ""
+
+#: inc/sections.php:354
+msgid "Icon card"
+msgstr ""
+
+#: inc/sections.php:354
+msgid "Large icon card"
+msgstr ""
+
+#: inc/sections.php:354
+msgid "Centred method card"
+msgstr ""
+
+#: inc/sections.php:356
+msgid "Note below cards"
+msgstr ""
+
+#: inc/sections.php:371
+msgid "Subtitle (method cards)"
+msgstr ""
+
+#: inc/sections.php:379
+msgid "Research Use Only Notice"
+msgstr ""
+
+#: inc/sections.php:388
+msgid "Research — Featured Compounds"
+msgstr ""
+
+#: inc/sections.php:394
+msgid "Stat 2 value"
+msgstr ""
+
+#: inc/sections.php:395
+msgid "Stat 2 label"
+msgstr ""
+
+#: inc/sections.php:396
+msgid "Stat 3 value"
+msgstr ""
+
+#: inc/sections.php:397
+msgid "Stat 3 label"
+msgstr ""
+
+#: inc/sections.php:401
+msgid "Compound strip (product slugs)"
+msgstr ""
+
+#: inc/sections.php:407
+msgid "COA Batch Register (search)"
+msgstr ""
+
+#: inc/sections.php:417
+msgid "Numbered Steps (dark)"
+msgstr ""
+
+#: inc/sections.php:443
+msgid "Documentation Pillars (split)"
+msgstr ""
+
+#: inc/sections.php:455
+msgid "Pillars"
+msgstr ""
+
+#: inc/sections.php:472
+msgid "Dose presets (mg)"
+msgstr ""
+
+#: inc/sections.php:473
+msgid "Strength presets (mcg/ml)"
+msgstr ""
+
+#: inc/sections.php:474
+msgid "Volume presets (ml)"
+msgstr ""
+
+#: inc/sections.php:475
+msgid "Disclaimer"
+msgstr ""
+
+#: inc/sections.php:481
+msgid "FAQ Page (help panel + all questions)"
+msgstr ""
+
+#: inc/sections.php:484
+msgid "Help panel title"
+msgstr ""
+
+#: inc/sections.php:485
+msgid "Help panel text"
+msgstr ""
+
+#: inc/sections.php:488
+msgid "\"Also useful\" links"
+msgstr ""
+
+#: inc/sections.php:498
+msgid "Link"
+msgstr ""
+
+#: inc/sections.php:518
+msgid "Contact (details + form)"
+msgstr ""
+
+#: inc/sections.php:521
+#: inc/sections.php:554
+msgid "Form title"
+msgstr ""
+
+#: inc/sections.php:522
+#: inc/sections.php:555
+msgid "Form intro"
+msgstr ""
+
+#: inc/sections.php:523
+msgid "Email note"
+msgstr ""
+
+#: inc/sections.php:524
+msgid "Wholesale note"
+msgstr ""
+
+#: inc/sections.php:530
+msgid "Affiliate — How It Works"
+msgstr ""
+
+#: inc/sections.php:549
+msgid "Affiliate — Perks & Application Form"
+msgstr ""
+
+#: inc/sections.php:558
+#: inc/sections.php:576
+msgid "Perks"
+msgstr ""
+
+#: inc/sections.php:571
+msgid "Wholesale — Numbered Perks"
+msgstr ""
+
+#: inc/sections.php:589
+msgid "Wholesale — Quote Request Form"
+msgstr ""
+
+#: inc/sections.php:599
+msgid "Policy Cards (icon + paragraphs)"
+msgstr ""
+
+#: inc/sections.php:604
+msgid "Sections"
+msgstr ""
+
+#: inc/sections.php:610
+msgid "Paragraphs (blank line between)"
+msgstr ""
+
+#: inc/seo.php:94
+msgid "High-Purity Research Compounds"
+msgstr ""
+
+#: inc/setup.php:56
+msgid "Primary menu (header)"
+msgstr ""
+
+#: inc/setup.php:57
+msgid "Footer — Shop column"
+msgstr ""
+
+#: inc/setup.php:58
+msgid "Footer — Company column"
+msgstr ""
+
+#: inc/setup.php:59
+msgid "Footer — Account column"
+msgstr ""
+
+#: inc/setup.php:60
+msgid "Footer — Compliance & Legal column"
+msgstr ""
+
+#: inc/setup.php:61
+msgid "Footer — bottom bar links"
+msgstr ""
+
+#: inc/setup.php:62
+msgid "Policy pages sidebar"
+msgstr ""
+
+#: inc/setup.php:84
+msgid "Blog sidebar"
+msgstr ""
+
+#: inc/setup.php:86
+msgid "Shown beside blog posts."
+msgstr ""
+
+#: inc/setup.php:112
+msgid "Skip to content"
+msgstr ""
+
+#: inc/woocommerce.php:217
+msgid "Lyophilised powder"
+msgstr ""
+
+#: inc/woocommerce.php:411
+msgid "Strictly for in-vitro laboratory research, analytical testing, and scientific investigation — not for human or animal use."
+msgstr ""
+
+#: inc/woocommerce.php:412
+msgid "Handle with appropriate personal protective equipment in a controlled laboratory environment."
+msgstr ""
+
+#: inc/woocommerce.php:413
+msgid "No dosage, administration, or treatment guidance is provided, as products are sold for research only."
+msgstr ""
+
+#: inc/woocommerce.php:414
+msgid "Follow accepted laboratory storage, handling, and disposal practices at all times."
+msgstr ""
+
+#: inc/woocommerce.php:498
+#: inc/woocommerce.php:499
+msgid "Awaiting payment"
+msgstr ""
+
+#: inc/woocommerce.php:500
+msgid "Processing"
+msgstr ""
+
+#: inc/woocommerce.php:501
+msgid "Shipped"
+msgstr ""
+
+#: inc/woocommerce.php:502
+msgid "Cancelled"
+msgstr ""
+
+#: inc/woocommerce.php:503
+msgid "Refunded"
+msgstr ""
+
+#: inc/woocommerce.php:504
+msgid "Failed"
+msgstr ""
+
+#. translators: %s: search query.
+#: index.php:12
+#, php-format
+msgid "Search results for “%s”"
+msgstr ""
+
+#: index.php:18
+#: index.php:23
+#: single.php:20
+msgid "Research notes"
+msgstr ""
+
+#: index.php:23
+#: searchform.php:11
+#: template-parts/layout/site-header.php:40
+#: woocommerce/archive-product.php:42
+msgid "Search"
+msgstr ""
+
+#: index.php:42
+msgid "Nothing found"
+msgstr ""
+
+#: index.php:43
+msgid "Try a different search, or browse the catalogue."
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — About"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Affiliate Programme"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Certificates of Analysis"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Contact"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Dosage Calculator"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — FAQ"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Policy / Legal"
+msgstr ""
+
+#: page-templates/template-legal.php:26
+msgid "Policy"
+msgstr ""
+
+#. translators: %s: month and year.
+#: page-templates/template-legal.php:44
+#, php-format
+msgid "Last updated %s"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Sign in"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Create account"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Research Library"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Shipping & Delivery"
+msgstr ""
+
+#. Template Name of the theme
+msgid "BioPlus — Wholesale"
+msgstr ""
+
+#: searchform.php:12
+msgid "Search…"
+msgstr ""
+
+#: template-parts/components/lead-form-open.php:14
+msgid "Message sent"
+msgstr ""
+
+#: template-parts/components/lead-form-open.php:14
+msgid "Thank you — received"
+msgstr ""
+
+#: template-parts/components/lead-form-open.php:15
+msgid "Thanks — we've got it and will reply within one working day."
+msgstr ""
+
+#: template-parts/components/payment-window.php:19
+msgid "Payment confirmed — thank you"
+msgstr ""
+
+#: template-parts/components/payment-window.php:20
+msgid "The timer has stopped. We're checking the transfer against your screenshot and will email you as soon as it clears and your order is on its way."
+msgstr ""
+
+#: template-parts/components/payment-window.php:26
+msgid "Payment window countdown"
+msgstr ""
+
+#: template-parts/components/payment-window.php:32
+msgid "remaining"
+msgstr ""
+
+#: template-parts/components/payment-window.php:32
+msgid "elapsed"
+msgstr ""
+
+#. translators: %d: minutes.
+#: template-parts/components/payment-window.php:36
+#, php-format
+msgid "Please transfer within %d minutes"
+msgstr ""
+
+#. translators: %d: minutes.
+#: template-parts/components/payment-window.php:36
+msgid "Payment window elapsed"
+msgstr ""
+
+#. translators: %d: minutes.
+#: template-parts/components/payment-window.php:37
+msgid "Paying inside this window means we can dispatch today. The order is not cancelled if the timer runs out — it just may not go out until the next working day."
+msgstr ""
+
+#. translators: %d: minutes.
+#: template-parts/components/payment-window.php:37
+msgid "Your order is still reserved and the account details below still apply — please go ahead and pay. If you have already paid, ignore this and we'll confirm once it clears."
+msgstr ""
+
+#: template-parts/components/payment-window.php:42
+msgid "Upload your payment screenshot"
+msgstr ""
+
+#: template-parts/components/payment-window.php:42
+msgid "(required)"
+msgstr ""
+
+#: template-parts/components/payment-window.php:43
+msgid "A screenshot of the payment itself — the confirmation from your banking app showing the amount and the reference. Attach it, then press"
+msgstr ""
+
+#: template-parts/components/payment-window.php:43
+msgid "Done"
+msgstr ""
+
+#: template-parts/components/payment-window.php:43
+msgid "below to confirm. Please don't upload anything else."
+msgstr ""
+
+#: template-parts/components/payment-window.php:46
+msgid "Your payment screenshot"
+msgstr ""
+
+#: template-parts/components/payment-window.php:48
+msgid "Screenshot received"
+msgstr ""
+
+#: template-parts/components/payment-window.php:49
+msgid "We'll confirm your order once the funds clear."
+msgstr ""
+
+#: template-parts/components/payment-window.php:51
+msgid "Replace"
+msgstr ""
+
+#: template-parts/components/payment-window.php:57
+msgid "Choose a screenshot"
+msgstr ""
+
+#: template-parts/components/payment-window.php:57
+msgid "Uploading…"
+msgstr ""
+
+#: template-parts/components/payment-window.php:58
+msgid "or drag one here · JPEG, PNG, WebP or HEIC"
+msgstr ""
+
+#: template-parts/components/payment-window.php:62
+msgid "Payment confirmed — nothing more to do"
+msgstr ""
+
+#: template-parts/components/payment-window.php:64
+#: template-parts/components/payment-window.php:65
+msgid "Done — I have paid"
+msgstr ""
+
+#: template-parts/components/payment-window.php:64
+msgid "Confirming…"
+msgstr ""
+
+#: template-parts/components/payment-window.php:68
+msgid "Attach your screenshot to enable this."
+msgstr ""
+
+#: template-parts/components/post-card.php:18
+msgid "Read more"
+msgstr ""
+
+#: template-parts/components/product-card.php:29
+#: woocommerce/single-product.php:80
+msgid "Best Seller"
+msgstr ""
+
+#: template-parts/components/product-card.php:41
+#: woocommerce/single-product.php:87
+msgid "BioPlus Labs research vial"
+msgstr ""
+
+#. translators: %d: number of options.
+#: template-parts/components/product-card.php:54
+#, php-format
+msgid "%d option"
+msgid_plural "%d options"
+msgstr[0] ""
+msgstr[1] ""
+
+#: template-parts/components/product-card.php:63
+#: woocommerce/single-product.php:114
+msgid "per vial"
+msgstr ""
+
+#: template-parts/components/product-card.php:63
+msgid "from"
+msgstr ""
+
+#: template-parts/components/product-card.php:68
+#: woocommerce/cart/cart.php:71
+msgid "Add"
+msgstr ""
+
+#: template-parts/components/product-card.php:72
+msgid "Select"
+msgstr ""
+
+#: template-parts/components/product-card.php:72
+msgid "View"
+msgstr ""
+
+#: template-parts/layout/age-gate.php:10
+msgid "I am at least 18 years of age."
+msgstr ""
+
+#: template-parts/layout/age-gate.php:11
+msgid "I understand that all products offered by BioPlus Labs are intended solely for laboratory research purposes."
+msgstr ""
+
+#: template-parts/layout/age-gate.php:12
+msgid "I acknowledge that these products are not intended for human or animal consumption."
+msgstr ""
+
+#: template-parts/layout/age-gate.php:13
+msgid "I understand that products sold by BioPlus Labs are not intended to diagnose, treat, cure, or prevent any disease."
+msgstr ""
+
+#: template-parts/layout/age-gate.php:14
+msgid "I agree to comply with all applicable laws and regulations regarding the purchase, possession, and use of research materials."
+msgstr ""
+
+#: template-parts/layout/age-gate.php:35
+msgid "Research Access Verification"
+msgstr ""
+
+#: template-parts/layout/age-gate.php:37
+msgid "Before entering this website, please confirm the following:"
+msgstr ""
+
+#: template-parts/layout/age-gate.php:45
+msgid "I confirm and agree to all of the statements below."
+msgstr ""
+
+#: template-parts/layout/age-gate.php:58
+msgid "Enter Site"
+msgstr ""
+
+#: template-parts/layout/age-gate.php:59
+msgid "Leave Site"
+msgstr ""
+
+#: template-parts/layout/age-gate.php:62
+msgid "By selecting “Enter Site,” you certify that you are at least 18 years of age and understand the research-use-only nature of the products offered by BioPlus Labs."
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:16
+#: woocommerce/cart/cart-empty.php:12
+#: woocommerce/cart/cart.php:18
+msgid "Your Cart"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:19
+msgid "Close cart"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:25
+msgid "Your cart is empty."
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:26
+msgid "Browse Catalogue"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:45
+msgid "Decrease quantity"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:47
+msgid "Increase quantity"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:59
+#: woocommerce/cart/cart.php:81
+#: woocommerce/checkout/review-order.php:21
+#: woocommerce/checkout/thankyou.php:119
+msgid "Subtotal"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:62
+msgid "Delivery calculated at checkout. UK prices include VAT where applicable."
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:64
+msgid "Proceed to Checkout"
+msgstr ""
+
+#: template-parts/layout/cart-drawer-inner.php:65
+msgid "View Cart"
+msgstr ""
+
+#: template-parts/layout/cart-drawer.php:11
+msgid "Shopping cart"
+msgstr ""
+
+#: template-parts/layout/search-overlay.php:10
+msgid "Search products"
+msgstr ""
+
+#: template-parts/layout/search-overlay.php:16
+msgid "Search peptides, blends, SKUs…"
+msgstr ""
+
+#: template-parts/layout/search-overlay.php:18
+msgid "Close search"
+msgstr ""
+
+#: template-parts/layout/site-footer.php:21
+#: woocommerce/cart/cart.php:24
+#: woocommerce/checkout/form-checkout.php:211
+msgid "Research Use Only"
+msgstr ""
+
+#. translators: %s: company number.
+#: template-parts/layout/site-footer.php:56
+#, php-format
+msgid "Company no. %s"
+msgstr ""
+
+#: template-parts/layout/site-footer.php:92
+msgid "Subscribe"
+msgstr ""
+
+#: template-parts/layout/site-footer.php:94
+msgid "You're subscribed — thanks. Watch your inbox for batch alerts."
+msgstr ""
+
+#: template-parts/layout/site-footer.php:103
+msgid "All rights reserved."
+msgstr ""
+
+#. translators: %s: company number.
+#: template-parts/layout/site-footer.php:105
+#, php-format
+msgid "Registered in Scotland no. %s"
+msgstr ""
+
+#: template-parts/layout/site-footer.php:112
+msgid "Must be 18+ to purchase"
+msgstr ""
+
+#: template-parts/layout/site-footer.php:120
+msgid "Powered by"
+msgstr ""
+
+#: template-parts/layout/site-header.php:15
+msgid "Open menu"
+msgstr ""
+
+#: template-parts/layout/site-header.php:30
+msgid "Primary"
+msgstr ""
+
+#: template-parts/layout/site-header.php:61
+msgid "Menu"
+msgstr ""
+
+#: template-parts/layout/site-header.php:72
+msgid "Close menu"
+msgstr ""
+
+#: template-parts/layout/site-header.php:74
+msgid "Mobile"
+msgstr ""
+
+#: template-parts/sections/about-intro.php:40
+msgid "Our Mission"
+msgstr ""
+
+#: template-parts/sections/about-intro.php:46
+msgid "Our Vision"
+msgstr ""
+
+#: template-parts/sections/affiliate-signup.php:39
+#: woocommerce/myaccount/bioplus-auth.php:43
+msgid "Full name"
+msgstr ""
+
+#: template-parts/sections/affiliate-signup.php:42
+msgid "Audience / network"
+msgstr ""
+
+#: template-parts/sections/affiliate-signup.php:42
+msgid "Describe your audience, platform, or research network."
+msgstr ""
+
+#: template-parts/sections/affiliate-signup.php:45
+msgid "Submit application"
+msgstr ""
+
+#. translators: %s: step number.
+#. translators: %s: step number such as 01.
+#: template-parts/sections/affiliate-steps.php:26
+#: template-parts/sections/process-band.php:33
+#, php-format
+msgid "Step %s"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:30
+msgid "Product name or batch number…"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:30
+msgid "Search certificates of analysis"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:31
+msgid "Clear search"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:35
+msgid "PASS > 99% — Meets BioPlus specification"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:36
+msgid "PASS > 98% — Acceptable research grade"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:37
+msgid "Results are listed by product and batch number for full transparency."
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:43
+msgid "Product & result"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:44
+msgid "Batch"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:45
+msgid "Actions"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:49
+msgid "No certificates match"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:50
+msgid "Check the batch number printed on your vial label, or contact us and we will send the certificate directly."
+msgstr ""
+
+#. translators: %s: month tested.
+#: template-parts/sections/coa-finder.php:65
+#, php-format
+msgid "Tested %s"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:69
+msgid "COA"
+msgstr ""
+
+#: template-parts/sections/coa-finder.php:72
+msgid "Product"
+msgstr ""
+
+#: template-parts/sections/contact.php:12
+msgid "Email — the fastest way to reach us"
+msgstr ""
+
+#: template-parts/sections/contact.php:14
+msgid "Location"
+msgstr ""
+
+#: template-parts/sections/contact.php:15
+msgid "Wholesale & laboratory supply"
+msgstr ""
+
+#: template-parts/sections/contact.php:41
+msgid "Registered in Scotland, company no."
+msgstr ""
+
+#: template-parts/sections/contact.php:62
+msgid "How can we help with your research?"
+msgstr ""
+
+#: template-parts/sections/contact.php:65
+#: template-parts/sections/contact.php:66
+msgid "Send message"
+msgstr ""
+
+#: template-parts/sections/contact.php:68
+msgid "By contacting us you acknowledge our products are Research Use Only."
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:13
+msgid "Desired Dose"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:14
+msgid "0.1 mg = 100 mcg (µg)"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:23
+msgid "Peptide Strength"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:33
+msgid "Volume (Bacteriostatic Water)"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:59
+msgid "Other"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:76
+msgid "You Need to Draw"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:78
+msgid "of Peptide Solution"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:82
+msgid "Syringe fill illustration"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:99
+msgid "The required draw exceeds the vial volume. Increase the peptide strength or volume."
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:102
+msgid "On a U-100 insulin syringe"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:103
+msgid "units"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:106
+msgid "Total peptide in vial"
+msgstr ""
+
+#: template-parts/sections/dosage-calculator.php:110
+msgid "Approx. doses per vial"
+msgstr ""
+
+#: template-parts/sections/faq-page.php:22
+msgid "Contact us"
+msgstr ""
+
+#: template-parts/sections/faq-page.php:29
+msgid "Email us"
+msgstr ""
+
+#: template-parts/sections/faq-page.php:36
+msgid "Also useful"
+msgstr ""
+
+#: template-parts/sections/hero.php:76
+#: template-parts/sections/range-feature.php:15
+msgid "The BioPlus Labs research vial range"
+msgstr ""
+
+#: template-parts/sections/page-hero.php:28
+#: woocommerce/archive-product.php:60
+#: woocommerce/single-product.php:50
+msgid "Breadcrumb"
+msgstr ""
+
+#: template-parts/sections/product-grid.php:32
+msgid "No products yet — run Appearance → BioPlus Setup to import the catalogue."
+msgstr ""
+
+#: template-parts/sections/research-featured.php:13
+msgid "Compounds"
+msgstr ""
+
+#: template-parts/sections/research-featured.php:59
+msgid "BioPlus Labs research peptide vials"
+msgstr ""
+
+#: template-parts/sections/wholesale-form.php:24
+msgid "Contact name"
+msgstr ""
+
+#: template-parts/sections/wholesale-form.php:28
+msgid "Products & estimated volume"
+msgstr ""
+
+#: template-parts/sections/wholesale-form.php:28
+msgid "List the products (and SKUs) and approximate quantities you're interested in."
+msgstr ""
+
+#: template-parts/sections/wholesale-form.php:31
+msgid "Request wholesale pricing"
+msgstr ""
+
+#: template-parts/sections/wholesale-form.php:33
+msgid "Prefer email? Reach us at"
+msgstr ""
+
+#: woocommerce/archive-product.php:17
+msgid "Featured"
+msgstr ""
+
+#: woocommerce/archive-product.php:18
+msgid "Price: Low to High"
+msgstr ""
+
+#: woocommerce/archive-product.php:19
+msgid "Price: High to Low"
+msgstr ""
+
+#: woocommerce/archive-product.php:20
+msgid "Name A–Z"
+msgstr ""
+
+#. translators: %s: search terms.
+#: woocommerce/archive-product.php:40
+#, php-format
+msgid "Results for “%s”"
+msgstr ""
+
+#: woocommerce/archive-product.php:41
+msgid "Research compounds matching your search. All products are Research Use Only."
+msgstr ""
+
+#: woocommerce/archive-product.php:49
+msgid "Research Catalogue"
+msgstr ""
+
+#: woocommerce/archive-product.php:50
+msgid "Every product we supply, on one page. High-purity research compounds and laboratory materials, batch-tested for identity and purity. All products are Research Use Only."
+msgstr ""
+
+#. translators: %d: number of products.
+#: woocommerce/archive-product.php:81
+#, php-format
+msgid "%d product"
+msgid_plural "%d products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: woocommerce/archive-product.php:89
+#: woocommerce/archive-product.php:95
+msgid "Sort"
+msgstr ""
+
+#: woocommerce/archive-product.php:109
+msgid "No products found"
+msgstr ""
+
+#: woocommerce/archive-product.php:110
+msgid "View the full catalogue"
+msgstr ""
+
+#: woocommerce/cart/cart-empty.php:13
+msgid "0 items · Research Use Only"
+msgstr ""
+
+#: woocommerce/cart/cart-empty.php:18
+msgid "Your cart is empty"
+msgstr ""
+
+#: woocommerce/cart/cart-empty.php:19
+msgid "Browse the catalogue to add research compounds."
+msgstr ""
+
+#: woocommerce/cart/cart-empty.php:21
+#: woocommerce/myaccount/orders.php:27
+msgid "Shop the catalogue"
+msgstr ""
+
+#. translators: %d: number of items.
+#: woocommerce/cart/cart.php:22
+#, php-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: woocommerce/cart/cart.php:49
+#: woocommerce/single-product.php:146
+msgid "Decrease"
+msgstr ""
+
+#: woocommerce/cart/cart.php:51
+#: woocommerce/single-product.php:148
+msgid "Increase"
+msgstr ""
+
+#. translators: %s: unit price.
+#: woocommerce/cart/cart.php:55
+#, php-format
+msgid "%s each"
+msgstr ""
+
+#: woocommerce/cart/cart.php:62
+#: woocommerce/checkout/thankyou.php:21
+#: woocommerce/checkout/thankyou.php:140
+msgid "Continue shopping"
+msgstr ""
+
+#: woocommerce/cart/cart.php:67
+msgid "Order Summary"
+msgstr ""
+
+#: woocommerce/cart/cart.php:71
+msgid "more to qualify for free UK delivery."
+msgstr ""
+
+#: woocommerce/cart/cart.php:77
+msgid "You've qualified for free UK delivery."
+msgstr ""
+
+#: woocommerce/cart/cart.php:82
+#: woocommerce/checkout/review-order.php:30
+#: woocommerce/checkout/thankyou.php:123
+msgid "Delivery"
+msgstr ""
+
+#: woocommerce/cart/cart.php:82
+msgid "Calculated at checkout"
+msgstr ""
+
+#: woocommerce/cart/cart.php:83
+msgid "Estimated total"
+msgstr ""
+
+#: woocommerce/cart/cart.php:86
+msgid "Secure checkout"
+msgstr ""
+
+#: woocommerce/cart/cart.php:87
+msgid "SSL-encrypted · Direct bank transfer"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:89
+msgid "Back to cart"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:94
+msgid "Checking out as a guest."
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:96
+msgid "to use a saved address and keep this order in your Research Hub."
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:109
+msgid "Contact information"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:114
+msgid "Research delivery address"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:130
+msgid "Create a Research Hub account"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:130
+msgid "track this order and download its Certificates of Analysis."
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:134
+msgid "Choose a password"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:146
+msgid "Payment method"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:162
+msgid "I certify that I am purchasing for legitimate research purposes, am at least 18 years of age, and that all products will be used solely for laboratory research in accordance with applicable laws. Products are not for human or animal consumption."
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:169
+msgid "Order summary"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:188
+msgid "Discount code"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:190
+msgid "Optional"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:191
+msgid "Apply"
+msgstr ""
+
+#: woocommerce/checkout/form-checkout.php:210
+msgid "SSL secure"
+msgstr ""
+
+#: woocommerce/checkout/payment.php:35
+msgid "You'll be paying into"
+msgstr ""
+
+#: woocommerce/checkout/payment.php:36
+msgid "Your order number"
+msgstr ""
+
+#. translators: %s: coupon code.
+#: woocommerce/checkout/review-order.php:24
+#, php-format
+msgid "Discount (%s)"
+msgstr ""
+
+#: woocommerce/checkout/review-order.php:34
+msgid "Enter your address"
+msgstr ""
+
+#: woocommerce/checkout/review-order.php:36
+#: woocommerce/checkout/thankyou.php:123
+msgid "Free"
+msgstr ""
+
+#: woocommerce/checkout/review-order.php:51
+#: woocommerce/checkout/thankyou.php:124
+msgid "Total"
+msgstr ""
+
+#. translators: %s: amount.
+#: woocommerce/checkout/review-order.php:56
+#, php-format
+msgid "Spend %s more for free delivery."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:20
+msgid "Thank you — your order has been received."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:42
+msgid "Payment unsuccessful"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:43
+msgid "Unfortunately your order cannot be processed as the payment was declined. Please try again."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:44
+msgid "Pay"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:49
+msgid "Order received"
+msgstr ""
+
+#. translators: 1: first name, 2: order number, 3: date.
+#: woocommerce/checkout/thankyou.php:54
+#, php-format
+msgid "Thank you, %1$s. Your order %2$s was placed on %3$s."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:65
+msgid "Pay by direct bank transfer"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:65
+msgid "Payment"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:71
+msgid "Payment for this order has been received — there is nothing more to pay. You can follow its progress in your Research Hub."
+msgstr ""
+
+#. translators: %s: payment method.
+#: woocommerce/checkout/thankyou.php:73
+#, php-format
+msgid "Paid by %s."
+msgstr ""
+
+#. translators: 1: amount, 2: minutes.
+#: woocommerce/checkout/thankyou.php:82
+#, php-format
+msgid "Transfer %1$s to the account below from your banking app, quoting the payment reference — that reference is how we match your transfer to this order. Please pay within %2$s minutes so we can dispatch today."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:98
+msgid "We'll email you the account details shortly. Please quote"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:98
+msgid "as your payment reference."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:103
+msgid "Your order"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:121
+msgid "Discount"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:127
+#: woocommerce/myaccount/view-order.php:68
+msgid "Delivery address"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:136
+msgid "Keep this page — the link in your confirmation email brings you back to it at any time. We'll email you again as soon as the transfer clears and your order is dispatched."
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:139
+msgid "View order in Research Hub"
+msgstr ""
+
+#: woocommerce/checkout/thankyou.php:139
+msgid "Create an account to track it"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:26
+#: woocommerce/myaccount/dashboard.php:58
+#: woocommerce/myaccount/form-lost-password.php:14
+#: woocommerce/myaccount/form-reset-password.php:15
+msgid "Member Access · RUO Platform"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:27
+msgid "Create your account"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:28
+msgid "Track orders, download batch Certificates of Analysis, and manage your research delivery address."
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:28
+msgid "Access your Research Hub, orders and Certificates of Analysis."
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:39
+msgid "Account registration is currently closed. You can still check out as a guest."
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:46
+#: woocommerce/myaccount/bioplus-auth.php:49
+#: woocommerce/myaccount/form-edit-account.php:38
+msgid "Password"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:46
+#: woocommerce/myaccount/form-edit-account.php:43
+#: woocommerce/myaccount/form-reset-password.php:20
+msgid "At least 10 characters."
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:51
+msgid "Remember me"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:52
+msgid "Forgot password?"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:60
+msgid "Accounts are for researchers aged 18 or over. All products are supplied for laboratory research use only and not for human or animal consumption."
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:72
+msgid "Create account"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:79
+msgid "Already registered?"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:81
+msgid "No account yet?"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:81
+msgid "Create one"
+msgstr ""
+
+#: woocommerce/myaccount/bioplus-auth.php:86
+msgid "You can also check out as a guest — an account is never required to order."
+msgstr ""
+
+#: woocommerce/myaccount/coa-files.php:16
+msgid "Files & Certificates of Analysis"
+msgstr ""
+
+#: woocommerce/myaccount/coa-files.php:17
+msgid "Batch-specific COA and documentation for your orders."
+msgstr ""
+
+#: woocommerce/myaccount/coa-files.php:25
+msgid "No documents yet"
+msgstr ""
+
+#: woocommerce/myaccount/coa-files.php:26
+msgid "Certificates of Analysis are attached to your orders as each batch is released, and appear here automatically."
+msgstr ""
+
+#. translators: 1: order number, 2: date.
+#: woocommerce/myaccount/coa-files.php:36
+#, php-format
+msgid "Order %1$s · %2$s"
+msgstr ""
+
+#: woocommerce/myaccount/coa-files.php:38
+msgid "Download"
+msgstr ""
+
+#: woocommerce/myaccount/coa-files.php:47
+msgid "Each production batch is subject to comprehensive analytical testing — including HPLC, UPLC, and Mass Spectrometry — to verify identity, purity, and quality specifications. Certificates are uploaded here as they are finalized and remain available for your records."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:19
+msgid "Total orders"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:20
+msgid "In transit"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:21
+msgid "COA files"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:24
+msgid "Recent orders"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:24
+msgid "Review order status, tracking, and history."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:25
+msgid "Download batch-specific COA documents."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:26
+msgid "Research address"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:26
+msgid "Manage your shipping & billing details."
+msgstr ""
+
+#. translators: 1: name, 2: name, 3: logout link.
+#: woocommerce/myaccount/dashboard.php:35
+#, php-format
+msgid "Hello %1$s (not %2$s? %3$s)"
+msgstr ""
+
+#. translators: 1: orders link, 2: address link, 3: account link.
+#: woocommerce/myaccount/dashboard.php:46
+#, php-format
+msgid "From your account dashboard you can view your %1$s, manage your %2$s, and %3$s."
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:47
+msgid "recent orders"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:48
+msgid "shipping and billing addresses"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:49
+msgid "edit your password and account details"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:60
+msgid "WELCOME BACK,"
+msgstr ""
+
+#: woocommerce/myaccount/dashboard.php:63
+msgid "Your BioPlus Labs account hub is built for order visibility, research-supply access, and account management — all in one secure dashboard."
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:18
+msgid "Update your account details and password."
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:26
+msgid "Account details"
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:31
+msgid "Phone (optional)"
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:39
+msgid "Leave blank to keep your current password."
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:41
+msgid "Current password"
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:43
+#: woocommerce/myaccount/form-reset-password.php:20
+msgid "New password"
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:44
+msgid "Confirm new password"
+msgstr ""
+
+#: woocommerce/myaccount/form-edit-account.php:52
+#: woocommerce/myaccount/research-address.php:61
+msgid "Save changes"
+msgstr ""
+
+#: woocommerce/myaccount/form-lost-password.php:15
+msgid "Reset your password"
+msgstr ""
+
+#: woocommerce/myaccount/form-lost-password.php:16
+msgid "Enter your email address and we'll send you a link to choose a new password."
+msgstr ""
+
+#: woocommerce/myaccount/form-lost-password.php:24
+msgid "Email me a reset link"
+msgstr ""
+
+#: woocommerce/myaccount/form-lost-password.php:25
+#: woocommerce/myaccount/lost-password-confirmation.php:15
+msgid "Back to sign in"
+msgstr ""
+
+#: woocommerce/myaccount/form-reset-password.php:16
+msgid "Choose a new password"
+msgstr ""
+
+#: woocommerce/myaccount/form-reset-password.php:21
+msgid "Re-enter new password"
+msgstr ""
+
+#: woocommerce/myaccount/form-reset-password.php:27
+msgid "Save password"
+msgstr ""
+
+#: woocommerce/myaccount/lost-password-confirmation.php:13
+msgid "Check your inbox"
+msgstr ""
+
+#: woocommerce/myaccount/my-account.php:18
+msgid "Need assistance?"
+msgstr ""
+
+#: woocommerce/myaccount/my-account.php:19
+msgid "Our support team is here to help with orders, COA, and account questions."
+msgstr ""
+
+#: woocommerce/myaccount/navigation.php:18
+msgid "Account pages"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:17
+msgid "Track and review your BioPlus Labs orders."
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:25
+msgid "No orders yet"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:26
+msgid "Your orders will appear here once you place one."
+msgstr ""
+
+#. translators: %s: date.
+#: woocommerce/myaccount/orders.php:47
+#: woocommerce/myaccount/view-order.php:25
+#, php-format
+msgid "Placed %s"
+msgstr ""
+
+#. translators: %s: amount.
+#: woocommerce/myaccount/orders.php:70
+#, php-format
+msgid "Awaiting your bank transfer of %s"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:74
+msgid "We'll email you the account details — please quote"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:74
+msgid "as your reference."
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:76
+#: woocommerce/myaccount/view-order.php:34
+msgid "Open payment page"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:83
+msgid "Tracking:"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:85
+#: woocommerce/myaccount/view-order.php:76
+msgid "Tracking available once shipped"
+msgstr ""
+
+#. translators: %d: count.
+#: woocommerce/myaccount/orders.php:91
+#, php-format
+msgid "View COA (%d)"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:93
+msgid "Details"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:102
+msgid "Newer orders"
+msgstr ""
+
+#: woocommerce/myaccount/orders.php:105
+msgid "Older orders"
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:20
+msgid "Manage the delivery address used for your research orders."
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:27
+msgid "Current delivery address"
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:41
+msgid "Update address"
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:41
+msgid "Add your research address"
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:56
+msgid "United Kingdom"
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:57
+msgid "Ireland"
+msgstr ""
+
+#: woocommerce/myaccount/research-address.php:64
+msgid "Orders ship only to verified research addresses. For institutional accounts and laboratory supply agreements, contact support."
+msgstr ""
+
+#. translators: %s: order number.
+#: woocommerce/myaccount/view-order.php:23
+#, php-format
+msgid "Order #%s"
+msgstr ""
+
+#: woocommerce/myaccount/view-order.php:72
+msgid "Shipment"
+msgstr ""
+
+#. translators: %s: method.
+#: woocommerce/myaccount/view-order.php:79
+#, php-format
+msgid "Payment: %s"
+msgstr ""
+
+#: woocommerce/myaccount/view-order.php:85
+msgid "Order updates"
+msgstr ""
+
+#: woocommerce/myaccount/view-order.php:94
+msgid "All orders"
+msgstr ""
+
+#: woocommerce/single-product.php:18
+msgid "This product has no options available yet."
+msgstr ""
+
+#: woocommerce/single-product.php:25
+msgid "Research Grade"
+msgstr ""
+
+#: woocommerce/single-product.php:68
+msgid "View vial"
+msgstr ""
+
+#: woocommerce/single-product.php:71
+msgid "View range"
+msgstr ""
+
+#: woocommerce/single-product.php:72
+msgid "BioPlus range"
+msgstr ""
+
+#: woocommerce/single-product.php:88
+msgid "BioPlus Labs research vial range"
+msgstr ""
+
+#: woocommerce/single-product.php:95
+msgid "Sterile"
+msgstr ""
+
+#: woocommerce/single-product.php:95
+msgid "Lyophilised"
+msgstr ""
+
+#: woocommerce/single-product.php:96
+msgid "Batch-Tested"
+msgstr ""
+
+#: woocommerce/single-product.php:97
+msgid "UK Dispatch"
+msgstr ""
+
+#: woocommerce/single-product.php:123
+#: woocommerce/single-product.php:126
+msgid "Select option"
+msgstr ""
+
+#: woocommerce/single-product.php:158
+#: woocommerce/single-product.php:159
+msgid "Currently out of stock"
+msgstr ""
+
+#: woocommerce/single-product.php:159
+#: woocommerce/single-product.php:160
+msgid "This option is on its way into stock. Email us and we'll let you know the moment it lands."
+msgstr ""
+
+#: woocommerce/single-product.php:159
+#: woocommerce/single-product.php:160
+msgid "This option has sold out. Email us and we'll let you know as soon as it is restocked."
+msgstr ""
+
+#: woocommerce/single-product.php:163
+msgid "Notify me by email"
+msgstr ""
+
+#: woocommerce/single-product.php:168
+msgid "Dosage calculator"
+msgstr ""
+
+#: woocommerce/single-product.php:169
+msgid "View COA"
+msgstr ""
+
+#: woocommerce/single-product.php:174
+msgid "Research Use Only."
+msgstr ""
+
+#: woocommerce/single-product.php:174
+msgid "Intended solely for laboratory and scientific research. Not for human or animal consumption and not intended to diagnose, treat, cure, or prevent any disease. No dosage or administration guidance is provided."
+msgstr ""
+
+#: woocommerce/single-product.php:181
+msgid "Full Description"
+msgstr ""
+
+#: woocommerce/single-product.php:183
+msgid "Usage"
+msgstr ""
+
+#: woocommerce/single-product.php:184
+msgid "Reviews"
+msgstr ""
+
+#: woocommerce/single-product.php:190
+msgid "Quantity"
+msgstr ""
+
+#: woocommerce/single-product.php:191
+msgid "Catalogue Number"
+msgstr ""
+
+#: woocommerce/single-product.php:194
+msgid "Molecular Formula"
+msgstr ""
+
+#: woocommerce/single-product.php:197
+msgid "Molecular Weight"
+msgstr ""
+
+#: woocommerce/single-product.php:200
+msgid "CAS Number"
+msgstr ""
+
+#. translators: %s: product name.
+#: woocommerce/single-product.php:217
+#, php-format
+msgid "High-Purity %s"
+msgstr ""
+
+#: woocommerce/single-product.php:221
+msgid "With a verified peptide purity of"
+msgstr ""
+
+#: woocommerce/single-product.php:221
+msgid "research grade"
+msgstr ""
+
+#. translators: %s: product form.
+#: woocommerce/single-product.php:221
+#, php-format
+msgid "this %s provides consistent quality for reliable laboratory experimentation."
+msgstr ""
+
+#: woocommerce/single-product.php:226
+msgid "Purity – Research Grade"
+msgstr ""
+
+#: woocommerce/single-product.php:228
+msgid "USP-Grade Sterile Reconstitution Solution"
+msgstr ""
+
+#: woocommerce/single-product.php:228
+msgid "Precision-Tested Lyophilised Peptide"
+msgstr ""
+
+#: woocommerce/single-product.php:239
+msgid "Product Details"
+msgstr ""
+
+#: woocommerce/single-product.php:252
+msgid "Storage"
+msgstr ""
+
+#. translators: %s: product name.
+#: woocommerce/single-product.php:253
+#, php-format
+msgid "As supplied, %s is stored in a sealed vial protected from light at"
+msgstr ""
+
+#. translators: %s: product name.
+#: woocommerce/single-product.php:253
+msgid "Storage conditions are printed on the vial label."
+msgstr ""
+
+#: woocommerce/single-product.php:259
+msgid "Note:"
+msgstr ""
+
+#: woocommerce/single-product.php:259
+msgid "This product is supplied strictly for"
+msgstr ""
+
+#: woocommerce/single-product.php:259
+msgid "laboratory research use only"
+msgstr ""
+
+#. translators: %s: site name.
+#: woocommerce/single-product.php:259
+#, php-format
+msgid "Not for human consumption or clinical application. %s provides no handling, preparation, or administration instructions — qualified researchers are responsible for determining their own protocols."
+msgstr ""
+
+#: woocommerce/single-product.php:263
+msgid "Research highlights"
+msgstr ""
+
+#. translators: %s: product name.
+#: woocommerce/single-product.php:264
+#, php-format
+msgid "Areas in which %s is investigated within the research community."
+msgstr ""
+
+#: woocommerce/single-product.php:273
+msgid "Information is provided for educational and research-reference purposes only and should not be interpreted as medical advice or a claim of efficacy."
+msgstr ""
+
+#: woocommerce/single-product.php:277
+msgid "Handling & usage"
+msgstr ""
+
+#: woocommerce/single-product.php:321
+msgid "No reviews yet"
+msgstr ""
+
+#. translators: %s: product name.
+#: woocommerce/single-product.php:322
+#, php-format
+msgid "Verified customer reviews for %s will appear here. Be the first to share your research experience after a verified purchase."
+msgstr ""
+
+#. translators: %s: product name.
+#: woocommerce/single-product.php:323
+msgid "Share feedback"
+msgstr ""
+
+#: woocommerce/single-product.php:340
+msgid "More from the catalogue"
+msgstr ""
+
+#: woocommerce/single-product.php:341
+msgid "You may also be researching"
+msgstr ""
+
+#: woocommerce/single-product.php:345
+msgid "View all products"
+msgstr ""

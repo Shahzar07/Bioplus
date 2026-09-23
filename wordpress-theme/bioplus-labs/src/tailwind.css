@@ -1,0 +1,300 @@
+/*
+ * BioPlus Labs — design system source.
+ *
+ * Compiled with Tailwind CSS v4 into assets/css/theme.css (see README):
+ *   npx @tailwindcss/cli -i src/tailwind.css -o assets/css/theme.css --minify
+ *
+ * Utilities are generated `important` so they keep their look inside
+ * Elementor, WooCommerce and core block markup, whose stylesheets are not
+ * layered and would otherwise win.
+ */
+@import "tailwindcss" important;
+
+@source "../*.php";
+@source "../inc/**/*.php";
+@source "../template-parts/**/*.php";
+@source "../page-templates/**/*.php";
+@source "../woocommerce/**/*.php";
+@source "../assets/js/theme.js";
+
+/* Self-hosted Inter + Space Grotesk (SIL OFL), as next/font self-hosted them. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/inter-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/inter-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/space-grotesk-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/space-grotesk-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/space-grotesk-latin-700-normal.woff2") format("woff2");
+}
+
+/* ============================================================
+   BIOPLUS LABS — Design Tokens (from src/app/globals.css)
+   Brand: heavy geometric wordmark, molecular ring counter,
+   brushed-metal plate. Accent: laboratory orange (#f85000).
+   ============================================================ */
+
+@theme {
+  --color-brand-50: #fff5ed;
+  --color-brand-100: #ffe8d5;
+  --color-brand-200: #ffcdaa;
+  --color-brand-300: #ffab74;
+  --color-brand-400: #ff8038;
+  --color-brand-500: #fb6a12;
+  --color-brand-600: #f85000;
+  --color-brand-700: #cc3d02;
+  --color-brand-800: #a13209;
+  --color-brand-900: #822c0d;
+
+  --color-ink-950: #08080a;
+  --color-ink-900: #0d0e11;
+  --color-ink-800: #16181c;
+  --color-ink-700: #23262c;
+  --color-ink-600: #343841;
+  --color-ink-500: #565c68;
+
+  --color-paper: #ffffff;
+  --color-mist: #f6f6f8;
+  --color-haze: #ebecef;
+  --color-line: #dee0e5;
+
+  --font-display: var(--font-display-src), "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  --radius-card: 14px;
+
+  --shadow-card: 0 1px 2px rgba(8, 8, 10, 0.05), 0 8px 24px -12px rgba(8, 8, 10, 0.14);
+  --shadow-pop: 0 24px 60px -20px rgba(120, 45, 5, 0.35);
+}
+
+:root {
+  /* next/font variables in the original; here the Google Fonts families. */
+  --font-display-src: "Space Grotesk";
+  --font-inter: "Inter";
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink-900);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    margin: 0;
+  }
+
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+}
+
+/* ------------------------------------------------ brand surfaces */
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.uppercase-wide {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.brand-gradient {
+  background-image: linear-gradient(120deg, var(--color-brand-700) 0%, var(--color-brand-600) 45%, var(--color-brand-400) 100%);
+}
+.brand-text-gradient {
+  background-image: linear-gradient(120deg, var(--color-brand-400) 0%, var(--color-brand-600) 55%, var(--color-brand-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.metal-plate {
+  background-image: linear-gradient(100deg, #f2f3f5 0%, #ffffff 18%, #d9dbe0 38%, #f7f8fa 55%, #cfd2d8 74%, #ffffff 88%, #e7e9ed 100%);
+}
+.metal-text-gradient {
+  background-image: linear-gradient(100deg, #ffffff 0%, #d4d7dd 35%, #ffffff 55%, #b9bdc6 78%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.band-dark {
+  background:
+    radial-gradient(900px 500px at 80% -10%, rgba(248, 80, 0, 0.22), transparent 60%),
+    radial-gradient(700px 500px at 0% 110%, rgba(255, 128, 56, 0.12), transparent 55%),
+    var(--color-ink-900);
+}
+
+.hairline-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.scroll-slim::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll-slim::-webkit-scrollbar-thumb { background: var(--color-ink-600); border-radius: 8px; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.5s ease both; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 30s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee, .animate-fade-up { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ------------------------------------------------ WordPress glue */
+
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important;
+}
+.skip-link:focus {
+  clip: auto;
+  clip-path: none;
+  height: auto;
+  width: auto;
+  z-index: 100000;
+  top: 8px;
+  left: 8px;
+  padding: 10px 16px;
+  background: #fff;
+  color: var(--color-ink-900);
+  border-radius: 999px;
+  box-shadow: var(--shadow-pop);
+}
+
+/* Keep the sticky header below the admin toolbar. */
+.admin-bar [data-site-header] { top: 32px; }
+@media (max-width: 782px) {
+  .admin-bar [data-site-header] { top: 46px; }
+}
+
+/* Elementor sections holding a BioPlus widget are edge to edge. */
+.elementor .bioplus-el { width: 100%; }
+.elementor-widget-container > .bioplus-el > section,
+.elementor-widget-container > .bioplus-el > div { margin: 0; }
+
+/* Long-form policy and page content (Prose.tsx). */
+.bioplus-prose { max-width: none; font-size: 15px; line-height: 1.625; color: var(--color-ink-700); }
+.bioplus-prose > :first-child { margin-top: 0; }
+.bioplus-prose h2 { font-family: var(--font-display); margin-top: 2.5rem; font-size: 1.5rem; line-height: 2rem; font-weight: 700; letter-spacing: -0.025em; color: var(--color-ink-900); }
+.bioplus-prose h3 { font-family: var(--font-display); margin-top: 1.75rem; font-size: 1.125rem; line-height: 1.75rem; font-weight: 700; color: var(--color-ink-900); }
+.bioplus-prose p { margin-top: 1rem; }
+.bioplus-prose ul, .bioplus-prose ol { margin-top: 1rem; padding-left: 1.25rem; }
+.bioplus-prose ul > li + li, .bioplus-prose ol > li + li { margin-top: 0.5rem; }
+.bioplus-prose ul li { list-style: disc; }
+.bioplus-prose ol li { list-style: decimal; }
+.bioplus-prose li::marker { color: var(--color-brand-500); }
+.bioplus-prose strong { font-weight: 600; color: var(--color-ink-900); }
+.bioplus-prose a { font-weight: 600; color: var(--color-brand-700); }
+.bioplus-prose a:hover { text-decoration: underline; }
+.bioplus-prose img { border-radius: 14px; }
+.bioplus-prose blockquote { margin-top: 1.25rem; border-left: 3px solid var(--color-brand-600); padding-left: 1rem; color: var(--color-ink-600); }
+
+/* WooCommerce checkout: fields WooCommerce's scripts rebuild (e.g. Irish counties). */
+.woocommerce-checkout #billing_state_field select,
+.woocommerce-checkout #billing_state_field input {
+  height: 2.75rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-line);
+  background: #fff;
+  padding: 0 0.875rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+.woocommerce-checkout label .optional,
+.woocommerce-checkout label abbr.required { display: none; }
+.woocommerce-checkout .woocommerce-invalid input,
+.woocommerce-checkout .woocommerce-invalid select { border-color: #fca5a5; }
+.woocommerce-NoticeGroup-checkout { margin-bottom: 0; }
+.woocommerce-checkout .blockUI.blockOverlay { border-radius: 1rem; }
+.bioplus-notice-text ul { margin: 0; padding: 0; list-style: none; }
+.bioplus-notice-text a { font-weight: 600; text-decoration: underline; }
+
+/* Widgets in the blog sidebar. */
+.widget ul { margin-top: 0.75rem; }
+.widget li { padding: 0.25rem 0; font-size: 14px; }
+.widget a:hover { color: var(--color-brand-700); }
+
+/* Blog pagination. */
+.navigation.pagination .nav-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.navigation.pagination .page-numbers { display: inline-grid; place-items: center; min-width: 2.5rem; height: 2.5rem; padding: 0 0.75rem; border-radius: 999px; border: 1px solid var(--color-line); font-size: 14px; font-weight: 600; }
+.navigation.pagination .page-numbers.current { background: var(--color-ink-900); color: #fff; border-color: transparent; }
+
+/* Comments. */
+.comment-form label { display: block; margin: 0.75rem 0 0.35rem; font-size: 13px; font-weight: 600; color: var(--color-ink-800); }
+.comment-form input[type="text"], .comment-form input[type="email"], .comment-form input[type="url"], .comment-form textarea { width: 100%; border: 1px solid var(--color-line); border-radius: 0.75rem; padding: 0.65rem 0.875rem; font-size: 14px; }
+
+@media print {
+  body { background: #fff; }
+}
